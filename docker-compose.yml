@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  db_mesarat:
+    container_name: postgres_mesarat
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DATABASE=${POSTGRES_DATABASE}
+    ports:
+      - 5435:5432
+    volumes:
+      - postgres_data_mesarat:/var/lib/postgresql/data
+    networks:
+      - mesarat-backend
+
+  redis_mesarat:
+    container_name: redis_mesarat
+    image: redis:5.0
+    restart: always
+    ports:
+      - 6381:6379
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data_mesarat:/data
+    networks:
+      - mesarat-backend
+
+volumes:
+  postgres_data_mesarat:
+  redis_data_mesarat:
+
+networks:
+  mesarat-backend:
