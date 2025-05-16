@@ -1,0 +1,149 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthModel {
+  message: String
+  user: UserModel
+}
+
+type ChatMemberModel {
+  chat: ChatModel!
+  chatId: String!
+  createdAt: DateTime!
+  id: ID!
+  isCreator: Boolean
+  joinedAt: DateTime!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
+type ChatMessageModel {
+  chat: ChatModel!
+  chatId: String!
+  createdAt: DateTime!
+  fileUrl: String
+  id: ID!
+  imageUrl: String
+  isDeleted: Boolean!
+  isEdited: Boolean!
+  readCount: String
+  replies: [ChatMessageModel!]!
+  replyTo: ChatMessageModel
+  replyToId: String
+  text: String
+  type: MessageType!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
+type ChatModel {
+  avatarUrl: String
+  chatName: String
+  createdAt: DateTime!
+  id: ID!
+  isDeleted: Boolean!
+  isGroup: Boolean!
+  lastMessageAt: DateTime
+  members: [ChatMemberModel!]!
+  updatedAt: DateTime!
+}
+
+input CreateChatInput {
+  chatName: String!
+  userIds: [String!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DeviceModel {
+  browser: String!
+  os: String!
+  type: String!
+}
+
+input FiltersInput {
+  searchTerm: String
+  skip: Float
+  take: Float
+}
+
+type LocationModel {
+  city: String!
+  country: String!
+  latitude: Float!
+  longitude: Float!
+}
+
+input LoginInput {
+  login: String!
+  password: String!
+  pin: String
+}
+
+enum MessageType {
+  FILE
+  IMAGE
+  SYSTEM
+  TEXT
+}
+
+type Mutation {
+  clearSessionCookie: Boolean!
+  createChat(data: CreateChatInput!): Boolean!
+  createUserWEmail(data: createUserWEmail!): Boolean!
+  loginUser(data: LoginInput!): AuthModel!
+  logoutUser: Boolean!
+  sendChatMessage(chatId: String!, data: SendChatMessageInput!): ChatMessageModel!
+}
+
+type Query {
+  findAllChatsByUser(filters: FiltersInput!): [ChatModel!]!
+  findAllMessagesByChat(chatId: String!, filters: FiltersInput!): [ChatMessageModel!]!
+  findCurrentSession: SessionModel!
+  findProfile: UserModel!
+  findSessionsByUser: [SessionModel!]!
+}
+
+input SendChatMessageInput {
+  message: String!
+}
+
+type SessionMetadataModel {
+  device: DeviceModel!
+  ip: String!
+  location: LocationModel!
+}
+
+type SessionModel {
+  createdAt: String!
+  id: ID!
+  metadata: SessionMetadataModel!
+  userId: String!
+}
+
+type Subscription {
+  chatMessageAdded(chatId: String!): ChatMessageModel!
+}
+
+type UserModel {
+  createdAt: DateTime!
+  deactivatedAt: DateTime
+  email: String!
+  id: ID!
+  isDeactivated: Boolean!
+  password: String!
+  updatedAt: DateTime!
+  username: String!
+}
+
+input createUserWEmail {
+  email: String!
+  password: String!
+  username: String!
+}

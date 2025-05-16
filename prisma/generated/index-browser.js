@@ -125,8 +125,45 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   email: 'email',
   password: 'password',
+  isDeactivated: 'isDeactivated',
+  deactivatedAt: 'deactivatedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatMessageScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  text: 'text',
+  imageUrl: 'imageUrl',
+  fileUrl: 'fileUrl',
+  isEdited: 'isEdited',
+  isDeleted: 'isDeleted',
+  replyToId: 'replyToId',
+  userId: 'userId',
+  chatId: 'chatId',
+  readCount: 'readCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatScalarFieldEnum = {
+  id: 'id',
+  chatName: 'chatName',
+  isGroup: 'isGroup',
+  avatarUrl: 'avatarUrl',
+  isDeleted: 'isDeleted',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  isCreator: 'isCreator',
+  chatId: 'chatId',
+  joinedAt: 'joinedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -139,9 +176,22 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.MessageType = exports.$Enums.MessageType = {
+  TEXT: 'TEXT',
+  IMAGE: 'IMAGE',
+  FILE: 'FILE',
+  SYSTEM: 'SYSTEM'
+};
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  ChatMessage: 'ChatMessage',
+  Chat: 'Chat',
+  ChatMember: 'ChatMember'
 };
 
 /**
