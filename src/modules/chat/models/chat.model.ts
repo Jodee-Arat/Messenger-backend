@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import { Chat } from "@/prisma/generated";
 
-import { ChatMemberModel } from "./chat-member";
+import { ChatMemberModel } from "./chat-member.model";
 
 @ObjectType()
 export class ChatModel implements Chat {

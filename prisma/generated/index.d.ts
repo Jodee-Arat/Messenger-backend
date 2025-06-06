@@ -24,6 +24,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type ChatMessage = $Result.DefaultSelection<Prisma.$ChatMessagePayload>
 /**
+ * Model FileMessage
+ * 
+ */
+export type FileMessage = $Result.DefaultSelection<Prisma.$FileMessagePayload>
+/**
  * Model Chat
  * 
  */
@@ -33,25 +38,21 @@ export type Chat = $Result.DefaultSelection<Prisma.$ChatPayload>
  * 
  */
 export type ChatMember = $Result.DefaultSelection<Prisma.$ChatMemberPayload>
-
 /**
- * Enums
+ * Model ClientKey
+ * 
  */
-export namespace $Enums {
-  export const MessageType: {
-  TEXT: 'TEXT',
-  IMAGE: 'IMAGE',
-  FILE: 'FILE',
-  SYSTEM: 'SYSTEM'
-};
-
-export type MessageType = (typeof MessageType)[keyof typeof MessageType]
-
-}
-
-export type MessageType = $Enums.MessageType
-
-export const MessageType: typeof $Enums.MessageType
+export type ClientKey = $Result.DefaultSelection<Prisma.$ClientKeyPayload>
+/**
+ * Model ServerKey
+ * 
+ */
+export type ServerKey = $Result.DefaultSelection<Prisma.$ServerKeyPayload>
+/**
+ * Model KeyDiffie
+ * 
+ */
+export type KeyDiffie = $Result.DefaultSelection<Prisma.$KeyDiffiePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -199,6 +200,16 @@ export class PrismaClient<
   get chatMessage(): Prisma.ChatMessageDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.fileMessage`: Exposes CRUD operations for the **FileMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FileMessages
+    * const fileMessages = await prisma.fileMessage.findMany()
+    * ```
+    */
+  get fileMessage(): Prisma.FileMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.chat`: Exposes CRUD operations for the **Chat** model.
     * Example usage:
     * ```ts
@@ -217,6 +228,36 @@ export class PrismaClient<
     * ```
     */
   get chatMember(): Prisma.ChatMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clientKey`: Exposes CRUD operations for the **ClientKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClientKeys
+    * const clientKeys = await prisma.clientKey.findMany()
+    * ```
+    */
+  get clientKey(): Prisma.ClientKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.serverKey`: Exposes CRUD operations for the **ServerKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ServerKeys
+    * const serverKeys = await prisma.serverKey.findMany()
+    * ```
+    */
+  get serverKey(): Prisma.ServerKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.keyDiffie`: Exposes CRUD operations for the **KeyDiffie** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more KeyDiffies
+    * const keyDiffies = await prisma.keyDiffie.findMany()
+    * ```
+    */
+  get keyDiffie(): Prisma.KeyDiffieDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -275,8 +316,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.7.0
-   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+   * Prisma Client JS version: 6.8.2
+   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
    */
   export type PrismaVersion = {
     client: string
@@ -659,8 +700,12 @@ export namespace Prisma {
   export const ModelName: {
     User: 'User',
     ChatMessage: 'ChatMessage',
+    FileMessage: 'FileMessage',
     Chat: 'Chat',
-    ChatMember: 'ChatMember'
+    ChatMember: 'ChatMember',
+    ClientKey: 'ClientKey',
+    ServerKey: 'ServerKey',
+    KeyDiffie: 'KeyDiffie'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -679,7 +724,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "chatMessage" | "chat" | "chatMember"
+      modelProps: "user" | "chatMessage" | "fileMessage" | "chat" | "chatMember" | "clientKey" | "serverKey" | "keyDiffie"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -831,6 +876,80 @@ export namespace Prisma {
           }
         }
       }
+      FileMessage: {
+        payload: Prisma.$FileMessagePayload<ExtArgs>
+        fields: Prisma.FileMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FileMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FileMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.FileMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FileMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          findMany: {
+            args: Prisma.FileMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>[]
+          }
+          create: {
+            args: Prisma.FileMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          createMany: {
+            args: Prisma.FileMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FileMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.FileMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          update: {
+            args: Prisma.FileMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.FileMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FileMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FileMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.FileMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FileMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.FileMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFileMessage>
+          }
+          groupBy: {
+            args: Prisma.FileMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FileMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FileMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<FileMessageCountAggregateOutputType> | number
+          }
+        }
+      }
       Chat: {
         payload: Prisma.$ChatPayload<ExtArgs>
         fields: Prisma.ChatFieldRefs
@@ -979,6 +1098,228 @@ export namespace Prisma {
           }
         }
       }
+      ClientKey: {
+        payload: Prisma.$ClientKeyPayload<ExtArgs>
+        fields: Prisma.ClientKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClientKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClientKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.ClientKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClientKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          findMany: {
+            args: Prisma.ClientKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>[]
+          }
+          create: {
+            args: Prisma.ClientKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          createMany: {
+            args: Prisma.ClientKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClientKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.ClientKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          update: {
+            args: Prisma.ClientKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClientKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClientKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClientKeyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClientKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.ClientKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClientKey>
+          }
+          groupBy: {
+            args: Prisma.ClientKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClientKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClientKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<ClientKeyCountAggregateOutputType> | number
+          }
+        }
+      }
+      ServerKey: {
+        payload: Prisma.$ServerKeyPayload<ExtArgs>
+        fields: Prisma.ServerKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ServerKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ServerKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.ServerKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ServerKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          findMany: {
+            args: Prisma.ServerKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>[]
+          }
+          create: {
+            args: Prisma.ServerKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          createMany: {
+            args: Prisma.ServerKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ServerKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.ServerKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          update: {
+            args: Prisma.ServerKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.ServerKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ServerKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ServerKeyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>[]
+          }
+          upsert: {
+            args: Prisma.ServerKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ServerKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.ServerKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateServerKey>
+          }
+          groupBy: {
+            args: Prisma.ServerKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ServerKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ServerKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<ServerKeyCountAggregateOutputType> | number
+          }
+        }
+      }
+      KeyDiffie: {
+        payload: Prisma.$KeyDiffiePayload<ExtArgs>
+        fields: Prisma.KeyDiffieFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.KeyDiffieFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.KeyDiffieFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          findFirst: {
+            args: Prisma.KeyDiffieFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.KeyDiffieFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          findMany: {
+            args: Prisma.KeyDiffieFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>[]
+          }
+          create: {
+            args: Prisma.KeyDiffieCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          createMany: {
+            args: Prisma.KeyDiffieCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.KeyDiffieCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>[]
+          }
+          delete: {
+            args: Prisma.KeyDiffieDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          update: {
+            args: Prisma.KeyDiffieUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          deleteMany: {
+            args: Prisma.KeyDiffieDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.KeyDiffieUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.KeyDiffieUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>[]
+          }
+          upsert: {
+            args: Prisma.KeyDiffieUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$KeyDiffiePayload>
+          }
+          aggregate: {
+            args: Prisma.KeyDiffieAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateKeyDiffie>
+          }
+          groupBy: {
+            args: Prisma.KeyDiffieGroupByArgs<ExtArgs>
+            result: $Utils.Optional<KeyDiffieGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.KeyDiffieCountArgs<ExtArgs>
+            result: $Utils.Optional<KeyDiffieCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1065,8 +1406,12 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     chatMessage?: ChatMessageOmit
+    fileMessage?: FileMessageOmit
     chat?: ChatOmit
     chatMember?: ChatMemberOmit
+    clientKey?: ClientKeyOmit
+    serverKey?: ServerKeyOmit
+    keyDiffie?: KeyDiffieOmit
   }
 
   /* Types for Logging */
@@ -1163,11 +1508,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     messages: number
     chatMemberships: number
+    files: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
     chatMemberships?: boolean | UserCountOutputTypeCountChatMembershipsArgs
+    files?: boolean | UserCountOutputTypeCountFilesArgs
   }
 
   // Custom InputTypes
@@ -1195,16 +1542,25 @@ export namespace Prisma {
     where?: ChatMemberWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileMessageWhereInput
+  }
+
 
   /**
    * Count Type ChatMessageCountOutputType
    */
 
   export type ChatMessageCountOutputType = {
+    files: number
     replies: number
   }
 
   export type ChatMessageCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    files?: boolean | ChatMessageCountOutputTypeCountFilesArgs
     replies?: boolean | ChatMessageCountOutputTypeCountRepliesArgs
   }
 
@@ -1222,6 +1578,13 @@ export namespace Prisma {
   /**
    * ChatMessageCountOutputType without action
    */
+  export type ChatMessageCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileMessageWhereInput
+  }
+
+  /**
+   * ChatMessageCountOutputType without action
+   */
   export type ChatMessageCountOutputTypeCountRepliesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChatMessageWhereInput
   }
@@ -1234,11 +1597,13 @@ export namespace Prisma {
   export type ChatCountOutputType = {
     messages: number
     members: number
+    files: number
   }
 
   export type ChatCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | ChatCountOutputTypeCountMessagesArgs
     members?: boolean | ChatCountOutputTypeCountMembersArgs
+    files?: boolean | ChatCountOutputTypeCountFilesArgs
   }
 
   // Custom InputTypes
@@ -1264,6 +1629,13 @@ export namespace Prisma {
    */
   export type ChatCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChatMemberWhereInput
+  }
+
+  /**
+   * ChatCountOutputType without action
+   */
+  export type ChatCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileMessageWhereInput
   }
 
 
@@ -1461,6 +1833,9 @@ export namespace Prisma {
     updatedAt?: boolean
     messages?: boolean | User$messagesArgs<ExtArgs>
     chatMemberships?: boolean | User$chatMembershipsArgs<ExtArgs>
+    clientKey?: boolean | User$clientKeyArgs<ExtArgs>
+    keyDiffie?: boolean | User$keyDiffieArgs<ExtArgs>
+    files?: boolean | User$filesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1501,6 +1876,9 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | User$messagesArgs<ExtArgs>
     chatMemberships?: boolean | User$chatMembershipsArgs<ExtArgs>
+    clientKey?: boolean | User$clientKeyArgs<ExtArgs>
+    keyDiffie?: boolean | User$keyDiffieArgs<ExtArgs>
+    files?: boolean | User$filesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1511,6 +1889,9 @@ export namespace Prisma {
     objects: {
       messages: Prisma.$ChatMessagePayload<ExtArgs>[]
       chatMemberships: Prisma.$ChatMemberPayload<ExtArgs>[]
+      clientKey: Prisma.$ClientKeyPayload<ExtArgs> | null
+      keyDiffie: Prisma.$KeyDiffiePayload<ExtArgs> | null
+      files: Prisma.$FileMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1917,6 +2298,9 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     chatMemberships<T extends User$chatMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$chatMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clientKey<T extends User$clientKeyArgs<ExtArgs> = {}>(args?: Subset<T, User$clientKeyArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    keyDiffie<T extends User$keyDiffieArgs<ExtArgs> = {}>(args?: Subset<T, User$keyDiffieArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    files<T extends User$filesArgs<ExtArgs> = {}>(args?: Subset<T, User$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2390,6 +2774,68 @@ export namespace Prisma {
   }
 
   /**
+   * User.clientKey
+   */
+  export type User$clientKeyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    where?: ClientKeyWhereInput
+  }
+
+  /**
+   * User.keyDiffie
+   */
+  export type User$keyDiffieArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    where?: KeyDiffieWhereInput
+  }
+
+  /**
+   * User.files
+   */
+  export type User$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    where?: FileMessageWhereInput
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    cursor?: FileMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2420,10 +2866,9 @@ export namespace Prisma {
 
   export type ChatMessageMinAggregateOutputType = {
     id: string | null
-    type: $Enums.MessageType | null
     text: string | null
-    imageUrl: string | null
-    fileUrl: string | null
+    isStarted: boolean | null
+    isFake: boolean | null
     isEdited: boolean | null
     isDeleted: boolean | null
     replyToId: string | null
@@ -2436,10 +2881,9 @@ export namespace Prisma {
 
   export type ChatMessageMaxAggregateOutputType = {
     id: string | null
-    type: $Enums.MessageType | null
     text: string | null
-    imageUrl: string | null
-    fileUrl: string | null
+    isStarted: boolean | null
+    isFake: boolean | null
     isEdited: boolean | null
     isDeleted: boolean | null
     replyToId: string | null
@@ -2452,10 +2896,9 @@ export namespace Prisma {
 
   export type ChatMessageCountAggregateOutputType = {
     id: number
-    type: number
     text: number
-    imageUrl: number
-    fileUrl: number
+    isStarted: number
+    isFake: number
     isEdited: number
     isDeleted: number
     replyToId: number
@@ -2470,10 +2913,9 @@ export namespace Prisma {
 
   export type ChatMessageMinAggregateInputType = {
     id?: true
-    type?: true
     text?: true
-    imageUrl?: true
-    fileUrl?: true
+    isStarted?: true
+    isFake?: true
     isEdited?: true
     isDeleted?: true
     replyToId?: true
@@ -2486,10 +2928,9 @@ export namespace Prisma {
 
   export type ChatMessageMaxAggregateInputType = {
     id?: true
-    type?: true
     text?: true
-    imageUrl?: true
-    fileUrl?: true
+    isStarted?: true
+    isFake?: true
     isEdited?: true
     isDeleted?: true
     replyToId?: true
@@ -2502,10 +2943,9 @@ export namespace Prisma {
 
   export type ChatMessageCountAggregateInputType = {
     id?: true
-    type?: true
     text?: true
-    imageUrl?: true
-    fileUrl?: true
+    isStarted?: true
+    isFake?: true
     isEdited?: true
     isDeleted?: true
     replyToId?: true
@@ -2591,10 +3031,9 @@ export namespace Prisma {
 
   export type ChatMessageGroupByOutputType = {
     id: string
-    type: $Enums.MessageType
     text: string | null
-    imageUrl: string | null
-    fileUrl: string | null
+    isStarted: boolean
+    isFake: boolean
     isEdited: boolean
     isDeleted: boolean
     replyToId: string | null
@@ -2624,10 +3063,9 @@ export namespace Prisma {
 
   export type ChatMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     text?: boolean
-    imageUrl?: boolean
-    fileUrl?: boolean
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: boolean
@@ -2636,6 +3074,7 @@ export namespace Prisma {
     readCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    files?: boolean | ChatMessage$filesArgs<ExtArgs>
     replyTo?: boolean | ChatMessage$replyToArgs<ExtArgs>
     replies?: boolean | ChatMessage$repliesArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2645,10 +3084,9 @@ export namespace Prisma {
 
   export type ChatMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     text?: boolean
-    imageUrl?: boolean
-    fileUrl?: boolean
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: boolean
@@ -2664,10 +3102,9 @@ export namespace Prisma {
 
   export type ChatMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    type?: boolean
     text?: boolean
-    imageUrl?: boolean
-    fileUrl?: boolean
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: boolean
@@ -2683,10 +3120,9 @@ export namespace Prisma {
 
   export type ChatMessageSelectScalar = {
     id?: boolean
-    type?: boolean
     text?: boolean
-    imageUrl?: boolean
-    fileUrl?: boolean
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: boolean
@@ -2697,8 +3133,9 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "text" | "imageUrl" | "fileUrl" | "isEdited" | "isDeleted" | "replyToId" | "userId" | "chatId" | "readCount" | "createdAt" | "updatedAt", ExtArgs["result"]["chatMessage"]>
+  export type ChatMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "isStarted" | "isFake" | "isEdited" | "isDeleted" | "replyToId" | "userId" | "chatId" | "readCount" | "createdAt" | "updatedAt", ExtArgs["result"]["chatMessage"]>
   export type ChatMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    files?: boolean | ChatMessage$filesArgs<ExtArgs>
     replyTo?: boolean | ChatMessage$replyToArgs<ExtArgs>
     replies?: boolean | ChatMessage$repliesArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2719,6 +3156,7 @@ export namespace Prisma {
   export type $ChatMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ChatMessage"
     objects: {
+      files: Prisma.$FileMessagePayload<ExtArgs>[]
       replyTo: Prisma.$ChatMessagePayload<ExtArgs> | null
       replies: Prisma.$ChatMessagePayload<ExtArgs>[]
       user: Prisma.$UserPayload<ExtArgs>
@@ -2726,10 +3164,9 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      type: $Enums.MessageType
       text: string | null
-      imageUrl: string | null
-      fileUrl: string | null
+      isStarted: boolean
+      isFake: boolean
       isEdited: boolean
       isDeleted: boolean
       replyToId: string | null
@@ -3132,6 +3569,7 @@ export namespace Prisma {
    */
   export interface Prisma__ChatMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    files<T extends ChatMessage$filesArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     replyTo<T extends ChatMessage$replyToArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$replyToArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     replies<T extends ChatMessage$repliesArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$repliesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -3166,10 +3604,9 @@ export namespace Prisma {
    */
   interface ChatMessageFieldRefs {
     readonly id: FieldRef<"ChatMessage", 'String'>
-    readonly type: FieldRef<"ChatMessage", 'MessageType'>
     readonly text: FieldRef<"ChatMessage", 'String'>
-    readonly imageUrl: FieldRef<"ChatMessage", 'String'>
-    readonly fileUrl: FieldRef<"ChatMessage", 'String'>
+    readonly isStarted: FieldRef<"ChatMessage", 'Boolean'>
+    readonly isFake: FieldRef<"ChatMessage", 'Boolean'>
     readonly isEdited: FieldRef<"ChatMessage", 'Boolean'>
     readonly isDeleted: FieldRef<"ChatMessage", 'Boolean'>
     readonly replyToId: FieldRef<"ChatMessage", 'String'>
@@ -3574,6 +4011,30 @@ export namespace Prisma {
   }
 
   /**
+   * ChatMessage.files
+   */
+  export type ChatMessage$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    where?: FileMessageWhereInput
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    cursor?: FileMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
    * ChatMessage.replyTo
    */
   export type ChatMessage$replyToArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3632,6 +4093,1158 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ChatMessageInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FileMessage
+   */
+
+  export type AggregateFileMessage = {
+    _count: FileMessageCountAggregateOutputType | null
+    _min: FileMessageMinAggregateOutputType | null
+    _max: FileMessageMaxAggregateOutputType | null
+  }
+
+  export type FileMessageMinAggregateOutputType = {
+    id: string | null
+    fileUrl: string | null
+    fileName: string | null
+    fileFullName: string | null
+    fileSize: string | null
+    fileFormat: string | null
+    chatMessageId: string | null
+    userId: string | null
+    chatId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FileMessageMaxAggregateOutputType = {
+    id: string | null
+    fileUrl: string | null
+    fileName: string | null
+    fileFullName: string | null
+    fileSize: string | null
+    fileFormat: string | null
+    chatMessageId: string | null
+    userId: string | null
+    chatId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FileMessageCountAggregateOutputType = {
+    id: number
+    fileUrl: number
+    fileName: number
+    fileFullName: number
+    fileSize: number
+    fileFormat: number
+    chatMessageId: number
+    userId: number
+    chatId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FileMessageMinAggregateInputType = {
+    id?: true
+    fileUrl?: true
+    fileName?: true
+    fileFullName?: true
+    fileSize?: true
+    fileFormat?: true
+    chatMessageId?: true
+    userId?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FileMessageMaxAggregateInputType = {
+    id?: true
+    fileUrl?: true
+    fileName?: true
+    fileFullName?: true
+    fileSize?: true
+    fileFormat?: true
+    chatMessageId?: true
+    userId?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FileMessageCountAggregateInputType = {
+    id?: true
+    fileUrl?: true
+    fileName?: true
+    fileFullName?: true
+    fileSize?: true
+    fileFormat?: true
+    chatMessageId?: true
+    userId?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FileMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FileMessage to aggregate.
+     */
+    where?: FileMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FileMessages to fetch.
+     */
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FileMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FileMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FileMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FileMessages
+    **/
+    _count?: true | FileMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FileMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FileMessageMaxAggregateInputType
+  }
+
+  export type GetFileMessageAggregateType<T extends FileMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateFileMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFileMessage[P]>
+      : GetScalarType<T[P], AggregateFileMessage[P]>
+  }
+
+
+
+
+  export type FileMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FileMessageWhereInput
+    orderBy?: FileMessageOrderByWithAggregationInput | FileMessageOrderByWithAggregationInput[]
+    by: FileMessageScalarFieldEnum[] | FileMessageScalarFieldEnum
+    having?: FileMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FileMessageCountAggregateInputType | true
+    _min?: FileMessageMinAggregateInputType
+    _max?: FileMessageMaxAggregateInputType
+  }
+
+  export type FileMessageGroupByOutputType = {
+    id: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    userId: string
+    chatId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: FileMessageCountAggregateOutputType | null
+    _min: FileMessageMinAggregateOutputType | null
+    _max: FileMessageMaxAggregateOutputType | null
+  }
+
+  type GetFileMessageGroupByPayload<T extends FileMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FileMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FileMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FileMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], FileMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FileMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileFullName?: boolean
+    fileSize?: boolean
+    fileFormat?: boolean
+    chatMessageId?: boolean
+    userId?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fileMessage"]>
+
+  export type FileMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileFullName?: boolean
+    fileSize?: boolean
+    fileFormat?: boolean
+    chatMessageId?: boolean
+    userId?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fileMessage"]>
+
+  export type FileMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileFullName?: boolean
+    fileSize?: boolean
+    fileFormat?: boolean
+    chatMessageId?: boolean
+    userId?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["fileMessage"]>
+
+  export type FileMessageSelectScalar = {
+    id?: boolean
+    fileUrl?: boolean
+    fileName?: boolean
+    fileFullName?: boolean
+    fileSize?: boolean
+    fileFormat?: boolean
+    chatMessageId?: boolean
+    userId?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FileMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fileUrl" | "fileName" | "fileFullName" | "fileSize" | "fileFormat" | "chatMessageId" | "userId" | "chatId" | "createdAt" | "updatedAt", ExtArgs["result"]["fileMessage"]>
+  export type FileMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+  export type FileMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+  export type FileMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chatMessage?: boolean | ChatMessageDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+
+  export type $FileMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FileMessage"
+    objects: {
+      chatMessage: Prisma.$ChatMessagePayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+      chat: Prisma.$ChatPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      fileUrl: string
+      fileName: string
+      fileFullName: string
+      fileSize: string
+      fileFormat: string
+      chatMessageId: string
+      userId: string
+      chatId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["fileMessage"]>
+    composites: {}
+  }
+
+  type FileMessageGetPayload<S extends boolean | null | undefined | FileMessageDefaultArgs> = $Result.GetResult<Prisma.$FileMessagePayload, S>
+
+  type FileMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FileMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FileMessageCountAggregateInputType | true
+    }
+
+  export interface FileMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FileMessage'], meta: { name: 'FileMessage' } }
+    /**
+     * Find zero or one FileMessage that matches the filter.
+     * @param {FileMessageFindUniqueArgs} args - Arguments to find a FileMessage
+     * @example
+     * // Get one FileMessage
+     * const fileMessage = await prisma.fileMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FileMessageFindUniqueArgs>(args: SelectSubset<T, FileMessageFindUniqueArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FileMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FileMessageFindUniqueOrThrowArgs} args - Arguments to find a FileMessage
+     * @example
+     * // Get one FileMessage
+     * const fileMessage = await prisma.fileMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FileMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, FileMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FileMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageFindFirstArgs} args - Arguments to find a FileMessage
+     * @example
+     * // Get one FileMessage
+     * const fileMessage = await prisma.fileMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FileMessageFindFirstArgs>(args?: SelectSubset<T, FileMessageFindFirstArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FileMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageFindFirstOrThrowArgs} args - Arguments to find a FileMessage
+     * @example
+     * // Get one FileMessage
+     * const fileMessage = await prisma.fileMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FileMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, FileMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FileMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FileMessages
+     * const fileMessages = await prisma.fileMessage.findMany()
+     * 
+     * // Get first 10 FileMessages
+     * const fileMessages = await prisma.fileMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const fileMessageWithIdOnly = await prisma.fileMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FileMessageFindManyArgs>(args?: SelectSubset<T, FileMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FileMessage.
+     * @param {FileMessageCreateArgs} args - Arguments to create a FileMessage.
+     * @example
+     * // Create one FileMessage
+     * const FileMessage = await prisma.fileMessage.create({
+     *   data: {
+     *     // ... data to create a FileMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends FileMessageCreateArgs>(args: SelectSubset<T, FileMessageCreateArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FileMessages.
+     * @param {FileMessageCreateManyArgs} args - Arguments to create many FileMessages.
+     * @example
+     * // Create many FileMessages
+     * const fileMessage = await prisma.fileMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FileMessageCreateManyArgs>(args?: SelectSubset<T, FileMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FileMessages and returns the data saved in the database.
+     * @param {FileMessageCreateManyAndReturnArgs} args - Arguments to create many FileMessages.
+     * @example
+     * // Create many FileMessages
+     * const fileMessage = await prisma.fileMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FileMessages and only return the `id`
+     * const fileMessageWithIdOnly = await prisma.fileMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FileMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, FileMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FileMessage.
+     * @param {FileMessageDeleteArgs} args - Arguments to delete one FileMessage.
+     * @example
+     * // Delete one FileMessage
+     * const FileMessage = await prisma.fileMessage.delete({
+     *   where: {
+     *     // ... filter to delete one FileMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FileMessageDeleteArgs>(args: SelectSubset<T, FileMessageDeleteArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FileMessage.
+     * @param {FileMessageUpdateArgs} args - Arguments to update one FileMessage.
+     * @example
+     * // Update one FileMessage
+     * const fileMessage = await prisma.fileMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FileMessageUpdateArgs>(args: SelectSubset<T, FileMessageUpdateArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FileMessages.
+     * @param {FileMessageDeleteManyArgs} args - Arguments to filter FileMessages to delete.
+     * @example
+     * // Delete a few FileMessages
+     * const { count } = await prisma.fileMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FileMessageDeleteManyArgs>(args?: SelectSubset<T, FileMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FileMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FileMessages
+     * const fileMessage = await prisma.fileMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FileMessageUpdateManyArgs>(args: SelectSubset<T, FileMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FileMessages and returns the data updated in the database.
+     * @param {FileMessageUpdateManyAndReturnArgs} args - Arguments to update many FileMessages.
+     * @example
+     * // Update many FileMessages
+     * const fileMessage = await prisma.fileMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FileMessages and only return the `id`
+     * const fileMessageWithIdOnly = await prisma.fileMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FileMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, FileMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FileMessage.
+     * @param {FileMessageUpsertArgs} args - Arguments to update or create a FileMessage.
+     * @example
+     * // Update or create a FileMessage
+     * const fileMessage = await prisma.fileMessage.upsert({
+     *   create: {
+     *     // ... data to create a FileMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FileMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FileMessageUpsertArgs>(args: SelectSubset<T, FileMessageUpsertArgs<ExtArgs>>): Prisma__FileMessageClient<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FileMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageCountArgs} args - Arguments to filter FileMessages to count.
+     * @example
+     * // Count the number of FileMessages
+     * const count = await prisma.fileMessage.count({
+     *   where: {
+     *     // ... the filter for the FileMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends FileMessageCountArgs>(
+      args?: Subset<T, FileMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FileMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FileMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FileMessageAggregateArgs>(args: Subset<T, FileMessageAggregateArgs>): Prisma.PrismaPromise<GetFileMessageAggregateType<T>>
+
+    /**
+     * Group by FileMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FileMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FileMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FileMessageGroupByArgs['orderBy'] }
+        : { orderBy?: FileMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FileMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFileMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FileMessage model
+   */
+  readonly fields: FileMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FileMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FileMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    chatMessage<T extends ChatMessageDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessageDefaultArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    chat<T extends ChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatDefaultArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FileMessage model
+   */
+  interface FileMessageFieldRefs {
+    readonly id: FieldRef<"FileMessage", 'String'>
+    readonly fileUrl: FieldRef<"FileMessage", 'String'>
+    readonly fileName: FieldRef<"FileMessage", 'String'>
+    readonly fileFullName: FieldRef<"FileMessage", 'String'>
+    readonly fileSize: FieldRef<"FileMessage", 'String'>
+    readonly fileFormat: FieldRef<"FileMessage", 'String'>
+    readonly chatMessageId: FieldRef<"FileMessage", 'String'>
+    readonly userId: FieldRef<"FileMessage", 'String'>
+    readonly chatId: FieldRef<"FileMessage", 'String'>
+    readonly createdAt: FieldRef<"FileMessage", 'DateTime'>
+    readonly updatedAt: FieldRef<"FileMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FileMessage findUnique
+   */
+  export type FileMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which FileMessage to fetch.
+     */
+    where: FileMessageWhereUniqueInput
+  }
+
+  /**
+   * FileMessage findUniqueOrThrow
+   */
+  export type FileMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which FileMessage to fetch.
+     */
+    where: FileMessageWhereUniqueInput
+  }
+
+  /**
+   * FileMessage findFirst
+   */
+  export type FileMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which FileMessage to fetch.
+     */
+    where?: FileMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FileMessages to fetch.
+     */
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FileMessages.
+     */
+    cursor?: FileMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FileMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FileMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FileMessages.
+     */
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FileMessage findFirstOrThrow
+   */
+  export type FileMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which FileMessage to fetch.
+     */
+    where?: FileMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FileMessages to fetch.
+     */
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FileMessages.
+     */
+    cursor?: FileMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FileMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FileMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FileMessages.
+     */
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FileMessage findMany
+   */
+  export type FileMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which FileMessages to fetch.
+     */
+    where?: FileMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FileMessages to fetch.
+     */
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FileMessages.
+     */
+    cursor?: FileMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FileMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FileMessages.
+     */
+    skip?: number
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * FileMessage create
+   */
+  export type FileMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FileMessage.
+     */
+    data: XOR<FileMessageCreateInput, FileMessageUncheckedCreateInput>
+  }
+
+  /**
+   * FileMessage createMany
+   */
+  export type FileMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FileMessages.
+     */
+    data: FileMessageCreateManyInput | FileMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FileMessage createManyAndReturn
+   */
+  export type FileMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many FileMessages.
+     */
+    data: FileMessageCreateManyInput | FileMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FileMessage update
+   */
+  export type FileMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FileMessage.
+     */
+    data: XOR<FileMessageUpdateInput, FileMessageUncheckedUpdateInput>
+    /**
+     * Choose, which FileMessage to update.
+     */
+    where: FileMessageWhereUniqueInput
+  }
+
+  /**
+   * FileMessage updateMany
+   */
+  export type FileMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FileMessages.
+     */
+    data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which FileMessages to update
+     */
+    where?: FileMessageWhereInput
+    /**
+     * Limit how many FileMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FileMessage updateManyAndReturn
+   */
+  export type FileMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update FileMessages.
+     */
+    data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which FileMessages to update
+     */
+    where?: FileMessageWhereInput
+    /**
+     * Limit how many FileMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FileMessage upsert
+   */
+  export type FileMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FileMessage to update in case it exists.
+     */
+    where: FileMessageWhereUniqueInput
+    /**
+     * In case the FileMessage found by the `where` argument doesn't exist, create a new FileMessage with this data.
+     */
+    create: XOR<FileMessageCreateInput, FileMessageUncheckedCreateInput>
+    /**
+     * In case the FileMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FileMessageUpdateInput, FileMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * FileMessage delete
+   */
+  export type FileMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    /**
+     * Filter which FileMessage to delete.
+     */
+    where: FileMessageWhereUniqueInput
+  }
+
+  /**
+   * FileMessage deleteMany
+   */
+  export type FileMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FileMessages to delete
+     */
+    where?: FileMessageWhereInput
+    /**
+     * Limit how many FileMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FileMessage without action
+   */
+  export type FileMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
   }
 
 
@@ -3825,6 +5438,8 @@ export namespace Prisma {
     updatedAt?: boolean
     messages?: boolean | Chat$messagesArgs<ExtArgs>
     members?: boolean | Chat$membersArgs<ExtArgs>
+    files?: boolean | Chat$filesArgs<ExtArgs>
+    serverKey?: boolean | Chat$serverKeyArgs<ExtArgs>
     _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["chat"]>
 
@@ -3865,6 +5480,8 @@ export namespace Prisma {
   export type ChatInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     messages?: boolean | Chat$messagesArgs<ExtArgs>
     members?: boolean | Chat$membersArgs<ExtArgs>
+    files?: boolean | Chat$filesArgs<ExtArgs>
+    serverKey?: boolean | Chat$serverKeyArgs<ExtArgs>
     _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChatIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3875,6 +5492,8 @@ export namespace Prisma {
     objects: {
       messages: Prisma.$ChatMessagePayload<ExtArgs>[]
       members: Prisma.$ChatMemberPayload<ExtArgs>[]
+      files: Prisma.$FileMessagePayload<ExtArgs>[]
+      serverKey: Prisma.$ServerKeyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4281,6 +5900,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     messages<T extends Chat$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Chat$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Chat$membersArgs<ExtArgs> = {}>(args?: Subset<T, Chat$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    files<T extends Chat$filesArgs<ExtArgs> = {}>(args?: Subset<T, Chat$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    serverKey<T extends Chat$serverKeyArgs<ExtArgs> = {}>(args?: Subset<T, Chat$serverKeyArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4751,6 +6372,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChatMemberScalarFieldEnum | ChatMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Chat.files
+   */
+  export type Chat$filesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FileMessage
+     */
+    select?: FileMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FileMessage
+     */
+    omit?: FileMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FileMessageInclude<ExtArgs> | null
+    where?: FileMessageWhereInput
+    orderBy?: FileMessageOrderByWithRelationInput | FileMessageOrderByWithRelationInput[]
+    cursor?: FileMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * Chat.serverKey
+   */
+  export type Chat$serverKeyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    where?: ServerKeyWhereInput
   }
 
   /**
@@ -5839,6 +7503,3418 @@ export namespace Prisma {
 
 
   /**
+   * Model ClientKey
+   */
+
+  export type AggregateClientKey = {
+    _count: ClientKeyCountAggregateOutputType | null
+    _avg: ClientKeyAvgAggregateOutputType | null
+    _sum: ClientKeySumAggregateOutputType | null
+    _min: ClientKeyMinAggregateOutputType | null
+    _max: ClientKeyMaxAggregateOutputType | null
+  }
+
+  export type ClientKeyAvgAggregateOutputType = {
+    publicKeyE: number | null
+    publicKeyN: number | null
+    sessionKey: number | null
+  }
+
+  export type ClientKeySumAggregateOutputType = {
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    sessionKey: bigint | null
+  }
+
+  export type ClientKeyMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    sessionKey: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClientKeyMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    sessionKey: bigint | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClientKeyCountAggregateOutputType = {
+    id: number
+    userId: number
+    publicKeyE: number
+    publicKeyN: number
+    sessionKey: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ClientKeyAvgAggregateInputType = {
+    publicKeyE?: true
+    publicKeyN?: true
+    sessionKey?: true
+  }
+
+  export type ClientKeySumAggregateInputType = {
+    publicKeyE?: true
+    publicKeyN?: true
+    sessionKey?: true
+  }
+
+  export type ClientKeyMinAggregateInputType = {
+    id?: true
+    userId?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    sessionKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClientKeyMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    sessionKey?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClientKeyCountAggregateInputType = {
+    id?: true
+    userId?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    sessionKey?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ClientKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClientKey to aggregate.
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientKeys to fetch.
+     */
+    orderBy?: ClientKeyOrderByWithRelationInput | ClientKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClientKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClientKeys
+    **/
+    _count?: true | ClientKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClientKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClientKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClientKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClientKeyMaxAggregateInputType
+  }
+
+  export type GetClientKeyAggregateType<T extends ClientKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregateClientKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClientKey[P]>
+      : GetScalarType<T[P], AggregateClientKey[P]>
+  }
+
+
+
+
+  export type ClientKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientKeyWhereInput
+    orderBy?: ClientKeyOrderByWithAggregationInput | ClientKeyOrderByWithAggregationInput[]
+    by: ClientKeyScalarFieldEnum[] | ClientKeyScalarFieldEnum
+    having?: ClientKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClientKeyCountAggregateInputType | true
+    _avg?: ClientKeyAvgAggregateInputType
+    _sum?: ClientKeySumAggregateInputType
+    _min?: ClientKeyMinAggregateInputType
+    _max?: ClientKeyMaxAggregateInputType
+  }
+
+  export type ClientKeyGroupByOutputType = {
+    id: string
+    userId: string
+    publicKeyE: bigint
+    publicKeyN: bigint
+    sessionKey: bigint
+    createdAt: Date
+    updatedAt: Date
+    _count: ClientKeyCountAggregateOutputType | null
+    _avg: ClientKeyAvgAggregateOutputType | null
+    _sum: ClientKeySumAggregateOutputType | null
+    _min: ClientKeyMinAggregateOutputType | null
+    _max: ClientKeyMaxAggregateOutputType | null
+  }
+
+  type GetClientKeyGroupByPayload<T extends ClientKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClientKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClientKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClientKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], ClientKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClientKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    sessionKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientKey"]>
+
+  export type ClientKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    sessionKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientKey"]>
+
+  export type ClientKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    sessionKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clientKey"]>
+
+  export type ClientKeySelectScalar = {
+    id?: boolean
+    userId?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    sessionKey?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ClientKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "publicKeyE" | "publicKeyN" | "sessionKey" | "createdAt" | "updatedAt", ExtArgs["result"]["clientKey"]>
+  export type ClientKeyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ClientKeyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ClientKeyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ClientKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClientKey"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      publicKeyE: bigint
+      publicKeyN: bigint
+      sessionKey: bigint
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["clientKey"]>
+    composites: {}
+  }
+
+  type ClientKeyGetPayload<S extends boolean | null | undefined | ClientKeyDefaultArgs> = $Result.GetResult<Prisma.$ClientKeyPayload, S>
+
+  type ClientKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClientKeyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClientKeyCountAggregateInputType | true
+    }
+
+  export interface ClientKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClientKey'], meta: { name: 'ClientKey' } }
+    /**
+     * Find zero or one ClientKey that matches the filter.
+     * @param {ClientKeyFindUniqueArgs} args - Arguments to find a ClientKey
+     * @example
+     * // Get one ClientKey
+     * const clientKey = await prisma.clientKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClientKeyFindUniqueArgs>(args: SelectSubset<T, ClientKeyFindUniqueArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClientKey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClientKeyFindUniqueOrThrowArgs} args - Arguments to find a ClientKey
+     * @example
+     * // Get one ClientKey
+     * const clientKey = await prisma.clientKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClientKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, ClientKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClientKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyFindFirstArgs} args - Arguments to find a ClientKey
+     * @example
+     * // Get one ClientKey
+     * const clientKey = await prisma.clientKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClientKeyFindFirstArgs>(args?: SelectSubset<T, ClientKeyFindFirstArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClientKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyFindFirstOrThrowArgs} args - Arguments to find a ClientKey
+     * @example
+     * // Get one ClientKey
+     * const clientKey = await prisma.clientKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClientKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, ClientKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClientKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClientKeys
+     * const clientKeys = await prisma.clientKey.findMany()
+     * 
+     * // Get first 10 ClientKeys
+     * const clientKeys = await prisma.clientKey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clientKeyWithIdOnly = await prisma.clientKey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClientKeyFindManyArgs>(args?: SelectSubset<T, ClientKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClientKey.
+     * @param {ClientKeyCreateArgs} args - Arguments to create a ClientKey.
+     * @example
+     * // Create one ClientKey
+     * const ClientKey = await prisma.clientKey.create({
+     *   data: {
+     *     // ... data to create a ClientKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClientKeyCreateArgs>(args: SelectSubset<T, ClientKeyCreateArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClientKeys.
+     * @param {ClientKeyCreateManyArgs} args - Arguments to create many ClientKeys.
+     * @example
+     * // Create many ClientKeys
+     * const clientKey = await prisma.clientKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClientKeyCreateManyArgs>(args?: SelectSubset<T, ClientKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClientKeys and returns the data saved in the database.
+     * @param {ClientKeyCreateManyAndReturnArgs} args - Arguments to create many ClientKeys.
+     * @example
+     * // Create many ClientKeys
+     * const clientKey = await prisma.clientKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClientKeys and only return the `id`
+     * const clientKeyWithIdOnly = await prisma.clientKey.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClientKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, ClientKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClientKey.
+     * @param {ClientKeyDeleteArgs} args - Arguments to delete one ClientKey.
+     * @example
+     * // Delete one ClientKey
+     * const ClientKey = await prisma.clientKey.delete({
+     *   where: {
+     *     // ... filter to delete one ClientKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClientKeyDeleteArgs>(args: SelectSubset<T, ClientKeyDeleteArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClientKey.
+     * @param {ClientKeyUpdateArgs} args - Arguments to update one ClientKey.
+     * @example
+     * // Update one ClientKey
+     * const clientKey = await prisma.clientKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClientKeyUpdateArgs>(args: SelectSubset<T, ClientKeyUpdateArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClientKeys.
+     * @param {ClientKeyDeleteManyArgs} args - Arguments to filter ClientKeys to delete.
+     * @example
+     * // Delete a few ClientKeys
+     * const { count } = await prisma.clientKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClientKeyDeleteManyArgs>(args?: SelectSubset<T, ClientKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClientKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClientKeys
+     * const clientKey = await prisma.clientKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClientKeyUpdateManyArgs>(args: SelectSubset<T, ClientKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClientKeys and returns the data updated in the database.
+     * @param {ClientKeyUpdateManyAndReturnArgs} args - Arguments to update many ClientKeys.
+     * @example
+     * // Update many ClientKeys
+     * const clientKey = await prisma.clientKey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClientKeys and only return the `id`
+     * const clientKeyWithIdOnly = await prisma.clientKey.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClientKeyUpdateManyAndReturnArgs>(args: SelectSubset<T, ClientKeyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClientKey.
+     * @param {ClientKeyUpsertArgs} args - Arguments to update or create a ClientKey.
+     * @example
+     * // Update or create a ClientKey
+     * const clientKey = await prisma.clientKey.upsert({
+     *   create: {
+     *     // ... data to create a ClientKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClientKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClientKeyUpsertArgs>(args: SelectSubset<T, ClientKeyUpsertArgs<ExtArgs>>): Prisma__ClientKeyClient<$Result.GetResult<Prisma.$ClientKeyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClientKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyCountArgs} args - Arguments to filter ClientKeys to count.
+     * @example
+     * // Count the number of ClientKeys
+     * const count = await prisma.clientKey.count({
+     *   where: {
+     *     // ... the filter for the ClientKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClientKeyCountArgs>(
+      args?: Subset<T, ClientKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClientKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClientKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClientKeyAggregateArgs>(args: Subset<T, ClientKeyAggregateArgs>): Prisma.PrismaPromise<GetClientKeyAggregateType<T>>
+
+    /**
+     * Group by ClientKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClientKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClientKeyGroupByArgs['orderBy'] }
+        : { orderBy?: ClientKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClientKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClientKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClientKey model
+   */
+  readonly fields: ClientKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClientKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClientKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClientKey model
+   */
+  interface ClientKeyFieldRefs {
+    readonly id: FieldRef<"ClientKey", 'String'>
+    readonly userId: FieldRef<"ClientKey", 'String'>
+    readonly publicKeyE: FieldRef<"ClientKey", 'BigInt'>
+    readonly publicKeyN: FieldRef<"ClientKey", 'BigInt'>
+    readonly sessionKey: FieldRef<"ClientKey", 'BigInt'>
+    readonly createdAt: FieldRef<"ClientKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"ClientKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClientKey findUnique
+   */
+  export type ClientKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientKey to fetch.
+     */
+    where: ClientKeyWhereUniqueInput
+  }
+
+  /**
+   * ClientKey findUniqueOrThrow
+   */
+  export type ClientKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientKey to fetch.
+     */
+    where: ClientKeyWhereUniqueInput
+  }
+
+  /**
+   * ClientKey findFirst
+   */
+  export type ClientKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientKey to fetch.
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientKeys to fetch.
+     */
+    orderBy?: ClientKeyOrderByWithRelationInput | ClientKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClientKeys.
+     */
+    cursor?: ClientKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClientKeys.
+     */
+    distinct?: ClientKeyScalarFieldEnum | ClientKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ClientKey findFirstOrThrow
+   */
+  export type ClientKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientKey to fetch.
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientKeys to fetch.
+     */
+    orderBy?: ClientKeyOrderByWithRelationInput | ClientKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClientKeys.
+     */
+    cursor?: ClientKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClientKeys.
+     */
+    distinct?: ClientKeyScalarFieldEnum | ClientKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ClientKey findMany
+   */
+  export type ClientKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ClientKeys to fetch.
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClientKeys to fetch.
+     */
+    orderBy?: ClientKeyOrderByWithRelationInput | ClientKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClientKeys.
+     */
+    cursor?: ClientKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClientKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClientKeys.
+     */
+    skip?: number
+    distinct?: ClientKeyScalarFieldEnum | ClientKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ClientKey create
+   */
+  export type ClientKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClientKey.
+     */
+    data: XOR<ClientKeyCreateInput, ClientKeyUncheckedCreateInput>
+  }
+
+  /**
+   * ClientKey createMany
+   */
+  export type ClientKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClientKeys.
+     */
+    data: ClientKeyCreateManyInput | ClientKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClientKey createManyAndReturn
+   */
+  export type ClientKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClientKeys.
+     */
+    data: ClientKeyCreateManyInput | ClientKeyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClientKey update
+   */
+  export type ClientKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClientKey.
+     */
+    data: XOR<ClientKeyUpdateInput, ClientKeyUncheckedUpdateInput>
+    /**
+     * Choose, which ClientKey to update.
+     */
+    where: ClientKeyWhereUniqueInput
+  }
+
+  /**
+   * ClientKey updateMany
+   */
+  export type ClientKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClientKeys.
+     */
+    data: XOR<ClientKeyUpdateManyMutationInput, ClientKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ClientKeys to update
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * Limit how many ClientKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClientKey updateManyAndReturn
+   */
+  export type ClientKeyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * The data used to update ClientKeys.
+     */
+    data: XOR<ClientKeyUpdateManyMutationInput, ClientKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ClientKeys to update
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * Limit how many ClientKeys to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClientKey upsert
+   */
+  export type ClientKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClientKey to update in case it exists.
+     */
+    where: ClientKeyWhereUniqueInput
+    /**
+     * In case the ClientKey found by the `where` argument doesn't exist, create a new ClientKey with this data.
+     */
+    create: XOR<ClientKeyCreateInput, ClientKeyUncheckedCreateInput>
+    /**
+     * In case the ClientKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClientKeyUpdateInput, ClientKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * ClientKey delete
+   */
+  export type ClientKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+    /**
+     * Filter which ClientKey to delete.
+     */
+    where: ClientKeyWhereUniqueInput
+  }
+
+  /**
+   * ClientKey deleteMany
+   */
+  export type ClientKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClientKeys to delete
+     */
+    where?: ClientKeyWhereInput
+    /**
+     * Limit how many ClientKeys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClientKey without action
+   */
+  export type ClientKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientKey
+     */
+    select?: ClientKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClientKey
+     */
+    omit?: ClientKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientKeyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ServerKey
+   */
+
+  export type AggregateServerKey = {
+    _count: ServerKeyCountAggregateOutputType | null
+    _avg: ServerKeyAvgAggregateOutputType | null
+    _sum: ServerKeySumAggregateOutputType | null
+    _min: ServerKeyMinAggregateOutputType | null
+    _max: ServerKeyMaxAggregateOutputType | null
+  }
+
+  export type ServerKeyAvgAggregateOutputType = {
+    publicKeyE: number | null
+    publicKeyN: number | null
+    privateKeyD: number | null
+    privateKeyP: number | null
+    privateKeyQ: number | null
+  }
+
+  export type ServerKeySumAggregateOutputType = {
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    privateKeyD: bigint | null
+    privateKeyP: bigint | null
+    privateKeyQ: bigint | null
+  }
+
+  export type ServerKeyMinAggregateOutputType = {
+    id: string | null
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    privateKeyD: bigint | null
+    privateKeyP: bigint | null
+    privateKeyQ: bigint | null
+    chatId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerKeyMaxAggregateOutputType = {
+    id: string | null
+    publicKeyE: bigint | null
+    publicKeyN: bigint | null
+    privateKeyD: bigint | null
+    privateKeyP: bigint | null
+    privateKeyQ: bigint | null
+    chatId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ServerKeyCountAggregateOutputType = {
+    id: number
+    publicKeyE: number
+    publicKeyN: number
+    privateKeyD: number
+    privateKeyP: number
+    privateKeyQ: number
+    chatId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ServerKeyAvgAggregateInputType = {
+    publicKeyE?: true
+    publicKeyN?: true
+    privateKeyD?: true
+    privateKeyP?: true
+    privateKeyQ?: true
+  }
+
+  export type ServerKeySumAggregateInputType = {
+    publicKeyE?: true
+    publicKeyN?: true
+    privateKeyD?: true
+    privateKeyP?: true
+    privateKeyQ?: true
+  }
+
+  export type ServerKeyMinAggregateInputType = {
+    id?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    privateKeyD?: true
+    privateKeyP?: true
+    privateKeyQ?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerKeyMaxAggregateInputType = {
+    id?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    privateKeyD?: true
+    privateKeyP?: true
+    privateKeyQ?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ServerKeyCountAggregateInputType = {
+    id?: true
+    publicKeyE?: true
+    publicKeyN?: true
+    privateKeyD?: true
+    privateKeyP?: true
+    privateKeyQ?: true
+    chatId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ServerKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerKey to aggregate.
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerKeys to fetch.
+     */
+    orderBy?: ServerKeyOrderByWithRelationInput | ServerKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ServerKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ServerKeys
+    **/
+    _count?: true | ServerKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ServerKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ServerKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ServerKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ServerKeyMaxAggregateInputType
+  }
+
+  export type GetServerKeyAggregateType<T extends ServerKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregateServerKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateServerKey[P]>
+      : GetScalarType<T[P], AggregateServerKey[P]>
+  }
+
+
+
+
+  export type ServerKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerKeyWhereInput
+    orderBy?: ServerKeyOrderByWithAggregationInput | ServerKeyOrderByWithAggregationInput[]
+    by: ServerKeyScalarFieldEnum[] | ServerKeyScalarFieldEnum
+    having?: ServerKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ServerKeyCountAggregateInputType | true
+    _avg?: ServerKeyAvgAggregateInputType
+    _sum?: ServerKeySumAggregateInputType
+    _min?: ServerKeyMinAggregateInputType
+    _max?: ServerKeyMaxAggregateInputType
+  }
+
+  export type ServerKeyGroupByOutputType = {
+    id: string
+    publicKeyE: bigint
+    publicKeyN: bigint
+    privateKeyD: bigint
+    privateKeyP: bigint
+    privateKeyQ: bigint
+    chatId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ServerKeyCountAggregateOutputType | null
+    _avg: ServerKeyAvgAggregateOutputType | null
+    _sum: ServerKeySumAggregateOutputType | null
+    _min: ServerKeyMinAggregateOutputType | null
+    _max: ServerKeyMaxAggregateOutputType | null
+  }
+
+  type GetServerKeyGroupByPayload<T extends ServerKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ServerKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ServerKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ServerKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], ServerKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ServerKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    privateKeyD?: boolean
+    privateKeyP?: boolean
+    privateKeyQ?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverKey"]>
+
+  export type ServerKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    privateKeyD?: boolean
+    privateKeyP?: boolean
+    privateKeyQ?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverKey"]>
+
+  export type ServerKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    privateKeyD?: boolean
+    privateKeyP?: boolean
+    privateKeyQ?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["serverKey"]>
+
+  export type ServerKeySelectScalar = {
+    id?: boolean
+    publicKeyE?: boolean
+    publicKeyN?: boolean
+    privateKeyD?: boolean
+    privateKeyP?: boolean
+    privateKeyQ?: boolean
+    chatId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ServerKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "publicKeyE" | "publicKeyN" | "privateKeyD" | "privateKeyP" | "privateKeyQ" | "chatId" | "createdAt" | "updatedAt", ExtArgs["result"]["serverKey"]>
+  export type ServerKeyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+  export type ServerKeyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+  export type ServerKeyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+  }
+
+  export type $ServerKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ServerKey"
+    objects: {
+      chat: Prisma.$ChatPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      publicKeyE: bigint
+      publicKeyN: bigint
+      privateKeyD: bigint
+      privateKeyP: bigint
+      privateKeyQ: bigint
+      chatId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["serverKey"]>
+    composites: {}
+  }
+
+  type ServerKeyGetPayload<S extends boolean | null | undefined | ServerKeyDefaultArgs> = $Result.GetResult<Prisma.$ServerKeyPayload, S>
+
+  type ServerKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ServerKeyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ServerKeyCountAggregateInputType | true
+    }
+
+  export interface ServerKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ServerKey'], meta: { name: 'ServerKey' } }
+    /**
+     * Find zero or one ServerKey that matches the filter.
+     * @param {ServerKeyFindUniqueArgs} args - Arguments to find a ServerKey
+     * @example
+     * // Get one ServerKey
+     * const serverKey = await prisma.serverKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ServerKeyFindUniqueArgs>(args: SelectSubset<T, ServerKeyFindUniqueArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ServerKey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ServerKeyFindUniqueOrThrowArgs} args - Arguments to find a ServerKey
+     * @example
+     * // Get one ServerKey
+     * const serverKey = await prisma.serverKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ServerKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, ServerKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyFindFirstArgs} args - Arguments to find a ServerKey
+     * @example
+     * // Get one ServerKey
+     * const serverKey = await prisma.serverKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ServerKeyFindFirstArgs>(args?: SelectSubset<T, ServerKeyFindFirstArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ServerKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyFindFirstOrThrowArgs} args - Arguments to find a ServerKey
+     * @example
+     * // Get one ServerKey
+     * const serverKey = await prisma.serverKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ServerKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, ServerKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ServerKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ServerKeys
+     * const serverKeys = await prisma.serverKey.findMany()
+     * 
+     * // Get first 10 ServerKeys
+     * const serverKeys = await prisma.serverKey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const serverKeyWithIdOnly = await prisma.serverKey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ServerKeyFindManyArgs>(args?: SelectSubset<T, ServerKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ServerKey.
+     * @param {ServerKeyCreateArgs} args - Arguments to create a ServerKey.
+     * @example
+     * // Create one ServerKey
+     * const ServerKey = await prisma.serverKey.create({
+     *   data: {
+     *     // ... data to create a ServerKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends ServerKeyCreateArgs>(args: SelectSubset<T, ServerKeyCreateArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ServerKeys.
+     * @param {ServerKeyCreateManyArgs} args - Arguments to create many ServerKeys.
+     * @example
+     * // Create many ServerKeys
+     * const serverKey = await prisma.serverKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ServerKeyCreateManyArgs>(args?: SelectSubset<T, ServerKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ServerKeys and returns the data saved in the database.
+     * @param {ServerKeyCreateManyAndReturnArgs} args - Arguments to create many ServerKeys.
+     * @example
+     * // Create many ServerKeys
+     * const serverKey = await prisma.serverKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ServerKeys and only return the `id`
+     * const serverKeyWithIdOnly = await prisma.serverKey.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ServerKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, ServerKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ServerKey.
+     * @param {ServerKeyDeleteArgs} args - Arguments to delete one ServerKey.
+     * @example
+     * // Delete one ServerKey
+     * const ServerKey = await prisma.serverKey.delete({
+     *   where: {
+     *     // ... filter to delete one ServerKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ServerKeyDeleteArgs>(args: SelectSubset<T, ServerKeyDeleteArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ServerKey.
+     * @param {ServerKeyUpdateArgs} args - Arguments to update one ServerKey.
+     * @example
+     * // Update one ServerKey
+     * const serverKey = await prisma.serverKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ServerKeyUpdateArgs>(args: SelectSubset<T, ServerKeyUpdateArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ServerKeys.
+     * @param {ServerKeyDeleteManyArgs} args - Arguments to filter ServerKeys to delete.
+     * @example
+     * // Delete a few ServerKeys
+     * const { count } = await prisma.serverKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ServerKeyDeleteManyArgs>(args?: SelectSubset<T, ServerKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ServerKeys
+     * const serverKey = await prisma.serverKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ServerKeyUpdateManyArgs>(args: SelectSubset<T, ServerKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ServerKeys and returns the data updated in the database.
+     * @param {ServerKeyUpdateManyAndReturnArgs} args - Arguments to update many ServerKeys.
+     * @example
+     * // Update many ServerKeys
+     * const serverKey = await prisma.serverKey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ServerKeys and only return the `id`
+     * const serverKeyWithIdOnly = await prisma.serverKey.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ServerKeyUpdateManyAndReturnArgs>(args: SelectSubset<T, ServerKeyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ServerKey.
+     * @param {ServerKeyUpsertArgs} args - Arguments to update or create a ServerKey.
+     * @example
+     * // Update or create a ServerKey
+     * const serverKey = await prisma.serverKey.upsert({
+     *   create: {
+     *     // ... data to create a ServerKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ServerKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ServerKeyUpsertArgs>(args: SelectSubset<T, ServerKeyUpsertArgs<ExtArgs>>): Prisma__ServerKeyClient<$Result.GetResult<Prisma.$ServerKeyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ServerKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyCountArgs} args - Arguments to filter ServerKeys to count.
+     * @example
+     * // Count the number of ServerKeys
+     * const count = await prisma.serverKey.count({
+     *   where: {
+     *     // ... the filter for the ServerKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends ServerKeyCountArgs>(
+      args?: Subset<T, ServerKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ServerKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ServerKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ServerKeyAggregateArgs>(args: Subset<T, ServerKeyAggregateArgs>): Prisma.PrismaPromise<GetServerKeyAggregateType<T>>
+
+    /**
+     * Group by ServerKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ServerKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ServerKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ServerKeyGroupByArgs['orderBy'] }
+        : { orderBy?: ServerKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ServerKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetServerKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ServerKey model
+   */
+  readonly fields: ServerKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ServerKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ServerKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    chat<T extends ChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatDefaultArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ServerKey model
+   */
+  interface ServerKeyFieldRefs {
+    readonly id: FieldRef<"ServerKey", 'String'>
+    readonly publicKeyE: FieldRef<"ServerKey", 'BigInt'>
+    readonly publicKeyN: FieldRef<"ServerKey", 'BigInt'>
+    readonly privateKeyD: FieldRef<"ServerKey", 'BigInt'>
+    readonly privateKeyP: FieldRef<"ServerKey", 'BigInt'>
+    readonly privateKeyQ: FieldRef<"ServerKey", 'BigInt'>
+    readonly chatId: FieldRef<"ServerKey", 'String'>
+    readonly createdAt: FieldRef<"ServerKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"ServerKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ServerKey findUnique
+   */
+  export type ServerKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerKey to fetch.
+     */
+    where: ServerKeyWhereUniqueInput
+  }
+
+  /**
+   * ServerKey findUniqueOrThrow
+   */
+  export type ServerKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerKey to fetch.
+     */
+    where: ServerKeyWhereUniqueInput
+  }
+
+  /**
+   * ServerKey findFirst
+   */
+  export type ServerKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerKey to fetch.
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerKeys to fetch.
+     */
+    orderBy?: ServerKeyOrderByWithRelationInput | ServerKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerKeys.
+     */
+    cursor?: ServerKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerKeys.
+     */
+    distinct?: ServerKeyScalarFieldEnum | ServerKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ServerKey findFirstOrThrow
+   */
+  export type ServerKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerKey to fetch.
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerKeys to fetch.
+     */
+    orderBy?: ServerKeyOrderByWithRelationInput | ServerKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ServerKeys.
+     */
+    cursor?: ServerKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ServerKeys.
+     */
+    distinct?: ServerKeyScalarFieldEnum | ServerKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ServerKey findMany
+   */
+  export type ServerKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter, which ServerKeys to fetch.
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ServerKeys to fetch.
+     */
+    orderBy?: ServerKeyOrderByWithRelationInput | ServerKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ServerKeys.
+     */
+    cursor?: ServerKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ServerKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ServerKeys.
+     */
+    skip?: number
+    distinct?: ServerKeyScalarFieldEnum | ServerKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ServerKey create
+   */
+  export type ServerKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ServerKey.
+     */
+    data: XOR<ServerKeyCreateInput, ServerKeyUncheckedCreateInput>
+  }
+
+  /**
+   * ServerKey createMany
+   */
+  export type ServerKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ServerKeys.
+     */
+    data: ServerKeyCreateManyInput | ServerKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ServerKey createManyAndReturn
+   */
+  export type ServerKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * The data used to create many ServerKeys.
+     */
+    data: ServerKeyCreateManyInput | ServerKeyCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerKey update
+   */
+  export type ServerKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ServerKey.
+     */
+    data: XOR<ServerKeyUpdateInput, ServerKeyUncheckedUpdateInput>
+    /**
+     * Choose, which ServerKey to update.
+     */
+    where: ServerKeyWhereUniqueInput
+  }
+
+  /**
+   * ServerKey updateMany
+   */
+  export type ServerKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ServerKeys.
+     */
+    data: XOR<ServerKeyUpdateManyMutationInput, ServerKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerKeys to update
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * Limit how many ServerKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerKey updateManyAndReturn
+   */
+  export type ServerKeyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * The data used to update ServerKeys.
+     */
+    data: XOR<ServerKeyUpdateManyMutationInput, ServerKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ServerKeys to update
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * Limit how many ServerKeys to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ServerKey upsert
+   */
+  export type ServerKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ServerKey to update in case it exists.
+     */
+    where: ServerKeyWhereUniqueInput
+    /**
+     * In case the ServerKey found by the `where` argument doesn't exist, create a new ServerKey with this data.
+     */
+    create: XOR<ServerKeyCreateInput, ServerKeyUncheckedCreateInput>
+    /**
+     * In case the ServerKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ServerKeyUpdateInput, ServerKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * ServerKey delete
+   */
+  export type ServerKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+    /**
+     * Filter which ServerKey to delete.
+     */
+    where: ServerKeyWhereUniqueInput
+  }
+
+  /**
+   * ServerKey deleteMany
+   */
+  export type ServerKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ServerKeys to delete
+     */
+    where?: ServerKeyWhereInput
+    /**
+     * Limit how many ServerKeys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ServerKey without action
+   */
+  export type ServerKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ServerKey
+     */
+    select?: ServerKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ServerKey
+     */
+    omit?: ServerKeyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ServerKeyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model KeyDiffie
+   */
+
+  export type AggregateKeyDiffie = {
+    _count: KeyDiffieCountAggregateOutputType | null
+    _avg: KeyDiffieAvgAggregateOutputType | null
+    _sum: KeyDiffieSumAggregateOutputType | null
+    _min: KeyDiffieMinAggregateOutputType | null
+    _max: KeyDiffieMaxAggregateOutputType | null
+  }
+
+  export type KeyDiffieAvgAggregateOutputType = {
+    publicKeyP: number | null
+    publicKeyG: number | null
+    privateKeyServer: number | null
+  }
+
+  export type KeyDiffieSumAggregateOutputType = {
+    publicKeyP: bigint | null
+    publicKeyG: bigint | null
+    privateKeyServer: bigint | null
+  }
+
+  export type KeyDiffieMinAggregateOutputType = {
+    id: string | null
+    publicKeyP: bigint | null
+    publicKeyG: bigint | null
+    privateKeyServer: bigint | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KeyDiffieMaxAggregateOutputType = {
+    id: string | null
+    publicKeyP: bigint | null
+    publicKeyG: bigint | null
+    privateKeyServer: bigint | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type KeyDiffieCountAggregateOutputType = {
+    id: number
+    publicKeyP: number
+    publicKeyG: number
+    privateKeyServer: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type KeyDiffieAvgAggregateInputType = {
+    publicKeyP?: true
+    publicKeyG?: true
+    privateKeyServer?: true
+  }
+
+  export type KeyDiffieSumAggregateInputType = {
+    publicKeyP?: true
+    publicKeyG?: true
+    privateKeyServer?: true
+  }
+
+  export type KeyDiffieMinAggregateInputType = {
+    id?: true
+    publicKeyP?: true
+    publicKeyG?: true
+    privateKeyServer?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KeyDiffieMaxAggregateInputType = {
+    id?: true
+    publicKeyP?: true
+    publicKeyG?: true
+    privateKeyServer?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type KeyDiffieCountAggregateInputType = {
+    id?: true
+    publicKeyP?: true
+    publicKeyG?: true
+    privateKeyServer?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type KeyDiffieAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KeyDiffie to aggregate.
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KeyDiffies to fetch.
+     */
+    orderBy?: KeyDiffieOrderByWithRelationInput | KeyDiffieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: KeyDiffieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KeyDiffies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KeyDiffies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned KeyDiffies
+    **/
+    _count?: true | KeyDiffieCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: KeyDiffieAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: KeyDiffieSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: KeyDiffieMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: KeyDiffieMaxAggregateInputType
+  }
+
+  export type GetKeyDiffieAggregateType<T extends KeyDiffieAggregateArgs> = {
+        [P in keyof T & keyof AggregateKeyDiffie]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateKeyDiffie[P]>
+      : GetScalarType<T[P], AggregateKeyDiffie[P]>
+  }
+
+
+
+
+  export type KeyDiffieGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: KeyDiffieWhereInput
+    orderBy?: KeyDiffieOrderByWithAggregationInput | KeyDiffieOrderByWithAggregationInput[]
+    by: KeyDiffieScalarFieldEnum[] | KeyDiffieScalarFieldEnum
+    having?: KeyDiffieScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: KeyDiffieCountAggregateInputType | true
+    _avg?: KeyDiffieAvgAggregateInputType
+    _sum?: KeyDiffieSumAggregateInputType
+    _min?: KeyDiffieMinAggregateInputType
+    _max?: KeyDiffieMaxAggregateInputType
+  }
+
+  export type KeyDiffieGroupByOutputType = {
+    id: string
+    publicKeyP: bigint
+    publicKeyG: bigint
+    privateKeyServer: bigint
+    userId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: KeyDiffieCountAggregateOutputType | null
+    _avg: KeyDiffieAvgAggregateOutputType | null
+    _sum: KeyDiffieSumAggregateOutputType | null
+    _min: KeyDiffieMinAggregateOutputType | null
+    _max: KeyDiffieMaxAggregateOutputType | null
+  }
+
+  type GetKeyDiffieGroupByPayload<T extends KeyDiffieGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<KeyDiffieGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof KeyDiffieGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], KeyDiffieGroupByOutputType[P]>
+            : GetScalarType<T[P], KeyDiffieGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type KeyDiffieSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyP?: boolean
+    publicKeyG?: boolean
+    privateKeyServer?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["keyDiffie"]>
+
+  export type KeyDiffieSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyP?: boolean
+    publicKeyG?: boolean
+    privateKeyServer?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["keyDiffie"]>
+
+  export type KeyDiffieSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    publicKeyP?: boolean
+    publicKeyG?: boolean
+    privateKeyServer?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["keyDiffie"]>
+
+  export type KeyDiffieSelectScalar = {
+    id?: boolean
+    publicKeyP?: boolean
+    publicKeyG?: boolean
+    privateKeyServer?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type KeyDiffieOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "publicKeyP" | "publicKeyG" | "privateKeyServer" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["keyDiffie"]>
+  export type KeyDiffieInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type KeyDiffieIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type KeyDiffieIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $KeyDiffiePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "KeyDiffie"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      publicKeyP: bigint
+      publicKeyG: bigint
+      privateKeyServer: bigint
+      userId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["keyDiffie"]>
+    composites: {}
+  }
+
+  type KeyDiffieGetPayload<S extends boolean | null | undefined | KeyDiffieDefaultArgs> = $Result.GetResult<Prisma.$KeyDiffiePayload, S>
+
+  type KeyDiffieCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<KeyDiffieFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: KeyDiffieCountAggregateInputType | true
+    }
+
+  export interface KeyDiffieDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['KeyDiffie'], meta: { name: 'KeyDiffie' } }
+    /**
+     * Find zero or one KeyDiffie that matches the filter.
+     * @param {KeyDiffieFindUniqueArgs} args - Arguments to find a KeyDiffie
+     * @example
+     * // Get one KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KeyDiffieFindUniqueArgs>(args: SelectSubset<T, KeyDiffieFindUniqueArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one KeyDiffie that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KeyDiffieFindUniqueOrThrowArgs} args - Arguments to find a KeyDiffie
+     * @example
+     * // Get one KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KeyDiffieFindUniqueOrThrowArgs>(args: SelectSubset<T, KeyDiffieFindUniqueOrThrowArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KeyDiffie that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieFindFirstArgs} args - Arguments to find a KeyDiffie
+     * @example
+     * // Get one KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KeyDiffieFindFirstArgs>(args?: SelectSubset<T, KeyDiffieFindFirstArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first KeyDiffie that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieFindFirstOrThrowArgs} args - Arguments to find a KeyDiffie
+     * @example
+     * // Get one KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KeyDiffieFindFirstOrThrowArgs>(args?: SelectSubset<T, KeyDiffieFindFirstOrThrowArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more KeyDiffies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KeyDiffies
+     * const keyDiffies = await prisma.keyDiffie.findMany()
+     * 
+     * // Get first 10 KeyDiffies
+     * const keyDiffies = await prisma.keyDiffie.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const keyDiffieWithIdOnly = await prisma.keyDiffie.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends KeyDiffieFindManyArgs>(args?: SelectSubset<T, KeyDiffieFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a KeyDiffie.
+     * @param {KeyDiffieCreateArgs} args - Arguments to create a KeyDiffie.
+     * @example
+     * // Create one KeyDiffie
+     * const KeyDiffie = await prisma.keyDiffie.create({
+     *   data: {
+     *     // ... data to create a KeyDiffie
+     *   }
+     * })
+     * 
+     */
+    create<T extends KeyDiffieCreateArgs>(args: SelectSubset<T, KeyDiffieCreateArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many KeyDiffies.
+     * @param {KeyDiffieCreateManyArgs} args - Arguments to create many KeyDiffies.
+     * @example
+     * // Create many KeyDiffies
+     * const keyDiffie = await prisma.keyDiffie.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends KeyDiffieCreateManyArgs>(args?: SelectSubset<T, KeyDiffieCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many KeyDiffies and returns the data saved in the database.
+     * @param {KeyDiffieCreateManyAndReturnArgs} args - Arguments to create many KeyDiffies.
+     * @example
+     * // Create many KeyDiffies
+     * const keyDiffie = await prisma.keyDiffie.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many KeyDiffies and only return the `id`
+     * const keyDiffieWithIdOnly = await prisma.keyDiffie.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends KeyDiffieCreateManyAndReturnArgs>(args?: SelectSubset<T, KeyDiffieCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a KeyDiffie.
+     * @param {KeyDiffieDeleteArgs} args - Arguments to delete one KeyDiffie.
+     * @example
+     * // Delete one KeyDiffie
+     * const KeyDiffie = await prisma.keyDiffie.delete({
+     *   where: {
+     *     // ... filter to delete one KeyDiffie
+     *   }
+     * })
+     * 
+     */
+    delete<T extends KeyDiffieDeleteArgs>(args: SelectSubset<T, KeyDiffieDeleteArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one KeyDiffie.
+     * @param {KeyDiffieUpdateArgs} args - Arguments to update one KeyDiffie.
+     * @example
+     * // Update one KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends KeyDiffieUpdateArgs>(args: SelectSubset<T, KeyDiffieUpdateArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more KeyDiffies.
+     * @param {KeyDiffieDeleteManyArgs} args - Arguments to filter KeyDiffies to delete.
+     * @example
+     * // Delete a few KeyDiffies
+     * const { count } = await prisma.keyDiffie.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends KeyDiffieDeleteManyArgs>(args?: SelectSubset<T, KeyDiffieDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KeyDiffies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KeyDiffies
+     * const keyDiffie = await prisma.keyDiffie.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends KeyDiffieUpdateManyArgs>(args: SelectSubset<T, KeyDiffieUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more KeyDiffies and returns the data updated in the database.
+     * @param {KeyDiffieUpdateManyAndReturnArgs} args - Arguments to update many KeyDiffies.
+     * @example
+     * // Update many KeyDiffies
+     * const keyDiffie = await prisma.keyDiffie.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more KeyDiffies and only return the `id`
+     * const keyDiffieWithIdOnly = await prisma.keyDiffie.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends KeyDiffieUpdateManyAndReturnArgs>(args: SelectSubset<T, KeyDiffieUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one KeyDiffie.
+     * @param {KeyDiffieUpsertArgs} args - Arguments to update or create a KeyDiffie.
+     * @example
+     * // Update or create a KeyDiffie
+     * const keyDiffie = await prisma.keyDiffie.upsert({
+     *   create: {
+     *     // ... data to create a KeyDiffie
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KeyDiffie we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KeyDiffieUpsertArgs>(args: SelectSubset<T, KeyDiffieUpsertArgs<ExtArgs>>): Prisma__KeyDiffieClient<$Result.GetResult<Prisma.$KeyDiffiePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of KeyDiffies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieCountArgs} args - Arguments to filter KeyDiffies to count.
+     * @example
+     * // Count the number of KeyDiffies
+     * const count = await prisma.keyDiffie.count({
+     *   where: {
+     *     // ... the filter for the KeyDiffies we want to count
+     *   }
+     * })
+    **/
+    count<T extends KeyDiffieCountArgs>(
+      args?: Subset<T, KeyDiffieCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], KeyDiffieCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a KeyDiffie.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KeyDiffieAggregateArgs>(args: Subset<T, KeyDiffieAggregateArgs>): Prisma.PrismaPromise<GetKeyDiffieAggregateType<T>>
+
+    /**
+     * Group by KeyDiffie.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KeyDiffieGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends KeyDiffieGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: KeyDiffieGroupByArgs['orderBy'] }
+        : { orderBy?: KeyDiffieGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, KeyDiffieGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKeyDiffieGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the KeyDiffie model
+   */
+  readonly fields: KeyDiffieFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for KeyDiffie.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__KeyDiffieClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the KeyDiffie model
+   */
+  interface KeyDiffieFieldRefs {
+    readonly id: FieldRef<"KeyDiffie", 'String'>
+    readonly publicKeyP: FieldRef<"KeyDiffie", 'BigInt'>
+    readonly publicKeyG: FieldRef<"KeyDiffie", 'BigInt'>
+    readonly privateKeyServer: FieldRef<"KeyDiffie", 'BigInt'>
+    readonly userId: FieldRef<"KeyDiffie", 'String'>
+    readonly createdAt: FieldRef<"KeyDiffie", 'DateTime'>
+    readonly updatedAt: FieldRef<"KeyDiffie", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * KeyDiffie findUnique
+   */
+  export type KeyDiffieFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter, which KeyDiffie to fetch.
+     */
+    where: KeyDiffieWhereUniqueInput
+  }
+
+  /**
+   * KeyDiffie findUniqueOrThrow
+   */
+  export type KeyDiffieFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter, which KeyDiffie to fetch.
+     */
+    where: KeyDiffieWhereUniqueInput
+  }
+
+  /**
+   * KeyDiffie findFirst
+   */
+  export type KeyDiffieFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter, which KeyDiffie to fetch.
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KeyDiffies to fetch.
+     */
+    orderBy?: KeyDiffieOrderByWithRelationInput | KeyDiffieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KeyDiffies.
+     */
+    cursor?: KeyDiffieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KeyDiffies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KeyDiffies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KeyDiffies.
+     */
+    distinct?: KeyDiffieScalarFieldEnum | KeyDiffieScalarFieldEnum[]
+  }
+
+  /**
+   * KeyDiffie findFirstOrThrow
+   */
+  export type KeyDiffieFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter, which KeyDiffie to fetch.
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KeyDiffies to fetch.
+     */
+    orderBy?: KeyDiffieOrderByWithRelationInput | KeyDiffieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for KeyDiffies.
+     */
+    cursor?: KeyDiffieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KeyDiffies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KeyDiffies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of KeyDiffies.
+     */
+    distinct?: KeyDiffieScalarFieldEnum | KeyDiffieScalarFieldEnum[]
+  }
+
+  /**
+   * KeyDiffie findMany
+   */
+  export type KeyDiffieFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter, which KeyDiffies to fetch.
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of KeyDiffies to fetch.
+     */
+    orderBy?: KeyDiffieOrderByWithRelationInput | KeyDiffieOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing KeyDiffies.
+     */
+    cursor?: KeyDiffieWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` KeyDiffies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` KeyDiffies.
+     */
+    skip?: number
+    distinct?: KeyDiffieScalarFieldEnum | KeyDiffieScalarFieldEnum[]
+  }
+
+  /**
+   * KeyDiffie create
+   */
+  export type KeyDiffieCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * The data needed to create a KeyDiffie.
+     */
+    data: XOR<KeyDiffieCreateInput, KeyDiffieUncheckedCreateInput>
+  }
+
+  /**
+   * KeyDiffie createMany
+   */
+  export type KeyDiffieCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KeyDiffies.
+     */
+    data: KeyDiffieCreateManyInput | KeyDiffieCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * KeyDiffie createManyAndReturn
+   */
+  export type KeyDiffieCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * The data used to create many KeyDiffies.
+     */
+    data: KeyDiffieCreateManyInput | KeyDiffieCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KeyDiffie update
+   */
+  export type KeyDiffieUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * The data needed to update a KeyDiffie.
+     */
+    data: XOR<KeyDiffieUpdateInput, KeyDiffieUncheckedUpdateInput>
+    /**
+     * Choose, which KeyDiffie to update.
+     */
+    where: KeyDiffieWhereUniqueInput
+  }
+
+  /**
+   * KeyDiffie updateMany
+   */
+  export type KeyDiffieUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KeyDiffies.
+     */
+    data: XOR<KeyDiffieUpdateManyMutationInput, KeyDiffieUncheckedUpdateManyInput>
+    /**
+     * Filter which KeyDiffies to update
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * Limit how many KeyDiffies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * KeyDiffie updateManyAndReturn
+   */
+  export type KeyDiffieUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * The data used to update KeyDiffies.
+     */
+    data: XOR<KeyDiffieUpdateManyMutationInput, KeyDiffieUncheckedUpdateManyInput>
+    /**
+     * Filter which KeyDiffies to update
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * Limit how many KeyDiffies to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * KeyDiffie upsert
+   */
+  export type KeyDiffieUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * The filter to search for the KeyDiffie to update in case it exists.
+     */
+    where: KeyDiffieWhereUniqueInput
+    /**
+     * In case the KeyDiffie found by the `where` argument doesn't exist, create a new KeyDiffie with this data.
+     */
+    create: XOR<KeyDiffieCreateInput, KeyDiffieUncheckedCreateInput>
+    /**
+     * In case the KeyDiffie was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<KeyDiffieUpdateInput, KeyDiffieUncheckedUpdateInput>
+  }
+
+  /**
+   * KeyDiffie delete
+   */
+  export type KeyDiffieDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+    /**
+     * Filter which KeyDiffie to delete.
+     */
+    where: KeyDiffieWhereUniqueInput
+  }
+
+  /**
+   * KeyDiffie deleteMany
+   */
+  export type KeyDiffieDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which KeyDiffies to delete
+     */
+    where?: KeyDiffieWhereInput
+    /**
+     * Limit how many KeyDiffies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * KeyDiffie without action
+   */
+  export type KeyDiffieDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KeyDiffie
+     */
+    select?: KeyDiffieSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the KeyDiffie
+     */
+    omit?: KeyDiffieOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: KeyDiffieInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5868,10 +10944,9 @@ export namespace Prisma {
 
   export const ChatMessageScalarFieldEnum: {
     id: 'id',
-    type: 'type',
     text: 'text',
-    imageUrl: 'imageUrl',
-    fileUrl: 'fileUrl',
+    isStarted: 'isStarted',
+    isFake: 'isFake',
     isEdited: 'isEdited',
     isDeleted: 'isDeleted',
     replyToId: 'replyToId',
@@ -5883,6 +10958,23 @@ export namespace Prisma {
   };
 
   export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
+
+
+  export const FileMessageScalarFieldEnum: {
+    id: 'id',
+    fileUrl: 'fileUrl',
+    fileName: 'fileName',
+    fileFullName: 'fileFullName',
+    fileSize: 'fileSize',
+    fileFormat: 'fileFormat',
+    chatMessageId: 'chatMessageId',
+    userId: 'userId',
+    chatId: 'chatId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FileMessageScalarFieldEnum = (typeof FileMessageScalarFieldEnum)[keyof typeof FileMessageScalarFieldEnum]
 
 
   export const ChatScalarFieldEnum: {
@@ -5908,6 +11000,47 @@ export namespace Prisma {
   };
 
   export type ChatMemberScalarFieldEnum = (typeof ChatMemberScalarFieldEnum)[keyof typeof ChatMemberScalarFieldEnum]
+
+
+  export const ClientKeyScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    publicKeyE: 'publicKeyE',
+    publicKeyN: 'publicKeyN',
+    sessionKey: 'sessionKey',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ClientKeyScalarFieldEnum = (typeof ClientKeyScalarFieldEnum)[keyof typeof ClientKeyScalarFieldEnum]
+
+
+  export const ServerKeyScalarFieldEnum: {
+    id: 'id',
+    publicKeyE: 'publicKeyE',
+    publicKeyN: 'publicKeyN',
+    privateKeyD: 'privateKeyD',
+    privateKeyP: 'privateKeyP',
+    privateKeyQ: 'privateKeyQ',
+    chatId: 'chatId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ServerKeyScalarFieldEnum = (typeof ServerKeyScalarFieldEnum)[keyof typeof ServerKeyScalarFieldEnum]
+
+
+  export const KeyDiffieScalarFieldEnum: {
+    id: 'id',
+    publicKeyP: 'publicKeyP',
+    publicKeyG: 'publicKeyG',
+    privateKeyServer: 'privateKeyServer',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type KeyDiffieScalarFieldEnum = (typeof KeyDiffieScalarFieldEnum)[keyof typeof KeyDiffieScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5975,16 +11108,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'MessageType'
+   * Reference to a field of type 'BigInt'
    */
-  export type EnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageType'>
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
     
 
 
   /**
-   * Reference to a field of type 'MessageType[]'
+   * Reference to a field of type 'BigInt[]'
    */
-  export type ListEnumMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessageType[]'>
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
@@ -5999,6 +11132,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -6019,6 +11166,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     messages?: ChatMessageListRelationFilter
     chatMemberships?: ChatMemberListRelationFilter
+    clientKey?: XOR<ClientKeyNullableScalarRelationFilter, ClientKeyWhereInput> | null
+    keyDiffie?: XOR<KeyDiffieNullableScalarRelationFilter, KeyDiffieWhereInput> | null
+    files?: FileMessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -6032,6 +11182,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
     messages?: ChatMessageOrderByRelationAggregateInput
     chatMemberships?: ChatMemberOrderByRelationAggregateInput
+    clientKey?: ClientKeyOrderByWithRelationInput
+    keyDiffie?: KeyDiffieOrderByWithRelationInput
+    files?: FileMessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -6048,6 +11201,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     messages?: ChatMessageListRelationFilter
     chatMemberships?: ChatMemberListRelationFilter
+    clientKey?: XOR<ClientKeyNullableScalarRelationFilter, ClientKeyWhereInput> | null
+    keyDiffie?: XOR<KeyDiffieNullableScalarRelationFilter, KeyDiffieWhereInput> | null
+    files?: FileMessageListRelationFilter
   }, "id" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -6083,10 +11239,9 @@ export namespace Prisma {
     OR?: ChatMessageWhereInput[]
     NOT?: ChatMessageWhereInput | ChatMessageWhereInput[]
     id?: StringFilter<"ChatMessage"> | string
-    type?: EnumMessageTypeFilter<"ChatMessage"> | $Enums.MessageType
     text?: StringNullableFilter<"ChatMessage"> | string | null
-    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
-    fileUrl?: StringNullableFilter<"ChatMessage"> | string | null
+    isStarted?: BoolFilter<"ChatMessage"> | boolean
+    isFake?: BoolFilter<"ChatMessage"> | boolean
     isEdited?: BoolFilter<"ChatMessage"> | boolean
     isDeleted?: BoolFilter<"ChatMessage"> | boolean
     replyToId?: StringNullableFilter<"ChatMessage"> | string | null
@@ -6095,6 +11250,7 @@ export namespace Prisma {
     readCount?: StringNullableFilter<"ChatMessage"> | string | null
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string
+    files?: FileMessageListRelationFilter
     replyTo?: XOR<ChatMessageNullableScalarRelationFilter, ChatMessageWhereInput> | null
     replies?: ChatMessageListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -6103,10 +11259,9 @@ export namespace Prisma {
 
   export type ChatMessageOrderByWithRelationInput = {
     id?: SortOrder
-    type?: SortOrder
     text?: SortOrderInput | SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    fileUrl?: SortOrderInput | SortOrder
+    isStarted?: SortOrder
+    isFake?: SortOrder
     isEdited?: SortOrder
     isDeleted?: SortOrder
     replyToId?: SortOrderInput | SortOrder
@@ -6115,6 +11270,7 @@ export namespace Prisma {
     readCount?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    files?: FileMessageOrderByRelationAggregateInput
     replyTo?: ChatMessageOrderByWithRelationInput
     replies?: ChatMessageOrderByRelationAggregateInput
     user?: UserOrderByWithRelationInput
@@ -6126,10 +11282,9 @@ export namespace Prisma {
     AND?: ChatMessageWhereInput | ChatMessageWhereInput[]
     OR?: ChatMessageWhereInput[]
     NOT?: ChatMessageWhereInput | ChatMessageWhereInput[]
-    type?: EnumMessageTypeFilter<"ChatMessage"> | $Enums.MessageType
     text?: StringNullableFilter<"ChatMessage"> | string | null
-    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
-    fileUrl?: StringNullableFilter<"ChatMessage"> | string | null
+    isStarted?: BoolFilter<"ChatMessage"> | boolean
+    isFake?: BoolFilter<"ChatMessage"> | boolean
     isEdited?: BoolFilter<"ChatMessage"> | boolean
     isDeleted?: BoolFilter<"ChatMessage"> | boolean
     replyToId?: StringNullableFilter<"ChatMessage"> | string | null
@@ -6138,6 +11293,7 @@ export namespace Prisma {
     readCount?: StringNullableFilter<"ChatMessage"> | string | null
     createdAt?: DateTimeFilter<"ChatMessage"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMessage"> | Date | string
+    files?: FileMessageListRelationFilter
     replyTo?: XOR<ChatMessageNullableScalarRelationFilter, ChatMessageWhereInput> | null
     replies?: ChatMessageListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -6146,10 +11302,9 @@ export namespace Prisma {
 
   export type ChatMessageOrderByWithAggregationInput = {
     id?: SortOrder
-    type?: SortOrder
     text?: SortOrderInput | SortOrder
-    imageUrl?: SortOrderInput | SortOrder
-    fileUrl?: SortOrderInput | SortOrder
+    isStarted?: SortOrder
+    isFake?: SortOrder
     isEdited?: SortOrder
     isDeleted?: SortOrder
     replyToId?: SortOrderInput | SortOrder
@@ -6168,10 +11323,9 @@ export namespace Prisma {
     OR?: ChatMessageScalarWhereWithAggregatesInput[]
     NOT?: ChatMessageScalarWhereWithAggregatesInput | ChatMessageScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ChatMessage"> | string
-    type?: EnumMessageTypeWithAggregatesFilter<"ChatMessage"> | $Enums.MessageType
     text?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
-    imageUrl?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
-    fileUrl?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
+    isStarted?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
+    isFake?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
     isEdited?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
     isDeleted?: BoolWithAggregatesFilter<"ChatMessage"> | boolean
     replyToId?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
@@ -6180,6 +11334,97 @@ export namespace Prisma {
     readCount?: StringNullableWithAggregatesFilter<"ChatMessage"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ChatMessage"> | Date | string
+  }
+
+  export type FileMessageWhereInput = {
+    AND?: FileMessageWhereInput | FileMessageWhereInput[]
+    OR?: FileMessageWhereInput[]
+    NOT?: FileMessageWhereInput | FileMessageWhereInput[]
+    id?: StringFilter<"FileMessage"> | string
+    fileUrl?: StringFilter<"FileMessage"> | string
+    fileName?: StringFilter<"FileMessage"> | string
+    fileFullName?: StringFilter<"FileMessage"> | string
+    fileSize?: StringFilter<"FileMessage"> | string
+    fileFormat?: StringFilter<"FileMessage"> | string
+    chatMessageId?: StringFilter<"FileMessage"> | string
+    userId?: StringFilter<"FileMessage"> | string
+    chatId?: StringFilter<"FileMessage"> | string
+    createdAt?: DateTimeFilter<"FileMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"FileMessage"> | Date | string
+    chatMessage?: XOR<ChatMessageScalarRelationFilter, ChatMessageWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+  }
+
+  export type FileMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileFullName?: SortOrder
+    fileSize?: SortOrder
+    fileFormat?: SortOrder
+    chatMessageId?: SortOrder
+    userId?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chatMessage?: ChatMessageOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+    chat?: ChatOrderByWithRelationInput
+  }
+
+  export type FileMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: FileMessageWhereInput | FileMessageWhereInput[]
+    OR?: FileMessageWhereInput[]
+    NOT?: FileMessageWhereInput | FileMessageWhereInput[]
+    fileUrl?: StringFilter<"FileMessage"> | string
+    fileName?: StringFilter<"FileMessage"> | string
+    fileFullName?: StringFilter<"FileMessage"> | string
+    fileSize?: StringFilter<"FileMessage"> | string
+    fileFormat?: StringFilter<"FileMessage"> | string
+    chatMessageId?: StringFilter<"FileMessage"> | string
+    userId?: StringFilter<"FileMessage"> | string
+    chatId?: StringFilter<"FileMessage"> | string
+    createdAt?: DateTimeFilter<"FileMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"FileMessage"> | Date | string
+    chatMessage?: XOR<ChatMessageScalarRelationFilter, ChatMessageWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+  }, "id">
+
+  export type FileMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileFullName?: SortOrder
+    fileSize?: SortOrder
+    fileFormat?: SortOrder
+    chatMessageId?: SortOrder
+    userId?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FileMessageCountOrderByAggregateInput
+    _max?: FileMessageMaxOrderByAggregateInput
+    _min?: FileMessageMinOrderByAggregateInput
+  }
+
+  export type FileMessageScalarWhereWithAggregatesInput = {
+    AND?: FileMessageScalarWhereWithAggregatesInput | FileMessageScalarWhereWithAggregatesInput[]
+    OR?: FileMessageScalarWhereWithAggregatesInput[]
+    NOT?: FileMessageScalarWhereWithAggregatesInput | FileMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"FileMessage"> | string
+    fileUrl?: StringWithAggregatesFilter<"FileMessage"> | string
+    fileName?: StringWithAggregatesFilter<"FileMessage"> | string
+    fileFullName?: StringWithAggregatesFilter<"FileMessage"> | string
+    fileSize?: StringWithAggregatesFilter<"FileMessage"> | string
+    fileFormat?: StringWithAggregatesFilter<"FileMessage"> | string
+    chatMessageId?: StringWithAggregatesFilter<"FileMessage"> | string
+    userId?: StringWithAggregatesFilter<"FileMessage"> | string
+    chatId?: StringWithAggregatesFilter<"FileMessage"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"FileMessage"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"FileMessage"> | Date | string
   }
 
   export type ChatWhereInput = {
@@ -6196,6 +11441,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Chat"> | Date | string
     messages?: ChatMessageListRelationFilter
     members?: ChatMemberListRelationFilter
+    files?: FileMessageListRelationFilter
+    serverKey?: XOR<ServerKeyNullableScalarRelationFilter, ServerKeyWhereInput> | null
   }
 
   export type ChatOrderByWithRelationInput = {
@@ -6209,6 +11456,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     messages?: ChatMessageOrderByRelationAggregateInput
     members?: ChatMemberOrderByRelationAggregateInput
+    files?: FileMessageOrderByRelationAggregateInput
+    serverKey?: ServerKeyOrderByWithRelationInput
   }
 
   export type ChatWhereUniqueInput = Prisma.AtLeast<{
@@ -6225,6 +11474,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Chat"> | Date | string
     messages?: ChatMessageListRelationFilter
     members?: ChatMemberListRelationFilter
+    files?: FileMessageListRelationFilter
+    serverKey?: XOR<ServerKeyNullableScalarRelationFilter, ServerKeyWhereInput> | null
   }, "id">
 
   export type ChatOrderByWithAggregationInput = {
@@ -6314,6 +11565,217 @@ export namespace Prisma {
     joinedAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string
   }
 
+  export type ClientKeyWhereInput = {
+    AND?: ClientKeyWhereInput | ClientKeyWhereInput[]
+    OR?: ClientKeyWhereInput[]
+    NOT?: ClientKeyWhereInput | ClientKeyWhereInput[]
+    id?: StringFilter<"ClientKey"> | string
+    userId?: StringFilter<"ClientKey"> | string
+    publicKeyE?: BigIntFilter<"ClientKey"> | bigint | number
+    publicKeyN?: BigIntFilter<"ClientKey"> | bigint | number
+    sessionKey?: BigIntFilter<"ClientKey"> | bigint | number
+    createdAt?: DateTimeFilter<"ClientKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ClientKey"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ClientKeyOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ClientKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: ClientKeyWhereInput | ClientKeyWhereInput[]
+    OR?: ClientKeyWhereInput[]
+    NOT?: ClientKeyWhereInput | ClientKeyWhereInput[]
+    publicKeyE?: BigIntFilter<"ClientKey"> | bigint | number
+    publicKeyN?: BigIntFilter<"ClientKey"> | bigint | number
+    sessionKey?: BigIntFilter<"ClientKey"> | bigint | number
+    createdAt?: DateTimeFilter<"ClientKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ClientKey"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type ClientKeyOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ClientKeyCountOrderByAggregateInput
+    _avg?: ClientKeyAvgOrderByAggregateInput
+    _max?: ClientKeyMaxOrderByAggregateInput
+    _min?: ClientKeyMinOrderByAggregateInput
+    _sum?: ClientKeySumOrderByAggregateInput
+  }
+
+  export type ClientKeyScalarWhereWithAggregatesInput = {
+    AND?: ClientKeyScalarWhereWithAggregatesInput | ClientKeyScalarWhereWithAggregatesInput[]
+    OR?: ClientKeyScalarWhereWithAggregatesInput[]
+    NOT?: ClientKeyScalarWhereWithAggregatesInput | ClientKeyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ClientKey"> | string
+    userId?: StringWithAggregatesFilter<"ClientKey"> | string
+    publicKeyE?: BigIntWithAggregatesFilter<"ClientKey"> | bigint | number
+    publicKeyN?: BigIntWithAggregatesFilter<"ClientKey"> | bigint | number
+    sessionKey?: BigIntWithAggregatesFilter<"ClientKey"> | bigint | number
+    createdAt?: DateTimeWithAggregatesFilter<"ClientKey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ClientKey"> | Date | string
+  }
+
+  export type ServerKeyWhereInput = {
+    AND?: ServerKeyWhereInput | ServerKeyWhereInput[]
+    OR?: ServerKeyWhereInput[]
+    NOT?: ServerKeyWhereInput | ServerKeyWhereInput[]
+    id?: StringFilter<"ServerKey"> | string
+    publicKeyE?: BigIntFilter<"ServerKey"> | bigint | number
+    publicKeyN?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyD?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyP?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyQ?: BigIntFilter<"ServerKey"> | bigint | number
+    chatId?: StringFilter<"ServerKey"> | string
+    createdAt?: DateTimeFilter<"ServerKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ServerKey"> | Date | string
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+  }
+
+  export type ServerKeyOrderByWithRelationInput = {
+    id?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chat?: ChatOrderByWithRelationInput
+  }
+
+  export type ServerKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    chatId?: string
+    AND?: ServerKeyWhereInput | ServerKeyWhereInput[]
+    OR?: ServerKeyWhereInput[]
+    NOT?: ServerKeyWhereInput | ServerKeyWhereInput[]
+    publicKeyE?: BigIntFilter<"ServerKey"> | bigint | number
+    publicKeyN?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyD?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyP?: BigIntFilter<"ServerKey"> | bigint | number
+    privateKeyQ?: BigIntFilter<"ServerKey"> | bigint | number
+    createdAt?: DateTimeFilter<"ServerKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ServerKey"> | Date | string
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+  }, "id" | "chatId">
+
+  export type ServerKeyOrderByWithAggregationInput = {
+    id?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ServerKeyCountOrderByAggregateInput
+    _avg?: ServerKeyAvgOrderByAggregateInput
+    _max?: ServerKeyMaxOrderByAggregateInput
+    _min?: ServerKeyMinOrderByAggregateInput
+    _sum?: ServerKeySumOrderByAggregateInput
+  }
+
+  export type ServerKeyScalarWhereWithAggregatesInput = {
+    AND?: ServerKeyScalarWhereWithAggregatesInput | ServerKeyScalarWhereWithAggregatesInput[]
+    OR?: ServerKeyScalarWhereWithAggregatesInput[]
+    NOT?: ServerKeyScalarWhereWithAggregatesInput | ServerKeyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ServerKey"> | string
+    publicKeyE?: BigIntWithAggregatesFilter<"ServerKey"> | bigint | number
+    publicKeyN?: BigIntWithAggregatesFilter<"ServerKey"> | bigint | number
+    privateKeyD?: BigIntWithAggregatesFilter<"ServerKey"> | bigint | number
+    privateKeyP?: BigIntWithAggregatesFilter<"ServerKey"> | bigint | number
+    privateKeyQ?: BigIntWithAggregatesFilter<"ServerKey"> | bigint | number
+    chatId?: StringWithAggregatesFilter<"ServerKey"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ServerKey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ServerKey"> | Date | string
+  }
+
+  export type KeyDiffieWhereInput = {
+    AND?: KeyDiffieWhereInput | KeyDiffieWhereInput[]
+    OR?: KeyDiffieWhereInput[]
+    NOT?: KeyDiffieWhereInput | KeyDiffieWhereInput[]
+    id?: StringFilter<"KeyDiffie"> | string
+    publicKeyP?: BigIntFilter<"KeyDiffie"> | bigint | number
+    publicKeyG?: BigIntFilter<"KeyDiffie"> | bigint | number
+    privateKeyServer?: BigIntFilter<"KeyDiffie"> | bigint | number
+    userId?: StringFilter<"KeyDiffie"> | string
+    createdAt?: DateTimeFilter<"KeyDiffie"> | Date | string
+    updatedAt?: DateTimeFilter<"KeyDiffie"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type KeyDiffieOrderByWithRelationInput = {
+    id?: SortOrder
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type KeyDiffieWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId?: string
+    AND?: KeyDiffieWhereInput | KeyDiffieWhereInput[]
+    OR?: KeyDiffieWhereInput[]
+    NOT?: KeyDiffieWhereInput | KeyDiffieWhereInput[]
+    publicKeyP?: BigIntFilter<"KeyDiffie"> | bigint | number
+    publicKeyG?: BigIntFilter<"KeyDiffie"> | bigint | number
+    privateKeyServer?: BigIntFilter<"KeyDiffie"> | bigint | number
+    createdAt?: DateTimeFilter<"KeyDiffie"> | Date | string
+    updatedAt?: DateTimeFilter<"KeyDiffie"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId">
+
+  export type KeyDiffieOrderByWithAggregationInput = {
+    id?: SortOrder
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: KeyDiffieCountOrderByAggregateInput
+    _avg?: KeyDiffieAvgOrderByAggregateInput
+    _max?: KeyDiffieMaxOrderByAggregateInput
+    _min?: KeyDiffieMinOrderByAggregateInput
+    _sum?: KeyDiffieSumOrderByAggregateInput
+  }
+
+  export type KeyDiffieScalarWhereWithAggregatesInput = {
+    AND?: KeyDiffieScalarWhereWithAggregatesInput | KeyDiffieScalarWhereWithAggregatesInput[]
+    OR?: KeyDiffieScalarWhereWithAggregatesInput[]
+    NOT?: KeyDiffieScalarWhereWithAggregatesInput | KeyDiffieScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"KeyDiffie"> | string
+    publicKeyP?: BigIntWithAggregatesFilter<"KeyDiffie"> | bigint | number
+    publicKeyG?: BigIntWithAggregatesFilter<"KeyDiffie"> | bigint | number
+    privateKeyServer?: BigIntWithAggregatesFilter<"KeyDiffie"> | bigint | number
+    userId?: StringWithAggregatesFilter<"KeyDiffie"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"KeyDiffie"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"KeyDiffie"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     username: string
@@ -6325,6 +11787,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: ChatMessageCreateNestedManyWithoutUserInput
     chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieCreateNestedOneWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6338,6 +11803,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
     chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyUncheckedCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieUncheckedCreateNestedOneWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -6351,6 +11819,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUpdateManyWithoutUserNestedInput
     chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUpdateOneWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6364,6 +11835,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
     chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUncheckedUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUncheckedUpdateOneWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6401,15 +11875,15 @@ export namespace Prisma {
 
   export type ChatMessageCreateInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
     replyTo?: ChatMessageCreateNestedOneWithoutRepliesInput
     replies?: ChatMessageCreateNestedManyWithoutReplyToInput
     user: UserCreateNestedOneWithoutMessagesInput
@@ -6418,10 +11892,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedCreateInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -6430,20 +11903,21 @@ export namespace Prisma {
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
     replies?: ChatMessageUncheckedCreateNestedManyWithoutReplyToInput
   }
 
   export type ChatMessageUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
     replyTo?: ChatMessageUpdateOneWithoutRepliesNestedInput
     replies?: ChatMessageUpdateManyWithoutReplyToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
@@ -6452,10 +11926,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6464,15 +11937,15 @@ export namespace Prisma {
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
     replies?: ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput
   }
 
   export type ChatMessageCreateManyInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -6485,10 +11958,9 @@ export namespace Prisma {
 
   export type ChatMessageUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6498,16 +11970,110 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
     chatId?: StringFieldUpdateOperationsInput | string
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageCreateInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatMessage: ChatMessageCreateNestedOneWithoutFilesInput
+    user: UserCreateNestedOneWithoutFilesInput
+    chat: ChatCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileMessageUncheckedCreateInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    userId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessage?: ChatMessageUpdateOneRequiredWithoutFilesNestedInput
+    user?: UserUpdateOneRequiredWithoutFilesNestedInput
+    chat?: ChatUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageCreateManyInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    userId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6523,6 +12089,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
+    files?: FileMessageCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyCreateNestedOneWithoutChatInput
   }
 
   export type ChatUncheckedCreateInput = {
@@ -6536,6 +12104,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyUncheckedCreateNestedOneWithoutChatInput
   }
 
   export type ChatUpdateInput = {
@@ -6549,6 +12119,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
+    files?: FileMessageUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUpdateOneWithoutChatNestedInput
   }
 
   export type ChatUncheckedUpdateInput = {
@@ -6562,6 +12134,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUncheckedUpdateOneWithoutChatNestedInput
   }
 
   export type ChatCreateManyInput = {
@@ -6651,6 +12225,227 @@ export namespace Prisma {
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ClientKeyCreateInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    sessionKey: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutClientKeyInput
+  }
+
+  export type ClientKeyUncheckedCreateInput = {
+    id?: string
+    userId: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    sessionKey: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientKeyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutClientKeyNestedInput
+  }
+
+  export type ClientKeyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientKeyCreateManyInput = {
+    id?: string
+    userId: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    sessionKey: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientKeyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientKeyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerKeyCreateInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    privateKeyD: bigint | number
+    privateKeyP: bigint | number
+    privateKeyQ: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chat: ChatCreateNestedOneWithoutServerKeyInput
+  }
+
+  export type ServerKeyUncheckedCreateInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    privateKeyD: bigint | number
+    privateKeyP: bigint | number
+    privateKeyQ: bigint | number
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerKeyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat?: ChatUpdateOneRequiredWithoutServerKeyNestedInput
+  }
+
+  export type ServerKeyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerKeyCreateManyInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    privateKeyD: bigint | number
+    privateKeyP: bigint | number
+    privateKeyQ: bigint | number
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerKeyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerKeyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KeyDiffieCreateInput = {
+    id?: string
+    publicKeyP: bigint | number
+    publicKeyG: bigint | number
+    privateKeyServer: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutKeyDiffieInput
+  }
+
+  export type KeyDiffieUncheckedCreateInput = {
+    id?: string
+    publicKeyP: bigint | number
+    publicKeyG: bigint | number
+    privateKeyServer: bigint | number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KeyDiffieUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutKeyDiffieNestedInput
+  }
+
+  export type KeyDiffieUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KeyDiffieCreateManyInput = {
+    id?: string
+    publicKeyP: bigint | number
+    publicKeyG: bigint | number
+    privateKeyServer: bigint | number
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KeyDiffieUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KeyDiffieUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -6705,6 +12500,22 @@ export namespace Prisma {
     none?: ChatMemberWhereInput
   }
 
+  export type ClientKeyNullableScalarRelationFilter = {
+    is?: ClientKeyWhereInput | null
+    isNot?: ClientKeyWhereInput | null
+  }
+
+  export type KeyDiffieNullableScalarRelationFilter = {
+    is?: KeyDiffieWhereInput | null
+    isNot?: KeyDiffieWhereInput | null
+  }
+
+  export type FileMessageListRelationFilter = {
+    every?: FileMessageWhereInput
+    some?: FileMessageWhereInput
+    none?: FileMessageWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -6715,6 +12526,10 @@ export namespace Prisma {
   }
 
   export type ChatMemberOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FileMessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -6805,13 +12620,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type EnumMessageTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMessageTypeFilter<$PrismaModel> | $Enums.MessageType
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -6844,10 +12652,9 @@ export namespace Prisma {
 
   export type ChatMessageCountOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     text?: SortOrder
-    imageUrl?: SortOrder
-    fileUrl?: SortOrder
+    isStarted?: SortOrder
+    isFake?: SortOrder
     isEdited?: SortOrder
     isDeleted?: SortOrder
     replyToId?: SortOrder
@@ -6860,10 +12667,9 @@ export namespace Prisma {
 
   export type ChatMessageMaxOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     text?: SortOrder
-    imageUrl?: SortOrder
-    fileUrl?: SortOrder
+    isStarted?: SortOrder
+    isFake?: SortOrder
     isEdited?: SortOrder
     isDeleted?: SortOrder
     replyToId?: SortOrder
@@ -6876,10 +12682,9 @@ export namespace Prisma {
 
   export type ChatMessageMinOrderByAggregateInput = {
     id?: SortOrder
-    type?: SortOrder
     text?: SortOrder
-    imageUrl?: SortOrder
-    fileUrl?: SortOrder
+    isStarted?: SortOrder
+    isFake?: SortOrder
     isEdited?: SortOrder
     isDeleted?: SortOrder
     replyToId?: SortOrder
@@ -6888,16 +12693,6 @@ export namespace Prisma {
     readCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type EnumMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.MessageType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMessageTypeFilter<$PrismaModel>
-    _max?: NestedEnumMessageTypeFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -6916,6 +12711,58 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type ChatMessageScalarRelationFilter = {
+    is?: ChatMessageWhereInput
+    isNot?: ChatMessageWhereInput
+  }
+
+  export type FileMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileFullName?: SortOrder
+    fileSize?: SortOrder
+    fileFormat?: SortOrder
+    chatMessageId?: SortOrder
+    userId?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FileMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileFullName?: SortOrder
+    fileSize?: SortOrder
+    fileFormat?: SortOrder
+    chatMessageId?: SortOrder
+    userId?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FileMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    fileUrl?: SortOrder
+    fileName?: SortOrder
+    fileFullName?: SortOrder
+    fileSize?: SortOrder
+    fileFormat?: SortOrder
+    chatMessageId?: SortOrder
+    userId?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerKeyNullableScalarRelationFilter = {
+    is?: ServerKeyWhereInput | null
+    isNot?: ServerKeyWhereInput | null
   }
 
   export type ChatCountOrderByAggregateInput = {
@@ -6993,6 +12840,169 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type ClientKeyCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClientKeyAvgOrderByAggregateInput = {
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+  }
+
+  export type ClientKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClientKeyMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClientKeySumOrderByAggregateInput = {
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    sessionKey?: SortOrder
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type ServerKeyCountOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerKeyAvgOrderByAggregateInput = {
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+  }
+
+  export type ServerKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerKeyMinOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+    chatId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ServerKeySumOrderByAggregateInput = {
+    publicKeyE?: SortOrder
+    publicKeyN?: SortOrder
+    privateKeyD?: SortOrder
+    privateKeyP?: SortOrder
+    privateKeyQ?: SortOrder
+  }
+
+  export type KeyDiffieCountOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KeyDiffieAvgOrderByAggregateInput = {
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+  }
+
+  export type KeyDiffieMaxOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KeyDiffieMinOrderByAggregateInput = {
+    id?: SortOrder
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type KeyDiffieSumOrderByAggregateInput = {
+    publicKeyP?: SortOrder
+    publicKeyG?: SortOrder
+    privateKeyServer?: SortOrder
+  }
+
   export type ChatMessageCreateNestedManyWithoutUserInput = {
     create?: XOR<ChatMessageCreateWithoutUserInput, ChatMessageUncheckedCreateWithoutUserInput> | ChatMessageCreateWithoutUserInput[] | ChatMessageUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutUserInput | ChatMessageCreateOrConnectWithoutUserInput[]
@@ -7007,6 +13017,25 @@ export namespace Prisma {
     connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
   }
 
+  export type ClientKeyCreateNestedOneWithoutUserInput = {
+    create?: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ClientKeyCreateOrConnectWithoutUserInput
+    connect?: ClientKeyWhereUniqueInput
+  }
+
+  export type KeyDiffieCreateNestedOneWithoutUserInput = {
+    create?: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+    connectOrCreate?: KeyDiffieCreateOrConnectWithoutUserInput
+    connect?: KeyDiffieWhereUniqueInput
+  }
+
+  export type FileMessageCreateNestedManyWithoutUserInput = {
+    create?: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput> | FileMessageCreateWithoutUserInput[] | FileMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutUserInput | FileMessageCreateOrConnectWithoutUserInput[]
+    createMany?: FileMessageCreateManyUserInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
   export type ChatMessageUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ChatMessageCreateWithoutUserInput, ChatMessageUncheckedCreateWithoutUserInput> | ChatMessageCreateWithoutUserInput[] | ChatMessageUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutUserInput | ChatMessageCreateOrConnectWithoutUserInput[]
@@ -7019,6 +13048,25 @@ export namespace Prisma {
     connectOrCreate?: ChatMemberCreateOrConnectWithoutUserInput | ChatMemberCreateOrConnectWithoutUserInput[]
     createMany?: ChatMemberCreateManyUserInputEnvelope
     connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+  }
+
+  export type ClientKeyUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ClientKeyCreateOrConnectWithoutUserInput
+    connect?: ClientKeyWhereUniqueInput
+  }
+
+  export type KeyDiffieUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+    connectOrCreate?: KeyDiffieCreateOrConnectWithoutUserInput
+    connect?: KeyDiffieWhereUniqueInput
+  }
+
+  export type FileMessageUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput> | FileMessageCreateWithoutUserInput[] | FileMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutUserInput | FileMessageCreateOrConnectWithoutUserInput[]
+    createMany?: FileMessageCreateManyUserInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -7065,6 +13113,40 @@ export namespace Prisma {
     deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
   }
 
+  export type ClientKeyUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ClientKeyCreateOrConnectWithoutUserInput
+    upsert?: ClientKeyUpsertWithoutUserInput
+    disconnect?: ClientKeyWhereInput | boolean
+    delete?: ClientKeyWhereInput | boolean
+    connect?: ClientKeyWhereUniqueInput
+    update?: XOR<XOR<ClientKeyUpdateToOneWithWhereWithoutUserInput, ClientKeyUpdateWithoutUserInput>, ClientKeyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KeyDiffieUpdateOneWithoutUserNestedInput = {
+    create?: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+    connectOrCreate?: KeyDiffieCreateOrConnectWithoutUserInput
+    upsert?: KeyDiffieUpsertWithoutUserInput
+    disconnect?: KeyDiffieWhereInput | boolean
+    delete?: KeyDiffieWhereInput | boolean
+    connect?: KeyDiffieWhereUniqueInput
+    update?: XOR<XOR<KeyDiffieUpdateToOneWithWhereWithoutUserInput, KeyDiffieUpdateWithoutUserInput>, KeyDiffieUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FileMessageUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput> | FileMessageCreateWithoutUserInput[] | FileMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutUserInput | FileMessageCreateOrConnectWithoutUserInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutUserInput | FileMessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FileMessageCreateManyUserInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutUserInput | FileMessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutUserInput | FileMessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+  }
+
   export type ChatMessageUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<ChatMessageCreateWithoutUserInput, ChatMessageUncheckedCreateWithoutUserInput> | ChatMessageCreateWithoutUserInput[] | ChatMessageUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutUserInput | ChatMessageCreateOrConnectWithoutUserInput[]
@@ -7093,6 +13175,47 @@ export namespace Prisma {
     deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
   }
 
+  export type ClientKeyUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+    connectOrCreate?: ClientKeyCreateOrConnectWithoutUserInput
+    upsert?: ClientKeyUpsertWithoutUserInput
+    disconnect?: ClientKeyWhereInput | boolean
+    delete?: ClientKeyWhereInput | boolean
+    connect?: ClientKeyWhereUniqueInput
+    update?: XOR<XOR<ClientKeyUpdateToOneWithWhereWithoutUserInput, ClientKeyUpdateWithoutUserInput>, ClientKeyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KeyDiffieUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+    connectOrCreate?: KeyDiffieCreateOrConnectWithoutUserInput
+    upsert?: KeyDiffieUpsertWithoutUserInput
+    disconnect?: KeyDiffieWhereInput | boolean
+    delete?: KeyDiffieWhereInput | boolean
+    connect?: KeyDiffieWhereUniqueInput
+    update?: XOR<XOR<KeyDiffieUpdateToOneWithWhereWithoutUserInput, KeyDiffieUpdateWithoutUserInput>, KeyDiffieUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FileMessageUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput> | FileMessageCreateWithoutUserInput[] | FileMessageUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutUserInput | FileMessageCreateOrConnectWithoutUserInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutUserInput | FileMessageUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FileMessageCreateManyUserInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutUserInput | FileMessageUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutUserInput | FileMessageUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+  }
+
+  export type FileMessageCreateNestedManyWithoutChatMessageInput = {
+    create?: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput> | FileMessageCreateWithoutChatMessageInput[] | FileMessageUncheckedCreateWithoutChatMessageInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatMessageInput | FileMessageCreateOrConnectWithoutChatMessageInput[]
+    createMany?: FileMessageCreateManyChatMessageInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
   export type ChatMessageCreateNestedOneWithoutRepliesInput = {
     create?: XOR<ChatMessageCreateWithoutRepliesInput, ChatMessageUncheckedCreateWithoutRepliesInput>
     connectOrCreate?: ChatMessageCreateOrConnectWithoutRepliesInput
@@ -7118,6 +13241,13 @@ export namespace Prisma {
     connect?: ChatWhereUniqueInput
   }
 
+  export type FileMessageUncheckedCreateNestedManyWithoutChatMessageInput = {
+    create?: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput> | FileMessageCreateWithoutChatMessageInput[] | FileMessageUncheckedCreateWithoutChatMessageInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatMessageInput | FileMessageCreateOrConnectWithoutChatMessageInput[]
+    createMany?: FileMessageCreateManyChatMessageInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
   export type ChatMessageUncheckedCreateNestedManyWithoutReplyToInput = {
     create?: XOR<ChatMessageCreateWithoutReplyToInput, ChatMessageUncheckedCreateWithoutReplyToInput> | ChatMessageCreateWithoutReplyToInput[] | ChatMessageUncheckedCreateWithoutReplyToInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutReplyToInput | ChatMessageCreateOrConnectWithoutReplyToInput[]
@@ -7125,12 +13255,22 @@ export namespace Prisma {
     connect?: ChatMessageWhereUniqueInput | ChatMessageWhereUniqueInput[]
   }
 
-  export type EnumMessageTypeFieldUpdateOperationsInput = {
-    set?: $Enums.MessageType
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type FileMessageUpdateManyWithoutChatMessageNestedInput = {
+    create?: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput> | FileMessageCreateWithoutChatMessageInput[] | FileMessageUncheckedCreateWithoutChatMessageInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatMessageInput | FileMessageCreateOrConnectWithoutChatMessageInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutChatMessageInput | FileMessageUpsertWithWhereUniqueWithoutChatMessageInput[]
+    createMany?: FileMessageCreateManyChatMessageInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutChatMessageInput | FileMessageUpdateWithWhereUniqueWithoutChatMessageInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutChatMessageInput | FileMessageUpdateManyWithWhereWithoutChatMessageInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
   }
 
   export type ChatMessageUpdateOneWithoutRepliesNestedInput = {
@@ -7173,6 +13313,20 @@ export namespace Prisma {
     update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutMessagesInput, ChatUpdateWithoutMessagesInput>, ChatUncheckedUpdateWithoutMessagesInput>
   }
 
+  export type FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput = {
+    create?: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput> | FileMessageCreateWithoutChatMessageInput[] | FileMessageUncheckedCreateWithoutChatMessageInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatMessageInput | FileMessageCreateOrConnectWithoutChatMessageInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutChatMessageInput | FileMessageUpsertWithWhereUniqueWithoutChatMessageInput[]
+    createMany?: FileMessageCreateManyChatMessageInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutChatMessageInput | FileMessageUpdateWithWhereUniqueWithoutChatMessageInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutChatMessageInput | FileMessageUpdateManyWithWhereWithoutChatMessageInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+  }
+
   export type ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput = {
     create?: XOR<ChatMessageCreateWithoutReplyToInput, ChatMessageUncheckedCreateWithoutReplyToInput> | ChatMessageCreateWithoutReplyToInput[] | ChatMessageUncheckedCreateWithoutReplyToInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutReplyToInput | ChatMessageCreateOrConnectWithoutReplyToInput[]
@@ -7185,6 +13339,48 @@ export namespace Prisma {
     update?: ChatMessageUpdateWithWhereUniqueWithoutReplyToInput | ChatMessageUpdateWithWhereUniqueWithoutReplyToInput[]
     updateMany?: ChatMessageUpdateManyWithWhereWithoutReplyToInput | ChatMessageUpdateManyWithWhereWithoutReplyToInput[]
     deleteMany?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
+  }
+
+  export type ChatMessageCreateNestedOneWithoutFilesInput = {
+    create?: XOR<ChatMessageCreateWithoutFilesInput, ChatMessageUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutFilesInput
+    connect?: ChatMessageWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutFilesInput = {
+    create?: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFilesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ChatCreateNestedOneWithoutFilesInput = {
+    create?: XOR<ChatCreateWithoutFilesInput, ChatUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutFilesInput
+    connect?: ChatWhereUniqueInput
+  }
+
+  export type ChatMessageUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<ChatMessageCreateWithoutFilesInput, ChatMessageUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutFilesInput
+    upsert?: ChatMessageUpsertWithoutFilesInput
+    connect?: ChatMessageWhereUniqueInput
+    update?: XOR<XOR<ChatMessageUpdateToOneWithWhereWithoutFilesInput, ChatMessageUpdateWithoutFilesInput>, ChatMessageUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFilesInput
+    upsert?: UserUpsertWithoutFilesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFilesInput, UserUpdateWithoutFilesInput>, UserUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type ChatUpdateOneRequiredWithoutFilesNestedInput = {
+    create?: XOR<ChatCreateWithoutFilesInput, ChatUncheckedCreateWithoutFilesInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutFilesInput
+    upsert?: ChatUpsertWithoutFilesInput
+    connect?: ChatWhereUniqueInput
+    update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutFilesInput, ChatUpdateWithoutFilesInput>, ChatUncheckedUpdateWithoutFilesInput>
   }
 
   export type ChatMessageCreateNestedManyWithoutChatInput = {
@@ -7201,6 +13397,19 @@ export namespace Prisma {
     connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
   }
 
+  export type FileMessageCreateNestedManyWithoutChatInput = {
+    create?: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput> | FileMessageCreateWithoutChatInput[] | FileMessageUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatInput | FileMessageCreateOrConnectWithoutChatInput[]
+    createMany?: FileMessageCreateManyChatInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
+  export type ServerKeyCreateNestedOneWithoutChatInput = {
+    create?: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+    connectOrCreate?: ServerKeyCreateOrConnectWithoutChatInput
+    connect?: ServerKeyWhereUniqueInput
+  }
+
   export type ChatMessageUncheckedCreateNestedManyWithoutChatInput = {
     create?: XOR<ChatMessageCreateWithoutChatInput, ChatMessageUncheckedCreateWithoutChatInput> | ChatMessageCreateWithoutChatInput[] | ChatMessageUncheckedCreateWithoutChatInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutChatInput | ChatMessageCreateOrConnectWithoutChatInput[]
@@ -7213,6 +13422,19 @@ export namespace Prisma {
     connectOrCreate?: ChatMemberCreateOrConnectWithoutChatInput | ChatMemberCreateOrConnectWithoutChatInput[]
     createMany?: ChatMemberCreateManyChatInputEnvelope
     connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+  }
+
+  export type FileMessageUncheckedCreateNestedManyWithoutChatInput = {
+    create?: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput> | FileMessageCreateWithoutChatInput[] | FileMessageUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatInput | FileMessageCreateOrConnectWithoutChatInput[]
+    createMany?: FileMessageCreateManyChatInputEnvelope
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
+  export type ServerKeyUncheckedCreateNestedOneWithoutChatInput = {
+    create?: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+    connectOrCreate?: ServerKeyCreateOrConnectWithoutChatInput
+    connect?: ServerKeyWhereUniqueInput
   }
 
   export type ChatMessageUpdateManyWithoutChatNestedInput = {
@@ -7243,6 +13465,30 @@ export namespace Prisma {
     deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
   }
 
+  export type FileMessageUpdateManyWithoutChatNestedInput = {
+    create?: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput> | FileMessageCreateWithoutChatInput[] | FileMessageUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatInput | FileMessageCreateOrConnectWithoutChatInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutChatInput | FileMessageUpsertWithWhereUniqueWithoutChatInput[]
+    createMany?: FileMessageCreateManyChatInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutChatInput | FileMessageUpdateWithWhereUniqueWithoutChatInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutChatInput | FileMessageUpdateManyWithWhereWithoutChatInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+  }
+
+  export type ServerKeyUpdateOneWithoutChatNestedInput = {
+    create?: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+    connectOrCreate?: ServerKeyCreateOrConnectWithoutChatInput
+    upsert?: ServerKeyUpsertWithoutChatInput
+    disconnect?: ServerKeyWhereInput | boolean
+    delete?: ServerKeyWhereInput | boolean
+    connect?: ServerKeyWhereUniqueInput
+    update?: XOR<XOR<ServerKeyUpdateToOneWithWhereWithoutChatInput, ServerKeyUpdateWithoutChatInput>, ServerKeyUncheckedUpdateWithoutChatInput>
+  }
+
   export type ChatMessageUncheckedUpdateManyWithoutChatNestedInput = {
     create?: XOR<ChatMessageCreateWithoutChatInput, ChatMessageUncheckedCreateWithoutChatInput> | ChatMessageCreateWithoutChatInput[] | ChatMessageUncheckedCreateWithoutChatInput[]
     connectOrCreate?: ChatMessageCreateOrConnectWithoutChatInput | ChatMessageCreateOrConnectWithoutChatInput[]
@@ -7269,6 +13515,30 @@ export namespace Prisma {
     update?: ChatMemberUpdateWithWhereUniqueWithoutChatInput | ChatMemberUpdateWithWhereUniqueWithoutChatInput[]
     updateMany?: ChatMemberUpdateManyWithWhereWithoutChatInput | ChatMemberUpdateManyWithWhereWithoutChatInput[]
     deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
+  }
+
+  export type FileMessageUncheckedUpdateManyWithoutChatNestedInput = {
+    create?: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput> | FileMessageCreateWithoutChatInput[] | FileMessageUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: FileMessageCreateOrConnectWithoutChatInput | FileMessageCreateOrConnectWithoutChatInput[]
+    upsert?: FileMessageUpsertWithWhereUniqueWithoutChatInput | FileMessageUpsertWithWhereUniqueWithoutChatInput[]
+    createMany?: FileMessageCreateManyChatInputEnvelope
+    set?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    disconnect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    delete?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+    update?: FileMessageUpdateWithWhereUniqueWithoutChatInput | FileMessageUpdateWithWhereUniqueWithoutChatInput[]
+    updateMany?: FileMessageUpdateManyWithWhereWithoutChatInput | FileMessageUpdateManyWithWhereWithoutChatInput[]
+    deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+  }
+
+  export type ServerKeyUncheckedUpdateOneWithoutChatNestedInput = {
+    create?: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+    connectOrCreate?: ServerKeyCreateOrConnectWithoutChatInput
+    upsert?: ServerKeyUpsertWithoutChatInput
+    disconnect?: ServerKeyWhereInput | boolean
+    delete?: ServerKeyWhereInput | boolean
+    connect?: ServerKeyWhereUniqueInput
+    update?: XOR<XOR<ServerKeyUpdateToOneWithWhereWithoutChatInput, ServerKeyUpdateWithoutChatInput>, ServerKeyUncheckedUpdateWithoutChatInput>
   }
 
   export type UserCreateNestedOneWithoutChatMembershipsInput = {
@@ -7301,6 +13571,56 @@ export namespace Prisma {
     upsert?: ChatUpsertWithoutMembersInput
     connect?: ChatWhereUniqueInput
     update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutMembersInput, ChatUpdateWithoutMembersInput>, ChatUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type UserCreateNestedOneWithoutClientKeyInput = {
+    create?: XOR<UserCreateWithoutClientKeyInput, UserUncheckedCreateWithoutClientKeyInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientKeyInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type UserUpdateOneRequiredWithoutClientKeyNestedInput = {
+    create?: XOR<UserCreateWithoutClientKeyInput, UserUncheckedCreateWithoutClientKeyInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientKeyInput
+    upsert?: UserUpsertWithoutClientKeyInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientKeyInput, UserUpdateWithoutClientKeyInput>, UserUncheckedUpdateWithoutClientKeyInput>
+  }
+
+  export type ChatCreateNestedOneWithoutServerKeyInput = {
+    create?: XOR<ChatCreateWithoutServerKeyInput, ChatUncheckedCreateWithoutServerKeyInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutServerKeyInput
+    connect?: ChatWhereUniqueInput
+  }
+
+  export type ChatUpdateOneRequiredWithoutServerKeyNestedInput = {
+    create?: XOR<ChatCreateWithoutServerKeyInput, ChatUncheckedCreateWithoutServerKeyInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutServerKeyInput
+    upsert?: ChatUpsertWithoutServerKeyInput
+    connect?: ChatWhereUniqueInput
+    update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutServerKeyInput, ChatUpdateWithoutServerKeyInput>, ChatUncheckedUpdateWithoutServerKeyInput>
+  }
+
+  export type UserCreateNestedOneWithoutKeyDiffieInput = {
+    create?: XOR<UserCreateWithoutKeyDiffieInput, UserUncheckedCreateWithoutKeyDiffieInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKeyDiffieInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutKeyDiffieNestedInput = {
+    create?: XOR<UserCreateWithoutKeyDiffieInput, UserUncheckedCreateWithoutKeyDiffieInput>
+    connectOrCreate?: UserCreateOrConnectWithoutKeyDiffieInput
+    upsert?: UserUpsertWithoutKeyDiffieInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutKeyDiffieInput, UserUpdateWithoutKeyDiffieInput>, UserUncheckedUpdateWithoutKeyDiffieInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -7419,13 +13739,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumMessageTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMessageTypeFilter<$PrismaModel> | $Enums.MessageType
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -7438,16 +13751,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MessageType | EnumMessageTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MessageType[] | ListEnumMessageTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.MessageType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMessageTypeFilter<$PrismaModel>
-    _max?: NestedEnumMessageTypeFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7480,17 +13783,55 @@ export namespace Prisma {
     _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type ChatMessageCreateWithoutUserInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
     replyTo?: ChatMessageCreateNestedOneWithoutRepliesInput
     replies?: ChatMessageCreateNestedManyWithoutReplyToInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -7498,10 +13839,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedCreateWithoutUserInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -7509,6 +13849,7 @@ export namespace Prisma {
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
     replies?: ChatMessageUncheckedCreateNestedManyWithoutReplyToInput
   }
 
@@ -7546,6 +13887,88 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ClientKeyCreateWithoutUserInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    sessionKey: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientKeyUncheckedCreateWithoutUserInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    sessionKey: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientKeyCreateOrConnectWithoutUserInput = {
+    where: ClientKeyWhereUniqueInput
+    create: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+  }
+
+  export type KeyDiffieCreateWithoutUserInput = {
+    id?: string
+    publicKeyP: bigint | number
+    publicKeyG: bigint | number
+    privateKeyServer: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KeyDiffieUncheckedCreateWithoutUserInput = {
+    id?: string
+    publicKeyP: bigint | number
+    publicKeyG: bigint | number
+    privateKeyServer: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type KeyDiffieCreateOrConnectWithoutUserInput = {
+    where: KeyDiffieWhereUniqueInput
+    create: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+  }
+
+  export type FileMessageCreateWithoutUserInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatMessage: ChatMessageCreateNestedOneWithoutFilesInput
+    chat: ChatCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileMessageUncheckedCreateWithoutUserInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileMessageCreateOrConnectWithoutUserInput = {
+    where: FileMessageWhereUniqueInput
+    create: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type FileMessageCreateManyUserInputEnvelope = {
+    data: FileMessageCreateManyUserInput | FileMessageCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ChatMessageUpsertWithWhereUniqueWithoutUserInput = {
     where: ChatMessageWhereUniqueInput
     update: XOR<ChatMessageUpdateWithoutUserInput, ChatMessageUncheckedUpdateWithoutUserInput>
@@ -7567,10 +13990,9 @@ export namespace Prisma {
     OR?: ChatMessageScalarWhereInput[]
     NOT?: ChatMessageScalarWhereInput | ChatMessageScalarWhereInput[]
     id?: StringFilter<"ChatMessage"> | string
-    type?: EnumMessageTypeFilter<"ChatMessage"> | $Enums.MessageType
     text?: StringNullableFilter<"ChatMessage"> | string | null
-    imageUrl?: StringNullableFilter<"ChatMessage"> | string | null
-    fileUrl?: StringNullableFilter<"ChatMessage"> | string | null
+    isStarted?: BoolFilter<"ChatMessage"> | boolean
+    isFake?: BoolFilter<"ChatMessage"> | boolean
     isEdited?: BoolFilter<"ChatMessage"> | boolean
     isDeleted?: BoolFilter<"ChatMessage"> | boolean
     replyToId?: StringNullableFilter<"ChatMessage"> | string | null
@@ -7608,17 +14030,144 @@ export namespace Prisma {
     joinedAt?: DateTimeFilter<"ChatMember"> | Date | string
   }
 
+  export type ClientKeyUpsertWithoutUserInput = {
+    update: XOR<ClientKeyUpdateWithoutUserInput, ClientKeyUncheckedUpdateWithoutUserInput>
+    create: XOR<ClientKeyCreateWithoutUserInput, ClientKeyUncheckedCreateWithoutUserInput>
+    where?: ClientKeyWhereInput
+  }
+
+  export type ClientKeyUpdateToOneWithWhereWithoutUserInput = {
+    where?: ClientKeyWhereInput
+    data: XOR<ClientKeyUpdateWithoutUserInput, ClientKeyUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ClientKeyUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientKeyUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionKey?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KeyDiffieUpsertWithoutUserInput = {
+    update: XOR<KeyDiffieUpdateWithoutUserInput, KeyDiffieUncheckedUpdateWithoutUserInput>
+    create: XOR<KeyDiffieCreateWithoutUserInput, KeyDiffieUncheckedCreateWithoutUserInput>
+    where?: KeyDiffieWhereInput
+  }
+
+  export type KeyDiffieUpdateToOneWithWhereWithoutUserInput = {
+    where?: KeyDiffieWhereInput
+    data: XOR<KeyDiffieUpdateWithoutUserInput, KeyDiffieUncheckedUpdateWithoutUserInput>
+  }
+
+  export type KeyDiffieUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type KeyDiffieUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyG?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyServer?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUpsertWithWhereUniqueWithoutUserInput = {
+    where: FileMessageWhereUniqueInput
+    update: XOR<FileMessageUpdateWithoutUserInput, FileMessageUncheckedUpdateWithoutUserInput>
+    create: XOR<FileMessageCreateWithoutUserInput, FileMessageUncheckedCreateWithoutUserInput>
+  }
+
+  export type FileMessageUpdateWithWhereUniqueWithoutUserInput = {
+    where: FileMessageWhereUniqueInput
+    data: XOR<FileMessageUpdateWithoutUserInput, FileMessageUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FileMessageUpdateManyWithWhereWithoutUserInput = {
+    where: FileMessageScalarWhereInput
+    data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FileMessageScalarWhereInput = {
+    AND?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+    OR?: FileMessageScalarWhereInput[]
+    NOT?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
+    id?: StringFilter<"FileMessage"> | string
+    fileUrl?: StringFilter<"FileMessage"> | string
+    fileName?: StringFilter<"FileMessage"> | string
+    fileFullName?: StringFilter<"FileMessage"> | string
+    fileSize?: StringFilter<"FileMessage"> | string
+    fileFormat?: StringFilter<"FileMessage"> | string
+    chatMessageId?: StringFilter<"FileMessage"> | string
+    userId?: StringFilter<"FileMessage"> | string
+    chatId?: StringFilter<"FileMessage"> | string
+    createdAt?: DateTimeFilter<"FileMessage"> | Date | string
+    updatedAt?: DateTimeFilter<"FileMessage"> | Date | string
+  }
+
+  export type FileMessageCreateWithoutChatMessageInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutFilesInput
+    chat: ChatCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileMessageUncheckedCreateWithoutChatMessageInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    userId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileMessageCreateOrConnectWithoutChatMessageInput = {
+    where: FileMessageWhereUniqueInput
+    create: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput>
+  }
+
+  export type FileMessageCreateManyChatMessageInputEnvelope = {
+    data: FileMessageCreateManyChatMessageInput | FileMessageCreateManyChatMessageInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ChatMessageCreateWithoutRepliesInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
     replyTo?: ChatMessageCreateNestedOneWithoutRepliesInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -7626,10 +14175,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedCreateWithoutRepliesInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -7638,6 +14186,7 @@ export namespace Prisma {
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
   }
 
   export type ChatMessageCreateOrConnectWithoutRepliesInput = {
@@ -7647,15 +14196,15 @@ export namespace Prisma {
 
   export type ChatMessageCreateWithoutReplyToInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
     replies?: ChatMessageCreateNestedManyWithoutReplyToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -7663,10 +14212,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedCreateWithoutReplyToInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     userId: string
@@ -7674,6 +14222,7 @@ export namespace Prisma {
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
     replies?: ChatMessageUncheckedCreateNestedManyWithoutReplyToInput
   }
 
@@ -7697,6 +14246,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieCreateNestedOneWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -7709,6 +14261,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyUncheckedCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieUncheckedCreateNestedOneWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -7726,6 +14281,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: ChatMemberCreateNestedManyWithoutChatInput
+    files?: FileMessageCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyCreateNestedOneWithoutChatInput
   }
 
   export type ChatUncheckedCreateWithoutMessagesInput = {
@@ -7738,11 +14295,29 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyUncheckedCreateNestedOneWithoutChatInput
   }
 
   export type ChatCreateOrConnectWithoutMessagesInput = {
     where: ChatWhereUniqueInput
     create: XOR<ChatCreateWithoutMessagesInput, ChatUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type FileMessageUpsertWithWhereUniqueWithoutChatMessageInput = {
+    where: FileMessageWhereUniqueInput
+    update: XOR<FileMessageUpdateWithoutChatMessageInput, FileMessageUncheckedUpdateWithoutChatMessageInput>
+    create: XOR<FileMessageCreateWithoutChatMessageInput, FileMessageUncheckedCreateWithoutChatMessageInput>
+  }
+
+  export type FileMessageUpdateWithWhereUniqueWithoutChatMessageInput = {
+    where: FileMessageWhereUniqueInput
+    data: XOR<FileMessageUpdateWithoutChatMessageInput, FileMessageUncheckedUpdateWithoutChatMessageInput>
+  }
+
+  export type FileMessageUpdateManyWithWhereWithoutChatMessageInput = {
+    where: FileMessageScalarWhereInput
+    data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyWithoutChatMessageInput>
   }
 
   export type ChatMessageUpsertWithoutRepliesInput = {
@@ -7758,15 +14333,15 @@ export namespace Prisma {
 
   export type ChatMessageUpdateWithoutRepliesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
     replyTo?: ChatMessageUpdateOneWithoutRepliesNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -7774,10 +14349,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateWithoutRepliesInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7786,6 +14360,7 @@ export namespace Prisma {
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
   }
 
   export type ChatMessageUpsertWithWhereUniqueWithoutReplyToInput = {
@@ -7825,6 +14400,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUpdateOneWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -7837,6 +14415,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUncheckedUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUncheckedUpdateOneWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChatUpsertWithoutMessagesInput = {
@@ -7860,6 +14441,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ChatMemberUpdateManyWithoutChatNestedInput
+    files?: FileMessageUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUpdateOneWithoutChatNestedInput
   }
 
   export type ChatUncheckedUpdateWithoutMessagesInput = {
@@ -7872,14 +14455,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUncheckedUpdateOneWithoutChatNestedInput
   }
 
-  export type ChatMessageCreateWithoutChatInput = {
+  export type ChatMessageCreateWithoutFilesInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     readCount?: string | null
@@ -7888,14 +14472,242 @@ export namespace Prisma {
     replyTo?: ChatMessageCreateNestedOneWithoutRepliesInput
     replies?: ChatMessageCreateNestedManyWithoutReplyToInput
     user: UserCreateNestedOneWithoutMessagesInput
+    chat: ChatCreateNestedOneWithoutMessagesInput
+  }
+
+  export type ChatMessageUncheckedCreateWithoutFilesInput = {
+    id?: string
+    text?: string | null
+    isStarted?: boolean
+    isFake?: boolean
+    isEdited?: boolean
+    isDeleted?: boolean
+    replyToId?: string | null
+    userId: string
+    chatId: string
+    readCount?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    replies?: ChatMessageUncheckedCreateNestedManyWithoutReplyToInput
+  }
+
+  export type ChatMessageCreateOrConnectWithoutFilesInput = {
+    where: ChatMessageWhereUniqueInput
+    create: XOR<ChatMessageCreateWithoutFilesInput, ChatMessageUncheckedCreateWithoutFilesInput>
+  }
+
+  export type UserCreateWithoutFilesInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutFilesInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyUncheckedCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutFilesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+  }
+
+  export type ChatCreateWithoutFilesInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageCreateNestedManyWithoutChatInput
+    members?: ChatMemberCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyCreateNestedOneWithoutChatInput
+  }
+
+  export type ChatUncheckedCreateWithoutFilesInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
+    members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyUncheckedCreateNestedOneWithoutChatInput
+  }
+
+  export type ChatCreateOrConnectWithoutFilesInput = {
+    where: ChatWhereUniqueInput
+    create: XOR<ChatCreateWithoutFilesInput, ChatUncheckedCreateWithoutFilesInput>
+  }
+
+  export type ChatMessageUpsertWithoutFilesInput = {
+    update: XOR<ChatMessageUpdateWithoutFilesInput, ChatMessageUncheckedUpdateWithoutFilesInput>
+    create: XOR<ChatMessageCreateWithoutFilesInput, ChatMessageUncheckedCreateWithoutFilesInput>
+    where?: ChatMessageWhereInput
+  }
+
+  export type ChatMessageUpdateToOneWithWhereWithoutFilesInput = {
+    where?: ChatMessageWhereInput
+    data: XOR<ChatMessageUpdateWithoutFilesInput, ChatMessageUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type ChatMessageUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    readCount?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replyTo?: ChatMessageUpdateOneWithoutRepliesNestedInput
+    replies?: ChatMessageUpdateManyWithoutReplyToNestedInput
+    user?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type ChatMessageUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    replyToId?: NullableStringFieldUpdateOperationsInput | string | null
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    readCount?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    replies?: ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput
+  }
+
+  export type UserUpsertWithoutFilesInput = {
+    update: XOR<UserUpdateWithoutFilesInput, UserUncheckedUpdateWithoutFilesInput>
+    create: XOR<UserCreateWithoutFilesInput, UserUncheckedCreateWithoutFilesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFilesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFilesInput, UserUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type UserUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUncheckedUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type ChatUpsertWithoutFilesInput = {
+    update: XOR<ChatUpdateWithoutFilesInput, ChatUncheckedUpdateWithoutFilesInput>
+    create: XOR<ChatCreateWithoutFilesInput, ChatUncheckedCreateWithoutFilesInput>
+    where?: ChatWhereInput
+  }
+
+  export type ChatUpdateToOneWithWhereWithoutFilesInput = {
+    where?: ChatWhereInput
+    data: XOR<ChatUpdateWithoutFilesInput, ChatUncheckedUpdateWithoutFilesInput>
+  }
+
+  export type ChatUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUpdateOneWithoutChatNestedInput
+  }
+
+  export type ChatUncheckedUpdateWithoutFilesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUncheckedUpdateOneWithoutChatNestedInput
+  }
+
+  export type ChatMessageCreateWithoutChatInput = {
+    id?: string
+    text?: string | null
+    isStarted?: boolean
+    isFake?: boolean
+    isEdited?: boolean
+    isDeleted?: boolean
+    readCount?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
+    replyTo?: ChatMessageCreateNestedOneWithoutRepliesInput
+    replies?: ChatMessageCreateNestedManyWithoutReplyToInput
+    user: UserCreateNestedOneWithoutMessagesInput
   }
 
   export type ChatMessageUncheckedCreateWithoutChatInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -7903,6 +14715,7 @@ export namespace Prisma {
     readCount?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
     replies?: ChatMessageUncheckedCreateNestedManyWithoutReplyToInput
   }
 
@@ -7940,6 +14753,69 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FileMessageCreateWithoutChatInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chatMessage: ChatMessageCreateNestedOneWithoutFilesInput
+    user: UserCreateNestedOneWithoutFilesInput
+  }
+
+  export type FileMessageUncheckedCreateWithoutChatInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FileMessageCreateOrConnectWithoutChatInput = {
+    where: FileMessageWhereUniqueInput
+    create: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput>
+  }
+
+  export type FileMessageCreateManyChatInputEnvelope = {
+    data: FileMessageCreateManyChatInput | FileMessageCreateManyChatInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ServerKeyCreateWithoutChatInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    privateKeyD: bigint | number
+    privateKeyP: bigint | number
+    privateKeyQ: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerKeyUncheckedCreateWithoutChatInput = {
+    id?: string
+    publicKeyE: bigint | number
+    publicKeyN: bigint | number
+    privateKeyD: bigint | number
+    privateKeyP: bigint | number
+    privateKeyQ: bigint | number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ServerKeyCreateOrConnectWithoutChatInput = {
+    where: ServerKeyWhereUniqueInput
+    create: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+  }
+
   export type ChatMessageUpsertWithWhereUniqueWithoutChatInput = {
     where: ChatMessageWhereUniqueInput
     update: XOR<ChatMessageUpdateWithoutChatInput, ChatMessageUncheckedUpdateWithoutChatInput>
@@ -7972,6 +14848,55 @@ export namespace Prisma {
     data: XOR<ChatMemberUpdateManyMutationInput, ChatMemberUncheckedUpdateManyWithoutChatInput>
   }
 
+  export type FileMessageUpsertWithWhereUniqueWithoutChatInput = {
+    where: FileMessageWhereUniqueInput
+    update: XOR<FileMessageUpdateWithoutChatInput, FileMessageUncheckedUpdateWithoutChatInput>
+    create: XOR<FileMessageCreateWithoutChatInput, FileMessageUncheckedCreateWithoutChatInput>
+  }
+
+  export type FileMessageUpdateWithWhereUniqueWithoutChatInput = {
+    where: FileMessageWhereUniqueInput
+    data: XOR<FileMessageUpdateWithoutChatInput, FileMessageUncheckedUpdateWithoutChatInput>
+  }
+
+  export type FileMessageUpdateManyWithWhereWithoutChatInput = {
+    where: FileMessageScalarWhereInput
+    data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyWithoutChatInput>
+  }
+
+  export type ServerKeyUpsertWithoutChatInput = {
+    update: XOR<ServerKeyUpdateWithoutChatInput, ServerKeyUncheckedUpdateWithoutChatInput>
+    create: XOR<ServerKeyCreateWithoutChatInput, ServerKeyUncheckedCreateWithoutChatInput>
+    where?: ServerKeyWhereInput
+  }
+
+  export type ServerKeyUpdateToOneWithWhereWithoutChatInput = {
+    where?: ServerKeyWhereInput
+    data: XOR<ServerKeyUpdateWithoutChatInput, ServerKeyUncheckedUpdateWithoutChatInput>
+  }
+
+  export type ServerKeyUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ServerKeyUncheckedUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    publicKeyE?: BigIntFieldUpdateOperationsInput | bigint | number
+    publicKeyN?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyD?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyP?: BigIntFieldUpdateOperationsInput | bigint | number
+    privateKeyQ?: BigIntFieldUpdateOperationsInput | bigint | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateWithoutChatMembershipsInput = {
     id?: string
     username: string
@@ -7982,6 +14907,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: ChatMessageCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieCreateNestedOneWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutChatMembershipsInput = {
@@ -7994,6 +14922,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyUncheckedCreateNestedOneWithoutUserInput
+    keyDiffie?: KeyDiffieUncheckedCreateNestedOneWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutChatMembershipsInput = {
@@ -8011,6 +14942,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: ChatMessageCreateNestedManyWithoutChatInput
+    files?: FileMessageCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyCreateNestedOneWithoutChatInput
   }
 
   export type ChatUncheckedCreateWithoutMembersInput = {
@@ -8023,6 +14956,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    serverKey?: ServerKeyUncheckedCreateNestedOneWithoutChatInput
   }
 
   export type ChatCreateOrConnectWithoutMembersInput = {
@@ -8051,6 +14986,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUpdateOneWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutChatMembershipsInput = {
@@ -8063,6 +15001,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUncheckedUpdateOneWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUncheckedUpdateOneWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChatUpsertWithoutMembersInput = {
@@ -8086,6 +15027,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
+    files?: FileMessageUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUpdateOneWithoutChatNestedInput
   }
 
   export type ChatUncheckedUpdateWithoutMembersInput = {
@@ -8098,14 +15041,239 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    serverKey?: ServerKeyUncheckedUpdateOneWithoutChatNestedInput
+  }
+
+  export type UserCreateWithoutClientKeyInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    keyDiffie?: KeyDiffieCreateNestedOneWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutClientKeyInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    keyDiffie?: KeyDiffieUncheckedCreateNestedOneWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutClientKeyInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClientKeyInput, UserUncheckedCreateWithoutClientKeyInput>
+  }
+
+  export type UserUpsertWithoutClientKeyInput = {
+    update: XOR<UserUpdateWithoutClientKeyInput, UserUncheckedUpdateWithoutClientKeyInput>
+    create: XOR<UserCreateWithoutClientKeyInput, UserUncheckedCreateWithoutClientKeyInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClientKeyInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClientKeyInput, UserUncheckedUpdateWithoutClientKeyInput>
+  }
+
+  export type UserUpdateWithoutClientKeyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUpdateOneWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClientKeyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    keyDiffie?: KeyDiffieUncheckedUpdateOneWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ChatCreateWithoutServerKeyInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageCreateNestedManyWithoutChatInput
+    members?: ChatMemberCreateNestedManyWithoutChatInput
+    files?: FileMessageCreateNestedManyWithoutChatInput
+  }
+
+  export type ChatUncheckedCreateWithoutServerKeyInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
+    members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+  }
+
+  export type ChatCreateOrConnectWithoutServerKeyInput = {
+    where: ChatWhereUniqueInput
+    create: XOR<ChatCreateWithoutServerKeyInput, ChatUncheckedCreateWithoutServerKeyInput>
+  }
+
+  export type ChatUpsertWithoutServerKeyInput = {
+    update: XOR<ChatUpdateWithoutServerKeyInput, ChatUncheckedUpdateWithoutServerKeyInput>
+    create: XOR<ChatCreateWithoutServerKeyInput, ChatUncheckedCreateWithoutServerKeyInput>
+    where?: ChatWhereInput
+  }
+
+  export type ChatUpdateToOneWithWhereWithoutServerKeyInput = {
+    where?: ChatWhereInput
+    data: XOR<ChatUpdateWithoutServerKeyInput, ChatUncheckedUpdateWithoutServerKeyInput>
+  }
+
+  export type ChatUpdateWithoutServerKeyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUpdateManyWithoutChatNestedInput
+    files?: FileMessageUpdateManyWithoutChatNestedInput
+  }
+
+  export type ChatUncheckedUpdateWithoutServerKeyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+  }
+
+  export type UserCreateWithoutKeyDiffieInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyCreateNestedOneWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutKeyDiffieInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    clientKey?: ClientKeyUncheckedCreateNestedOneWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutKeyDiffieInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutKeyDiffieInput, UserUncheckedCreateWithoutKeyDiffieInput>
+  }
+
+  export type UserUpsertWithoutKeyDiffieInput = {
+    update: XOR<UserUpdateWithoutKeyDiffieInput, UserUncheckedUpdateWithoutKeyDiffieInput>
+    create: XOR<UserCreateWithoutKeyDiffieInput, UserUncheckedCreateWithoutKeyDiffieInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutKeyDiffieInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutKeyDiffieInput, UserUncheckedUpdateWithoutKeyDiffieInput>
+  }
+
+  export type UserUpdateWithoutKeyDiffieInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUpdateOneWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutKeyDiffieInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    clientKey?: ClientKeyUncheckedUpdateOneWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChatMessageCreateManyUserInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -8122,17 +15290,30 @@ export namespace Prisma {
     joinedAt?: Date | string
   }
 
+  export type FileMessageCreateManyUserInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ChatMessageUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
     replyTo?: ChatMessageUpdateOneWithoutRepliesNestedInput
     replies?: ChatMessageUpdateManyWithoutReplyToNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -8140,10 +15321,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8151,15 +15331,15 @@ export namespace Prisma {
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
     replies?: ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput
   }
 
   export type ChatMessageUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8190,12 +15370,63 @@ export namespace Prisma {
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type FileMessageUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessage?: ChatMessageUpdateOneRequiredWithoutFilesNestedInput
+    chat?: ChatUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileMessageUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageCreateManyChatMessageInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    userId: string
+    chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ChatMessageCreateManyReplyToInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     userId: string
@@ -8205,17 +15436,56 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type FileMessageUpdateWithoutChatMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFilesNestedInput
+    chat?: ChatUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileMessageUncheckedUpdateWithoutChatMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUncheckedUpdateManyWithoutChatMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ChatMessageUpdateWithoutReplyToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
     replies?: ChatMessageUpdateManyWithoutReplyToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -8223,10 +15493,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateWithoutReplyToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
@@ -8234,15 +15503,15 @@ export namespace Prisma {
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
     replies?: ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput
   }
 
   export type ChatMessageUncheckedUpdateManyWithoutReplyToInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
@@ -8254,10 +15523,9 @@ export namespace Prisma {
 
   export type ChatMessageCreateManyChatInput = {
     id?: string
-    type?: $Enums.MessageType
     text?: string | null
-    imageUrl?: string | null
-    fileUrl?: string | null
+    isStarted?: boolean
+    isFake?: boolean
     isEdited?: boolean
     isDeleted?: boolean
     replyToId?: string | null
@@ -8274,17 +15542,30 @@ export namespace Prisma {
     joinedAt?: Date | string
   }
 
+  export type FileMessageCreateManyChatInput = {
+    id?: string
+    fileUrl: string
+    fileName: string
+    fileFullName: string
+    fileSize: string
+    fileFormat: string
+    chatMessageId: string
+    userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ChatMessageUpdateWithoutChatInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
     replyTo?: ChatMessageUpdateOneWithoutRepliesNestedInput
     replies?: ChatMessageUpdateManyWithoutReplyToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
@@ -8292,10 +15573,9 @@ export namespace Prisma {
 
   export type ChatMessageUncheckedUpdateWithoutChatInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8303,15 +15583,15 @@ export namespace Prisma {
     readCount?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
     replies?: ChatMessageUncheckedUpdateManyWithoutReplyToNestedInput
   }
 
   export type ChatMessageUncheckedUpdateManyWithoutChatInput = {
     id?: StringFieldUpdateOperationsInput | string
-    type?: EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
     text?: NullableStringFieldUpdateOperationsInput | string | null
-    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isFake?: BoolFieldUpdateOperationsInput | boolean
     isEdited?: BoolFieldUpdateOperationsInput | boolean
     isDeleted?: BoolFieldUpdateOperationsInput | boolean
     replyToId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8340,6 +15620,45 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chatMessage?: ChatMessageUpdateOneRequiredWithoutFilesNestedInput
+    user?: UserUpdateOneRequiredWithoutFilesNestedInput
+  }
+
+  export type FileMessageUncheckedUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FileMessageUncheckedUpdateManyWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileUrl?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileFullName?: StringFieldUpdateOperationsInput | string
+    fileSize?: StringFieldUpdateOperationsInput | string
+    fileFormat?: StringFieldUpdateOperationsInput | string
+    chatMessageId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

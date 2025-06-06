@@ -21,6 +21,12 @@ model User {
   messages        ChatMessage[]
   chatMemberships ChatMember[]
 
+  clientKey ClientKey?
+
+  keyDiffie KeyDiffie?
+
+  files FileMessage[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -30,18 +36,19 @@ model User {
 model ChatMessage {
   id String @id @default(uuid())
 
-  type     MessageType @default(TEXT)
-  text     String? // Необязательное, если, например, только image
-  imageUrl String? // Для изображений (можно расширить до других типов)
-  fileUrl  String? // Для вложений (документы и т.д.)
+  text String?
 
-  isEdited  Boolean @default(false)
-  isDeleted Boolean @default(false)
+  isStarted Boolean @default(false) @map("is_started")
+  isFake    Boolean @default(false) @map("is_fake")
+  isEdited  Boolean @default(false) @map("is_edited")
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  files FileMessage[]
 
   replyTo   ChatMessage? @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: Cascade)
   replyToId String?
 
-  replies ChatMessage[] @relation("MessageReplies") // ← обратная сторона связи
+  replies ChatMessage[] @relation("MessageReplies")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
@@ -57,6 +64,30 @@ model ChatMessage {
   @@map("chat_messages")
 }
 
+model FileMessage {
+  id String @id @default(uuid())
+
+  fileUrl      String
+  fileName     String
+  fileFullName String
+  fileSize     String
+  fileFormat   String
+
+  chatMessage   ChatMessage @relation(fields: [chatMessageId], references: [id], onDelete: Cascade)
+  chatMessageId String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
+
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @map("chat_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("file_messages")
+}
+
 model Chat {
   id        String  @id @default(uuid())
   chatName  String? @map("chat_name")
@@ -64,8 +95,10 @@ model Chat {
   avatarUrl String? @map("avatar_url")
   isDeleted Boolean @default(false)
 
-  messages ChatMessage[]
-  members  ChatMember[]
+  messages  ChatMessage[]
+  members   ChatMember[]
+  files     FileMessage[]
+  serverKey ServerKey?
 
   lastMessageAt DateTime? @map("last_message_at")
 
@@ -91,9 +124,52 @@ model ChatMember {
   @@map("chat_members")
 }
 
-enum MessageType {
-  TEXT
-  IMAGE
-  FILE
-  SYSTEM
+model ClientKey {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  publicKeyE BigInt
+  publicKeyN BigInt
+  sessionKey BigInt
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("client_keys")
+}
+
+model ServerKey {
+  id String @id @default(uuid())
+
+  publicKeyE  BigInt
+  publicKeyN  BigInt
+  privateKeyD BigInt
+  privateKeyP BigInt
+  privateKeyQ BigInt
+
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @unique @map("chat_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("server_keys")
+}
+
+model KeyDiffie {
+  id String @id @default(uuid())
+
+  publicKeyP       BigInt
+  publicKeyG       BigInt
+  privateKeyServer BigInt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("keys_diffie")
 }

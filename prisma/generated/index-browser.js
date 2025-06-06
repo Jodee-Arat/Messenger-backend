@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.7.0
- * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+ * Prisma Client JS version: 6.8.2
+ * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
  */
 Prisma.prismaVersion = {
-  client: "6.7.0",
-  engine: "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed"
+  client: "6.8.2",
+  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -133,16 +133,29 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.ChatMessageScalarFieldEnum = {
   id: 'id',
-  type: 'type',
   text: 'text',
-  imageUrl: 'imageUrl',
-  fileUrl: 'fileUrl',
+  isStarted: 'isStarted',
+  isFake: 'isFake',
   isEdited: 'isEdited',
   isDeleted: 'isDeleted',
   replyToId: 'replyToId',
   userId: 'userId',
   chatId: 'chatId',
   readCount: 'readCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FileMessageScalarFieldEnum = {
+  id: 'id',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  fileFullName: 'fileFullName',
+  fileSize: 'fileSize',
+  fileFormat: 'fileFormat',
+  chatMessageId: 'chatMessageId',
+  userId: 'userId',
+  chatId: 'chatId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -166,6 +179,38 @@ exports.Prisma.ChatMemberScalarFieldEnum = {
   joinedAt: 'joinedAt'
 };
 
+exports.Prisma.ClientKeyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  publicKeyE: 'publicKeyE',
+  publicKeyN: 'publicKeyN',
+  sessionKey: 'sessionKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ServerKeyScalarFieldEnum = {
+  id: 'id',
+  publicKeyE: 'publicKeyE',
+  publicKeyN: 'publicKeyN',
+  privateKeyD: 'privateKeyD',
+  privateKeyP: 'privateKeyP',
+  privateKeyQ: 'privateKeyQ',
+  chatId: 'chatId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KeyDiffieScalarFieldEnum = {
+  id: 'id',
+  publicKeyP: 'publicKeyP',
+  publicKeyG: 'publicKeyG',
+  privateKeyServer: 'privateKeyServer',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -180,18 +225,17 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.MessageType = exports.$Enums.MessageType = {
-  TEXT: 'TEXT',
-  IMAGE: 'IMAGE',
-  FILE: 'FILE',
-  SYSTEM: 'SYSTEM'
-};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
   ChatMessage: 'ChatMessage',
+  FileMessage: 'FileMessage',
   Chat: 'Chat',
-  ChatMember: 'ChatMember'
+  ChatMember: 'ChatMember',
+  ClientKey: 'ClientKey',
+  ServerKey: 'ServerKey',
+  KeyDiffie: 'KeyDiffie'
 };
 
 /**

@@ -13,7 +13,7 @@ export class CreateChatInput {
   @Field(() => String)
   @IsString()
   @IsNotEmpty()
-  @Length(6, 30)
+  @Length(1, 30)
   public chatName: string;
 
   @Field(() => [String])

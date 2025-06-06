@@ -21,4 +21,10 @@ export class AccountResolver {
   public async me(@Authorized("id") id: string) {
     return await this.accountService.me(id);
   }
+
+  @Authorization()
+  @Query(() => [UserModel], { name: "findAllUsers" })
+  public async findAllUsers(@Authorized("id") userId: string) {
+    return await this.accountService.findAllUsers(userId);
+  }
 }

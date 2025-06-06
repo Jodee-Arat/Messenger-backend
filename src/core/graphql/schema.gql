@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AttachFileModel {
+  chatMessageId: String!
+  fileId: String!
+}
+
 type AuthModel {
   message: String
   user: UserModel
@@ -23,17 +28,18 @@ type ChatMessageModel {
   chat: ChatModel!
   chatId: String!
   createdAt: DateTime!
-  fileUrl: String
+  files: [FileMessageModel!]
+  hash: [String!]!
   id: ID!
-  imageUrl: String
   isDeleted: Boolean!
   isEdited: Boolean!
+  isFake: Boolean!
+  isStarted: Boolean!
   readCount: String
   replies: [ChatMessageModel!]!
   replyTo: ChatMessageModel
   replyToId: String
   text: String
-  type: MessageType!
   updatedAt: DateTime!
   user: UserModel!
   userId: String!
@@ -67,6 +73,44 @@ type DeviceModel {
   type: String!
 }
 
+input ExchangeKeysInput {
+  publicKeyDiffie: String!
+  publicKeyE: String!
+  publicKeyG: String!
+  publicKeyN: String!
+  publicKeyP: String!
+}
+
+type ExchangeKeysModel {
+  openKeyServerDiffie: String!
+  publicKeyE: String!
+  publicKeyN: String!
+}
+
+type FileDownloadData {
+  base64: String!
+  filename: String!
+  hash: [String!]!
+  mimetype: String!
+}
+
+type FileMessageModel {
+  chat: ChatModel!
+  chatId: String!
+  chatMessage: ChatMessageModel!
+  chatMessageId: String!
+  createdAt: DateTime!
+  fileFormat: String!
+  fileFullName: String!
+  fileName: String!
+  fileSize: String!
+  fileUrl: String!
+  id: ID!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
 input FiltersInput {
   searchTerm: String
   skip: Float
@@ -86,32 +130,44 @@ input LoginInput {
   pin: String
 }
 
-enum MessageType {
-  FILE
-  IMAGE
-  SYSTEM
-  TEXT
-}
-
 type Mutation {
   clearSessionCookie: Boolean!
-  createChat(data: CreateChatInput!): Boolean!
+  createChat(data: CreateChatInput!): ChatModel!
   createUserWEmail(data: createUserWEmail!): Boolean!
+  deleteChat(chatId: String!): Boolean!
+  downloadFile(fileId: String!): FileDownloadData!
+  exchangeKey(chatId: String!, data: ExchangeKeysInput!): ExchangeKeysModel!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
-  sendChatMessage(chatId: String!, data: SendChatMessageInput!): ChatMessageModel!
+  removeFile(fileId: String!): Boolean!
+  removeMessages(chatId: String!, data: RemoveMessagesInput!): Boolean!
+  sendChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
+  sendFile(chatId: String!, data: SendFileInput!, file: Upload!, messageId: String): AttachFileModel!
 }
 
 type Query {
   findAllChatsByUser(filters: FiltersInput!): [ChatModel!]!
   findAllMessagesByChat(chatId: String!, filters: FiltersInput!): [ChatMessageModel!]!
+  findAllUsers: [UserModel!]!
+  findChatByChatId(chatId: String!): ChatModel!
   findCurrentSession: SessionModel!
   findProfile: UserModel!
   findSessionsByUser: [SessionModel!]!
 }
 
+input RemoveMessagesInput {
+  messageIds: [String!]!
+}
+
 input SendChatMessageInput {
-  message: String!
+  fileIds: [String!]!
+  hash: [String!]
+  isFake: Boolean!
+  message: String
+}
+
+input SendFileInput {
+  hashFile: [String!]!
 }
 
 type SessionMetadataModel {
@@ -128,8 +184,12 @@ type SessionModel {
 }
 
 type Subscription {
-  chatMessageAdded(chatId: String!): ChatMessageModel!
+  chatAdded(userId: String!): ChatModel!
+  chatMessageAdded(chatId: String!, userId: String!): ChatMessageModel!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type UserModel {
   createdAt: DateTime!

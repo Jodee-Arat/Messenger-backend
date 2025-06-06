@@ -56,4 +56,14 @@ export class AccountService {
 
     return user;
   }
+
+  public async findAllUsers(userId: string) {
+    return await this.prismaService.user.findMany({
+      where: {
+        id: {
+          not: userId
+        }
+      }
+    });
+  }
 }

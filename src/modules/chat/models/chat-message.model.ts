@@ -1,35 +1,37 @@
-import { Field, ID, ObjectType, registerEnumType } from "@nestjs/graphql";
+import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import { ChatMessage, MessageType } from "@/prisma/generated";
+import { ChatMessage } from "@/prisma/generated";
 
 import { UserModel } from "../../auth/account/models/user.model";
 
 import { ChatModel } from "./chat.model";
-
-registerEnumType(MessageType, { name: "MessageType" });
+import { FileMessageModel } from "./file-message.model";
 
 @ObjectType()
 export class ChatMessageModel implements ChatMessage {
   @Field(() => ID)
   id: string;
 
-  @Field(() => MessageType)
-  type: MessageType;
-
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   text: string | null;
 
-  @Field({ nullable: true })
-  imageUrl: string | null;
+  @Field(() => Boolean)
+  isStarted: boolean;
 
-  @Field({ nullable: true })
-  fileUrl: string | null;
+  @Field(() => Boolean)
+  isFake: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   isDeleted: boolean;
 
-  @Field()
+  @Field(() => Boolean)
   isEdited: boolean;
+
+  @Field(() => [FileMessageModel], { nullable: true })
+  files?: FileMessageModel[];
+
+  @Field(() => ChatMessageModel, { nullable: true })
+  replyTo?: ChatMessageModel | null;
 
   @Field({ nullable: true })
   replyToId: string | null;
@@ -37,8 +39,14 @@ export class ChatMessageModel implements ChatMessage {
   @Field({ nullable: true })
   readCount: string | null;
 
+  @Field(() => UserModel)
+  user: UserModel;
+
   @Field()
   userId: string;
+
+  @Field(() => ChatModel)
+  chat: ChatModel;
 
   @Field()
   chatId: string;
@@ -49,15 +57,9 @@ export class ChatMessageModel implements ChatMessage {
   @Field()
   updatedAt: Date;
 
-  @Field(() => ChatMessageModel, { nullable: true })
-  replyTo?: ChatMessageModel | null;
+  @Field(() => [String])
+  hash: string[];
 
   @Field(() => [ChatMessageModel])
   replies: ChatMessageModel[];
-
-  @Field(() => UserModel)
-  user: UserModel;
-
-  @Field(() => ChatModel)
-  chat: ChatModel;
 }
