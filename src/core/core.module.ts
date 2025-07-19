@@ -6,7 +6,6 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { AccountModule } from "../modules/auth/account/account.module";
 import { SessionModule } from "../modules/auth/session/session.module";
 import { ChatModule } from "../modules/chat/chat.module";
-import { CryptoModule } from "../modules/crypto/crypto.module";
 import { StorageModule } from "../modules/libs/storage/storage.module";
 import { IS_DEV_ENV } from "../shared/utils/is-dev.util";
 
@@ -31,8 +30,7 @@ import { RedisModule } from "./redis/redis.module";
     StorageModule,
     AccountModule,
     SessionModule,
-    ChatModule,
-    CryptoModule
+    ChatModule
   ]
 })
 export class CoreModule {}

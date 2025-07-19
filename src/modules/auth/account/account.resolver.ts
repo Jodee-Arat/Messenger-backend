@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 
-import { Authorization } from "@/src/shared/decorators/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/authorized.decorator";
+import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
+import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
 import { AccountService } from "./account.service";
 import { createUserWEmail } from "./inputs/create-user-with-email.input";

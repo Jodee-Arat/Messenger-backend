@@ -24,35 +24,53 @@ type ChatMemberModel {
   userId: String!
 }
 
+type ChatMessageIdModel {
+  id: String!
+}
+
 type ChatMessageModel {
   chat: ChatModel!
   chatId: String!
   createdAt: DateTime!
+  draftOfChat: [ChatModel!]
+  draftOfChatId: String
   files: [FileMessageModel!]
-  hash: [String!]!
   id: ID!
   isDeleted: Boolean!
+  isDraft: Boolean!
   isEdited: Boolean!
-  isFake: Boolean!
+  isForwarded: Boolean!
+  isReply: Boolean!
   isStarted: Boolean!
+  lastMessageForChat: ChatModel
   readCount: String
-  replies: [ChatMessageModel!]!
-  replyTo: ChatMessageModel
-  replyToId: String
+  repliedToLinks: [ChatMessageReplyModel]
+  replies: [ChatMessageReplyModel]
   text: String
   updatedAt: DateTime!
   user: UserModel!
   userId: String!
 }
 
+type ChatMessageReplyModel {
+  id: ID!
+  repliedTo: ChatMessageModel
+  repliedToId: String!
+  reply: ChatMessageModel
+  replyId: String!
+}
+
 type ChatModel {
   avatarUrl: String
   chatName: String
   createdAt: DateTime!
+  draftMessages: [ChatMessageModel!]
   id: ID!
   isDeleted: Boolean!
   isGroup: Boolean!
+  lastMessage: ChatMessageModel
   lastMessageAt: DateTime
+  lastMessageId: String
   members: [ChatMemberModel!]!
   updatedAt: DateTime!
 }
@@ -73,25 +91,9 @@ type DeviceModel {
   type: String!
 }
 
-input ExchangeKeysInput {
-  publicKeyDiffie: String!
-  publicKeyE: String!
-  publicKeyG: String!
-  publicKeyN: String!
-  publicKeyP: String!
-}
-
-type ExchangeKeysModel {
-  openKeyServerDiffie: String!
-  publicKeyE: String!
-  publicKeyN: String!
-}
-
 type FileDownloadData {
-  base64: String!
+  fileUrl: String!
   filename: String!
-  hash: [String!]!
-  mimetype: String!
 }
 
 type FileMessageModel {
@@ -135,14 +137,16 @@ type Mutation {
   createChat(data: CreateChatInput!): ChatModel!
   createUserWEmail(data: createUserWEmail!): Boolean!
   deleteChat(chatId: String!): Boolean!
-  downloadFile(fileId: String!): FileDownloadData!
-  exchangeKey(chatId: String!, data: ExchangeKeysInput!): ExchangeKeysModel!
+  downloadFile(chatId: String!, fileId: String!): FileDownloadData!
+  editChatMessage(chatId: String!, data: SendChatMessageInput!, messageId: String!): Boolean!
+  forwardChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
-  removeFile(fileId: String!): Boolean!
+  removeFile(chatId: String!, fileId: String!): Boolean!
   removeMessages(chatId: String!, data: RemoveMessagesInput!): Boolean!
+  sendChatDraftMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
-  sendFile(chatId: String!, data: SendFileInput!, file: Upload!, messageId: String): AttachFileModel!
+  sendFile(chatId: String!, file: Upload!, messageId: String): AttachFileModel!
 }
 
 type Query {
@@ -160,14 +164,11 @@ input RemoveMessagesInput {
 }
 
 input SendChatMessageInput {
-  fileIds: [String!]!
-  hash: [String!]
-  isFake: Boolean!
-  message: String
-}
-
-input SendFileInput {
-  hashFile: [String!]!
+  fileIds: [String!]
+  forwardedMessageIds: [String!]
+  isEdit: Boolean
+  targetChatId: String
+  text: String
 }
 
 type SessionMetadataModel {
@@ -186,6 +187,9 @@ type SessionModel {
 type Subscription {
   chatAdded(userId: String!): ChatModel!
   chatMessageAdded(chatId: String!, userId: String!): ChatMessageModel!
+  chatMessageEdit(chatId: String!, userId: String!): ChatMessageModel!
+  chatMessageRemoved(chatId: String!, userId: String!): [ChatMessageIdModel!]!
+  chatUpdated(userId: String!): ChatModel!
 }
 
 """The `Upload` scalar type represents a file upload."""

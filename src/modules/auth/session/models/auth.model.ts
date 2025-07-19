@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
-import { UserModel } from "./user.model";
+import { UserModel } from "../../account/models/user.model";
 
 @ObjectType()
 export class AuthModel {

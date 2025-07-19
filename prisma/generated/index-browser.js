@@ -135,15 +135,23 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
   id: 'id',
   text: 'text',
   isStarted: 'isStarted',
-  isFake: 'isFake',
   isEdited: 'isEdited',
   isDeleted: 'isDeleted',
-  replyToId: 'replyToId',
+  isForwarded: 'isForwarded',
+  isReply: 'isReply',
+  isDraft: 'isDraft',
+  draftOfChatId: 'draftOfChatId',
   userId: 'userId',
   chatId: 'chatId',
   readCount: 'readCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ChatMessageReplyScalarFieldEnum = {
+  id: 'id',
+  replyId: 'replyId',
+  repliedToId: 'repliedToId'
 };
 
 exports.Prisma.FileMessageScalarFieldEnum = {
@@ -166,6 +174,7 @@ exports.Prisma.ChatScalarFieldEnum = {
   isGroup: 'isGroup',
   avatarUrl: 'avatarUrl',
   isDeleted: 'isDeleted',
+  lastMessageId: 'lastMessageId',
   lastMessageAt: 'lastMessageAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -177,38 +186,6 @@ exports.Prisma.ChatMemberScalarFieldEnum = {
   isCreator: 'isCreator',
   chatId: 'chatId',
   joinedAt: 'joinedAt'
-};
-
-exports.Prisma.ClientKeyScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  publicKeyE: 'publicKeyE',
-  publicKeyN: 'publicKeyN',
-  sessionKey: 'sessionKey',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ServerKeyScalarFieldEnum = {
-  id: 'id',
-  publicKeyE: 'publicKeyE',
-  publicKeyN: 'publicKeyN',
-  privateKeyD: 'privateKeyD',
-  privateKeyP: 'privateKeyP',
-  privateKeyQ: 'privateKeyQ',
-  chatId: 'chatId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.KeyDiffieScalarFieldEnum = {
-  id: 'id',
-  publicKeyP: 'publicKeyP',
-  publicKeyG: 'publicKeyG',
-  privateKeyServer: 'privateKeyServer',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -230,12 +207,10 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   User: 'User',
   ChatMessage: 'ChatMessage',
+  ChatMessageReply: 'ChatMessageReply',
   FileMessage: 'FileMessage',
   Chat: 'Chat',
-  ChatMember: 'ChatMember',
-  ClientKey: 'ClientKey',
-  ServerKey: 'ServerKey',
-  KeyDiffie: 'KeyDiffie'
+  ChatMember: 'ChatMember'
 };
 
 /**

@@ -88,7 +88,7 @@ export class SessionService {
 
     return {
       user: savedUser,
-      message: null
+      message: "null"
     };
   }
 

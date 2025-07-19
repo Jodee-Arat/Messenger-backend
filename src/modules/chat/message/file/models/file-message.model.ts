@@ -1,11 +1,10 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import { FileMessage } from "@/prisma/generated";
+import { UserModel } from "@/src/modules/auth/account/models/user.model";
 
-import { UserModel } from "../../auth/account/models/user.model";
-
-import { ChatMessageModel } from "./chat-message.model";
-import { ChatModel } from "./chat.model";
+import { ChatModel } from "../../../models/chat.model";
+import { ChatMessageModel } from "../../models/chat-message.model";
 
 @ObjectType()
 export class FileMessageModel implements FileMessage {
