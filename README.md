@@ -1,87 +1,87 @@
 # MesArat Backend
 
-MesArat — это безопасное веб-приложение для обмена сообщениями, использующее современные криптографические алгоритмы и коммуникацию в реальном времени через GraphQL подписки. Этот репозиторий содержит backend-часть проекта, разработанную для поддержки как корпоративных, так и обычных пользователей с упором на безопасность, масштабируемость и гибкость.
+MesArat is a secure web messaging application that leverages modern cryptographic algorithms and real-time communication via GraphQL subscriptions. This repository contains the backend part of the project, designed to support both corporate and regular users with a focus on security, scalability, and flexibility.
 
 ---
 
-## 🚀 Функционал backend
+## 🚀 Backend Features
 
-- 🔑 Управление аккаунтами и сессиями
-- 💬 Поддержка множества чатов, групп и сообщений
-- 🛡️ Ролевое авторизованное управление доступом с использованием Guards и кастомных декораторов
-- 📡 GraphQL API с подписками для реального времени и уведомлений
-- 🗂️ Хранение файлов через интеграцию с Selectel S3 — надёжное и масштабируемое решение
-- 🧾 Персистентное хранение данных с PostgreSQL и Prisma ORM
-- ⚡ Быстрое и масштабируемое управление сессиями с помощью Redis
-- 🏢 Функции, ориентированные на корпоративных пользователей:
-  - Организация пользователей в группы и подразделения
-  - Гранулярный контроль доступа для регулирования коммуникаций сотрудников
-  - Механизмы аудита и контроля для соответствия политикам безопасности
-
----
-
-## 🔒 Безопасность и конфиденциальность
-
-- Сессии пользователей надежно хранятся и валидируются в Redis для защиты и высокой производительности
-- Защищённые эндпоинты с использованием Guards и декораторов предотвращают несанкционированный доступ
-- Безопасное управление криптографическими ключами и подписями
-- Планируемые функции:
-  - Секретные чаты с энд-ту-энд шифрованием
-  - Двухфакторная аутентификация и расширенные настройки приватности
-  - Логирование аудита и административный контроль для корпоративного управления
+- 🔑 Account and session management  
+- 💬 Support for multiple chats, groups, and messages  
+- 🛡️ Role-based access control using Guards and custom decorators  
+- 📡 GraphQL API with subscriptions for real-time communication and notifications  
+- 🗂️ File storage integrated with Selectel S3 — a reliable and scalable solution  
+- 🧾 Persistent data storage using PostgreSQL and Prisma ORM  
+- ⚡ Fast and scalable session management using Redis  
+- 🏢 Corporate-oriented features:  
+  - Organization of users into groups and departments  
+  - Granular access control to regulate employee communications  
+  - Audit and compliance mechanisms for security policies  
 
 ---
 
-## 🧱 Ключевые сущности
+## 🔒 Security and Privacy
 
-- **Account:** данные пользователя и публичные криптографические ключи
-- **Session:** активные аутентификационные токены и метаданные сессий
-- **Group:** организационные единицы — компании или команды
-- **Chat:** каналы коммуникации внутри групп или между пользователями
-- **Message:** зашифрованные тексты, файлы и цифровые подписи
-
----
-
-## 🛠️ Технологический стек
-
-- **Node.js + NestJS** — масштабируемый модульный backend-фреймворк
-- **GraphQL (Apollo Server)** — гибкий API с поддержкой подписок для реального времени
-- **PostgreSQL** — реляционная база данных для надёжного хранения
-- **Prisma ORM** — типобезопасный клиент для работы с базой и миграциями
-- **Redis** — высокопроизводительное хранилище для управления сессиями и кэширования
-- **Selectel S3 (через AWS SDK)** — объектное хранилище для файлов и вложений, совместимое с S3 API
-- **Docker** — контейнеризация для удобства деплоя и настройки окружения
-- **Безопасность и утилиты:**
-  - Guards и декораторы NestJS для контроля доступа
-  - Управление конфигурацией через `@nestjs/config` и dotenv
-  - Шифрование с использованием crypto-js и Argon2 для хэширования паролей
-- **Дополнительные библиотеки:**
-  - Passport + passport-jwt для аутентификации JWT
-  - graphql-upload для загрузки файлов через GraphQL
-  - device-detector-js для определения информации об устройстве
-  - sharp для обработки изображений
-  - class-validator и class-transformer для валидации и трансформации данных
-  - rxjs для реактивного программирования
-  - i18n-iso-countries для поддержки международных стран и локализаций
-- **Инструменты разработки:**
-  - TypeScript 5 и ts-node для разработки на TS
-  - ESLint, Prettier, и плагины для стандартизации кода
-  - Jest и supertest для тестирования
-  - SWC для быстрой компиляции и сборки
-  - Nest CLI и схематики для генерации кода
+- User sessions are securely stored and validated in Redis for protection and high performance  
+- Protected endpoints use Guards and decorators to prevent unauthorized access  
+- Secure management of cryptographic keys and signatures  
+- Planned features:  
+  - Secret chats with end-to-end encryption  
+  - Two-factor authentication and enhanced privacy settings  
+  - Audit logging and administrative controls for corporate management  
 
 ---
 
-## 🚧 Текущий статус проекта
+## 🧱 Core Entities
 
-Это **финальная версия backend** перед началом разработки мобильного приложения. Backend полностью готов поддерживать веб-frontend и будущие мобильные клиенты, обеспечивая синхронизацию, безопасность и масштабируемость.
-
----
-
-## 🤝 Вклад в проект
-
-- Обсуждайте архитектуру, безопасность и новые функции
+- **Account:** user data and public cryptographic keys  
+- **Session:** active authentication tokens and session metadata  
+- **Group:** organizational units such as companies or teams  
+- **Chat:** communication channels within groups or between users  
+- **Message:** encrypted texts, files, and digital signatures  
 
 ---
 
-Если у вас есть вопросы или предложения — обращайтесь!
+## 🛠️ Technology Stack
+
+- **Node.js + NestJS** — scalable modular backend framework  
+- **GraphQL (Apollo Server)** — flexible API with support for real-time subscriptions  
+- **PostgreSQL** — reliable relational database  
+- **Prisma ORM** — type-safe database client and migration tool  
+- **Redis** — high-performance session storage and caching  
+- **Selectel S3 (via AWS SDK)** — object storage for files and attachments compatible with S3 API  
+- **Docker** — containerization for easy deployment and environment setup  
+- **Security and utilities:**  
+  - NestJS Guards and decorators for access control  
+  - Configuration management with `@nestjs/config` and dotenv  
+  - Encryption with crypto-js and Argon2 for password hashing  
+- **Additional libraries:**  
+  - Passport + passport-jwt for JWT authentication  
+  - graphql-upload for file uploads via GraphQL  
+  - device-detector-js for device information detection  
+  - sharp for image processing  
+  - class-validator and class-transformer for data validation and transformation  
+  - rxjs for reactive programming  
+  - i18n-iso-countries for international country and localization support  
+- **Development tools:**  
+  - TypeScript 5 and ts-node for TS development  
+  - ESLint, Prettier, and plugins for code standardization  
+  - Jest and supertest for testing  
+  - SWC for fast compilation and bundling  
+  - Nest CLI and schematics for code generation  
+
+---
+
+## 🚧 Current Project Status
+
+This is the **final backend version** before starting mobile application development. The backend is fully ready to support the web frontend and future mobile clients, ensuring synchronization, security, and scalability.
+
+---
+
+## 🤝 Contribution
+
+- Discuss architecture, security, and new features  
+
+---
+
+If you have any questions or suggestions, feel free to reach out!
