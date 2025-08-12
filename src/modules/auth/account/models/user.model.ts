@@ -16,6 +16,12 @@ export class UserModel implements User {
   @Field(() => String)
   public username: string;
 
+  @Field(() => String, { nullable: true })
+  public bio: string | null;
+
+  @Field(() => String, { nullable: true })
+  public avatarUrl: string | null;
+
   @Field(() => Boolean)
   public isDeactivated: boolean;
 

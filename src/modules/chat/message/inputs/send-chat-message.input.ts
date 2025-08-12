@@ -8,22 +8,20 @@ export class SendChatMessageInput {
   @IsOptional()
   public text?: string;
 
-  @Field(() => String, {
-    nullable: true
-  })
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  public targetChatsId?: string[];
+
+  @Field(() => String, { nullable: true })
   @IsString()
   @IsOptional()
-  public targetChatId?: string;
+  public editId?: string;
 
   @Field(() => [String], { nullable: true })
   @IsArray()
   @IsOptional()
   public forwardedMessageIds?: string[];
-
-  @Field(() => Boolean, { nullable: true })
-  @IsOptional()
-  @IsBoolean()
-  public isEdit?: boolean;
 
   @Field(() => [String], { nullable: true })
   @IsArray()

@@ -52,6 +52,9 @@ export class ChatMessageModel implements ChatMessage {
   @Field(() => ChatModel, { nullable: true })
   lastMessageForChat?: ChatModel | null;
 
+  @Field(() => ChatModel, { nullable: true })
+  pinnedInChat?: ChatModel | null;
+
   @Field(() => String, { nullable: true })
   draftOfChatId: string;
 

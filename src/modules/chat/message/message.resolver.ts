@@ -1,11 +1,12 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
+import e from "express";
 import { PubSub } from "graphql-subscriptions";
 
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
 
-import { FiltersInput } from "../inputs/filters.input";
+import { FiltersInput } from "../../inputs/filters.input";
 import { ChatModel } from "../models/chat.model";
 
 import { RemoveMessagesInput } from "./inputs/remove-messages.input";
@@ -101,29 +102,35 @@ export class MessageResolver {
     @Args("chatId") chatId: string,
     @Args("data") input: SendChatMessageInput
   ) {
-    const { message, chat } = await this.messageService.forwardChatMessage(
+    const { messages, chats } = await this.messageService.forwardChatMessage(
       userId,
       chatId,
       input
     );
+    if (messages.length > 1) {
+      for (let message of messages) {
+        console.log(message);
 
-    this.pubSub.publish("CHAT_MESSAGE_ADDED", {
-      chatMessageAdded: message
-    });
-
-    for (const member of chat.members) {
-      const hasDraft = chat.draftMessages?.some(
-        (msg) => msg.user.id === member.userId
-      );
-
-      if (!hasDraft) {
-        this.pubSub.publish(`CHAT_UPDATED_${member.userId}`, {
-          chatUpdated: { ...chat, draftMessages: null }
+        this.pubSub.publish("CHAT_MESSAGE_ADDED", {
+          chatMessageAdded: message
         });
+      }
+      for (let chat of chats) {
+        for (const member of chat.members) {
+          const hasDraft = chat.draftMessages?.some(
+            (msg) => msg.user.id === member.userId
+          );
+
+          if (!hasDraft) {
+            this.pubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+              chatUpdated: { ...chat, draftMessages: null }
+            });
+          }
+        }
       }
     }
 
-    return message ? true : false;
+    return messages ? true : false;
   }
 
   @Authorization()
@@ -134,16 +141,13 @@ export class MessageResolver {
     @Args("chatId") chatId: string,
     @Args("data") input: SendChatMessageInput
   ) {
-    const { message, chat } = await this.messageService.sendChatDraftMessage(
-      userId,
-      chatId,
-      input
-    );
-    this.pubSub.publish(`CHAT_UPDATED_${message.userId}`, {
+    const { draftMessage, chat } =
+      await this.messageService.sendChatDraftMessage(userId, chatId, input);
+    this.pubSub.publish(`CHAT_UPDATED_${draftMessage.userId}`, {
       chatUpdated: chat
     });
 
-    return message ? true : false;
+    return draftMessage ? true : false;
   }
 
   @Subscription(() => [ChatMessageIdModel], {
@@ -213,53 +217,17 @@ export class MessageResolver {
     return this.pubSub.asyncIterableIterator(`CHAT_UPDATED_${userId}`);
   }
 
-  @Subscription(() => ChatMessageModel, {
-    name: "chatMessageEdit",
-    filter: (payload, variables, context) => {
-      const isCorrectChat =
-        payload.chatMessageEdited.chatId === variables.chatId;
-
-      const isMemberChat = payload.chatMessageEdited.chat.members.some(
-        (member) => member.userId === variables.userId
-      );
-
-      return isCorrectChat && isMemberChat;
-    },
-    async resolve(this: MessageResolver, value, args) {
-      return value.chatMessageEdited;
-    }
-  })
-  public chatMessageEdit(
-    @Args("chatId") chatId: string,
-    @Args("userId") userId: string
-  ) {
-    return this.pubSub.asyncIterableIterator("CHAT_MESSAGE_EDIT");
-  }
-
   @Authorization()
   @IsMemberChat()
-  @Mutation(() => Boolean, { name: "editChatMessage" })
-  public async editChatMessage(
+  @Mutation(() => Boolean, { name: "removeDraft" })
+  public async removeDraft(
     @Authorized("id") userId: string,
-    @Args("chatId") chatId: string,
-    @Args("messageId") messageId: string,
-    @Args("data") input: SendChatMessageInput
+    @Args("chatId") chatId: string
   ) {
-    const { message, chat } = await this.messageService.editChatMessage(
+    const messageDraft = await this.messageService.removeDraftMessage(
       userId,
-      chatId,
-      messageId,
-      input
+      chatId
     );
-
-    this.pubSub.publish("CHAT_MESSAGE_EDIT", {
-      chatMessageEdited: message
-    });
-
-    this.pubSub.publish(`CHAT_UPDATED_${message.userId}`, {
-      chatUpdated: chat
-    });
-
-    return message ? true : false;
+    return !!messageDraft;
   }
 }

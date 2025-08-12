@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 
 import { AccountModule } from "../modules/auth/account/account.module";
+import { ProfileModule } from "../modules/auth/profile/profile.module";
 import { SessionModule } from "../modules/auth/session/session.module";
 import { ChatModule } from "../modules/chat/chat.module";
 import { StorageModule } from "../modules/libs/storage/storage.module";
@@ -30,7 +31,8 @@ import { RedisModule } from "./redis/redis.module";
     StorageModule,
     AccountModule,
     SessionModule,
-    ChatModule
+    ChatModule,
+    ProfileModule
   ]
 })
 export class CoreModule {}

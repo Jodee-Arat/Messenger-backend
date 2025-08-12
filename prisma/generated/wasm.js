@@ -123,8 +123,10 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   username: 'username',
+  bio: 'bio',
   email: 'email',
   password: 'password',
+  avatarUrl: 'avatarUrl',
   isDeactivated: 'isDeactivated',
   deactivatedAt: 'deactivatedAt',
   createdAt: 'createdAt',
@@ -139,8 +141,6 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
   isDeleted: 'isDeleted',
   isForwarded: 'isForwarded',
   isReply: 'isReply',
-  isDraft: 'isDraft',
-  draftOfChatId: 'draftOfChatId',
   userId: 'userId',
   chatId: 'chatId',
   readCount: 'readCount',
@@ -154,6 +154,24 @@ exports.Prisma.ChatMessageReplyScalarFieldEnum = {
   repliedToId: 'repliedToId'
 };
 
+exports.Prisma.DraftMessageScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  isForwarded: 'isForwarded',
+  editId: 'editId',
+  filesEditId: 'filesEditId',
+  userId: 'userId',
+  chatId: 'chatId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DraftMessageReplyScalarFieldEnum = {
+  id: 'id',
+  draftMessageId: 'draftMessageId',
+  repliedToId: 'repliedToId'
+};
+
 exports.Prisma.FileMessageScalarFieldEnum = {
   id: 'id',
   fileUrl: 'fileUrl',
@@ -162,8 +180,19 @@ exports.Prisma.FileMessageScalarFieldEnum = {
   fileSize: 'fileSize',
   fileFormat: 'fileFormat',
   chatMessageId: 'chatMessageId',
+  draftMessageId: 'draftMessageId',
   userId: 'userId',
   chatId: 'chatId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GroupScalarFieldEnum = {
+  id: 'id',
+  groupName: 'groupName',
+  avatarUrl: 'avatarUrl',
+  isDeleted: 'isDeleted',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -174,10 +203,20 @@ exports.Prisma.ChatScalarFieldEnum = {
   isGroup: 'isGroup',
   avatarUrl: 'avatarUrl',
   isDeleted: 'isDeleted',
+  description: 'description',
+  groupId: 'groupId',
   lastMessageId: 'lastMessageId',
+  pinnedMessageId: 'pinnedMessageId',
   lastMessageAt: 'lastMessageAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PinnedChatScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chatId: 'chatId',
+  pinnedAt: 'pinnedAt'
 };
 
 exports.Prisma.ChatMemberScalarFieldEnum = {
@@ -185,7 +224,19 @@ exports.Prisma.ChatMemberScalarFieldEnum = {
   userId: 'userId',
   isCreator: 'isCreator',
   chatId: 'chatId',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GroupMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  isCreator: 'isCreator',
+  groupId: 'groupId',
+  joinedAt: 'joinedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -208,9 +259,14 @@ exports.Prisma.ModelName = {
   User: 'User',
   ChatMessage: 'ChatMessage',
   ChatMessageReply: 'ChatMessageReply',
+  DraftMessage: 'DraftMessage',
+  DraftMessageReply: 'DraftMessageReply',
   FileMessage: 'FileMessage',
+  Group: 'Group',
   Chat: 'Chat',
-  ChatMember: 'ChatMember'
+  PinnedChat: 'PinnedChat',
+  ChatMember: 'ChatMember',
+  GroupMember: 'GroupMember'
 };
 
 /**

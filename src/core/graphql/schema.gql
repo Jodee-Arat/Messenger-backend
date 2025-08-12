@@ -3,13 +3,44 @@
 # ------------------------------------------------------
 
 type AttachFileModel {
-  chatMessageId: String!
+  chatDraftMessageId: String!
   fileId: String!
 }
 
 type AuthModel {
   message: String
   user: UserModel
+}
+
+input ChangeChatInfoInput {
+  chatName: String!
+  description: String!
+}
+
+input ChangeGroupInfoInput {
+  description: String!
+  groupName: String!
+}
+
+input ChangeProfileInfoInput {
+  bio: String!
+  username: String!
+}
+
+type ChatDraftMessageModel {
+  chat: ChatModel!
+  chatId: String!
+  createdAt: DateTime!
+  editId: String
+  files: [FileMessageModel!]!
+  filesEditId: [String!]!
+  id: ID!
+  isForwarded: Boolean!
+  repliedToLinks: [chatDraftMessageReplyModel!]!
+  text: String!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
 }
 
 type ChatMemberModel {
@@ -43,6 +74,7 @@ type ChatMessageModel {
   isReply: Boolean!
   isStarted: Boolean!
   lastMessageForChat: ChatModel
+  pinnedInChat: ChatModel
   readCount: String
   repliedToLinks: [ChatMessageReplyModel]
   replies: [ChatMessageReplyModel]
@@ -64,7 +96,10 @@ type ChatModel {
   avatarUrl: String
   chatName: String
   createdAt: DateTime!
-  draftMessages: [ChatMessageModel!]
+  description: String
+  draftMessages: [ChatDraftMessageModel!]
+  group: GroupModel
+  groupId: String
   id: ID!
   isDeleted: Boolean!
   isGroup: Boolean!
@@ -72,11 +107,18 @@ type ChatModel {
   lastMessageAt: DateTime
   lastMessageId: String
   members: [ChatMemberModel!]!
+  pinnedMessage: ChatMessageModel
+  pinnedMessageId: String
   updatedAt: DateTime!
 }
 
 input CreateChatInput {
   chatName: String!
+  userIds: [String!]!
+}
+
+input CreateGroupInput {
+  groupName: String!
   userIds: [String!]!
 }
 
@@ -99,9 +141,11 @@ type FileDownloadData {
 type FileMessageModel {
   chat: ChatModel!
   chatId: String!
-  chatMessage: ChatMessageModel!
+  chatMessage: ChatMessageModel
   chatMessageId: String!
   createdAt: DateTime!
+  draftMessage: ChatDraftMessageModel
+  draftMessageId: String!
   fileFormat: String!
   fileFullName: String!
   fileName: String!
@@ -119,6 +163,30 @@ input FiltersInput {
   take: Float
 }
 
+type GroupMemberModel {
+  createdAt: DateTime!
+  group: GroupModel!
+  groupId: String!
+  id: ID!
+  isCreator: Boolean
+  joinedAt: DateTime!
+  updatedAt: DateTime!
+  user: UserModel!
+  userId: String!
+}
+
+type GroupModel {
+  avatarUrl: String
+  chats: [ChatModel!]!
+  createdAt: DateTime!
+  description: String
+  groupName: String!
+  id: ID!
+  isDeleted: Boolean!
+  members: [GroupMemberModel!]!
+  updatedAt: DateTime!
+}
+
 type LocationModel {
   city: String!
   country: String!
@@ -133,28 +201,48 @@ input LoginInput {
 }
 
 type Mutation {
+  changeChatAvatar(avatar: Upload!, chatId: String!): String!
+  changeChatInfo(chatId: String!, data: ChangeChatInfoInput!): Boolean!
+  changeGroupAvatar(avatar: Upload!, groupId: String!): String!
+  changeGroupInfo(data: ChangeGroupInfoInput!, groupId: String!): Boolean!
+  changeProfileAvatar(avatar: Upload!): String!
+  changeProfileInfo(data: ChangeProfileInfoInput!): Boolean!
   clearSessionCookie: Boolean!
-  createChat(data: CreateChatInput!): ChatModel!
+  createChat(data: CreateChatInput!, groupId: String!): ChatModel!
+  createGroup(data: CreateGroupInput!): GroupModel!
   createUserWEmail(data: createUserWEmail!): Boolean!
   deleteChat(chatId: String!): Boolean!
+  deleteGroup(groupId: String!): Boolean!
   downloadFile(chatId: String!, fileId: String!): FileDownloadData!
-  editChatMessage(chatId: String!, data: SendChatMessageInput!, messageId: String!): Boolean!
   forwardChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
+  pinChat(chatId: String!): Boolean!
+  pinMessage(chatId: String!, messageId: String!): Boolean!
+  removeChatAvatar(chatId: String!): Boolean!
+  removeDraft(chatId: String!): Boolean!
   removeFile(chatId: String!, fileId: String!): Boolean!
+  removeGroupAvatar(groupId: String!): Boolean!
   removeMessages(chatId: String!, data: RemoveMessagesInput!): Boolean!
+  removeProfileAvatar: Boolean!
   sendChatDraftMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendFile(chatId: String!, file: Upload!, messageId: String): AttachFileModel!
+  unPinChat(chatId: String!): Boolean!
+  unPinMessage(chatId: String!): Boolean!
 }
 
 type Query {
+  checkChatAccess(chatId: String!): Boolean!
+  checkGroupAccess(groupId: String!): Boolean!
+  findAllChatsByGroup(filters: FiltersInput!, groupId: String!): [ChatModel!]!
   findAllChatsByUser(filters: FiltersInput!): [ChatModel!]!
+  findAllGroupsByUser(filters: FiltersInput!): [GroupModel!]!
   findAllMessagesByChat(chatId: String!, filters: FiltersInput!): [ChatMessageModel!]!
   findAllUsers: [UserModel!]!
   findChatByChatId(chatId: String!): ChatModel!
   findCurrentSession: SessionModel!
+  findGroupByGroupId(groupId: String!): GroupModel!
   findProfile: UserModel!
   findSessionsByUser: [SessionModel!]!
 }
@@ -164,10 +252,10 @@ input RemoveMessagesInput {
 }
 
 input SendChatMessageInput {
+  editId: String
   fileIds: [String!]
   forwardedMessageIds: [String!]
-  isEdit: Boolean
-  targetChatId: String
+  targetChatsId: [String!]
   text: String
 }
 
@@ -185,17 +273,21 @@ type SessionModel {
 }
 
 type Subscription {
-  chatAdded(userId: String!): ChatModel!
+  chatAdded(groupId: String!, userId: String!): ChatModel!
+  chatDeleted(groupId: String!, userId: String!): ChatModel!
   chatMessageAdded(chatId: String!, userId: String!): ChatMessageModel!
-  chatMessageEdit(chatId: String!, userId: String!): ChatMessageModel!
   chatMessageRemoved(chatId: String!, userId: String!): [ChatMessageIdModel!]!
   chatUpdated(userId: String!): ChatModel!
+  groupAdded(userId: String!): GroupModel!
+  groupDeleted(userId: String!): GroupModel!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
 
 type UserModel {
+  avatarUrl: String
+  bio: String
   createdAt: DateTime!
   deactivatedAt: DateTime
   email: String!
@@ -204,6 +296,16 @@ type UserModel {
   password: String!
   updatedAt: DateTime!
   username: String!
+}
+
+type chatDraftMessageReplyModel {
+  createdAt: DateTime!
+  draftMessage: ChatDraftMessageModel!
+  draftMessageId: String!
+  id: ID!
+  repliedTo: ChatMessageModel!
+  repliedToId: String!
+  updatedAt: DateTime!
 }
 
 input createUserWEmail {

@@ -4,6 +4,7 @@ import { FileMessage } from "@/prisma/generated";
 import { UserModel } from "@/src/modules/auth/account/models/user.model";
 
 import { ChatModel } from "../../../models/chat.model";
+import { ChatDraftMessageModel } from "../../models/chat-draft-message.model";
 import { ChatMessageModel } from "../../models/chat-message.model";
 
 @ObjectType()
@@ -26,11 +27,16 @@ export class FileMessageModel implements FileMessage {
   @Field(() => String)
   fileSize: string;
 
-  @Field(() => ChatMessageModel)
-  chatMessage: ChatMessageModel;
+  @Field(() => ChatMessageModel, { nullable: true })
+  chatMessage?: ChatMessageModel;
 
   @Field(() => String)
   chatMessageId: string;
+
+  @Field(() => ChatDraftMessageModel, { nullable: true })
+  draftMessage?: ChatDraftMessageModel;
+  @Field(() => String)
+  draftMessageId: string;
 
   @Field(() => UserModel)
   user: UserModel;

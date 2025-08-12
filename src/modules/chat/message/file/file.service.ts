@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { fileTypeFromBuffer } from "file-type";
 import { Upload } from "graphql-upload";
 
-import { ChatMessage, User } from "@/prisma/generated";
+import { ChatMessage, DraftMessage, User } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { StorageService } from "@/src/modules/libs/storage/storage.service";
 
@@ -28,8 +28,7 @@ export class FileService {
       include: {
         draftMessages: {
           where: {
-            userId: user.id,
-            isDraft: true
+            userId: user.id
           },
           include: {
             files: true
@@ -38,16 +37,15 @@ export class FileService {
       }
     });
 
-    let chatMessage: ChatMessage;
+    let chatDraftMessage: DraftMessage;
 
-    if (chatWithDraft?.draftMessages?.length > 0) {
-      chatMessage = chatWithDraft.draftMessages[0];
+    if (chatWithDraft?.draftMessages?.[0]) {
+      chatDraftMessage = chatWithDraft.draftMessages[0];
     } else {
-      chatMessage = await this.prismaService.chatMessage.create({
+      chatDraftMessage = await this.prismaService.draftMessage.create({
         data: {
           userId: user.id,
-          chatId,
-          isDraft: true
+          chatId
         }
       });
 
@@ -55,7 +53,7 @@ export class FileService {
         where: { id: chatId },
         data: {
           draftMessages: {
-            connect: { id: chatMessage.id }
+            connect: { id: chatDraftMessage.id }
           }
         }
       });
@@ -63,7 +61,7 @@ export class FileService {
 
     const fileTypeResult = await fileTypeFromBuffer(buffer);
     const fileFormat = fileTypeResult?.ext ?? "unknown";
-    const filePath = `chats/${chatId}/${chatMessage.id}/${filename}`;
+    const filePath = `chats/${chatId}/${chatDraftMessage.id}/${filename}`;
 
     const fileMessage = await this.prismaService.fileMessage.create({
       data: {
@@ -72,14 +70,14 @@ export class FileService {
         fileSize: buffer.length.toString(),
         fileFormat,
         fileUrl: `${this.configService.getOrThrow<string>("S3_URL")}${filePath}`,
-        chatMessageId: chatMessage.id,
+        draftMessageId: chatDraftMessage.id,
         userId: user.id,
         chatId
       }
     });
 
-    await this.prismaService.chatMessage.update({
-      where: { id: chatMessage.id },
+    await this.prismaService.draftMessage.update({
+      where: { id: chatDraftMessage.id },
       data: {
         files: {
           connect: { id: fileMessage.id }
@@ -91,7 +89,7 @@ export class FileService {
 
     return {
       fileId: fileMessage.id,
-      chatMessageId: chatMessage.id
+      chatDraftMessageId: chatDraftMessage.id
     };
   }
 
@@ -101,7 +99,7 @@ export class FileService {
         id: fileId
       },
       include: {
-        chatMessage: {
+        draftMessage: {
           include: {
             files: true,
             repliedToLinks: true
@@ -113,25 +111,43 @@ export class FileService {
     if (!fileMessage) {
       throw new BadRequestException(`File message with id ${fileId} not found`);
     }
+    const draft = fileMessage.draftMessage;
 
-    await this.storageService.remove(fileMessage.fileFullName);
+    if (!draft) {
+      throw new BadRequestException("Draft message not found for the file");
+    }
 
-    const draft = fileMessage.chatMessage;
+    const fileExists = draft.files.some((file) => file.id === fileId);
+    if (fileExists) {
+      await this.storageService.remove(fileMessage.fileFullName);
+    }
 
     const isDraftEmpty =
       (!draft.text || draft.text.trim() === "") &&
-      (!draft.files || draft.files.length === 1) &&
-      (!draft.repliedToLinks || draft.repliedToLinks.length === 0);
-
+      (!draft.files || (draft.files.length === 1 && fileExists)) &&
+      (!draft.repliedToLinks || draft.repliedToLinks.length === 0) &&
+      (draft.filesEditId.length === 0 ||
+        (draft.filesEditId.length === 1 && !fileExists));
     if (isDraftEmpty) {
-      await this.prismaService.chatMessage.delete({
+      await this.prismaService.draftMessage.delete({
         where: { id: draft.id }
       });
     } else {
-      await this.prismaService.fileMessage.delete({
-        where: { id: fileId }
+      await this.prismaService.draftMessage.update({
+        where: { id: draft.id },
+        data: {
+          files: {
+            set: draft.files
+              .map((file) => file.id)
+              .filter((id) => id !== fileId)
+              .map((id) => ({ id }))
+          }
+        }
       });
     }
+    await this.prismaService.fileMessage.deleteMany({
+      where: { id: fileId }
+    });
 
     return true;
   }

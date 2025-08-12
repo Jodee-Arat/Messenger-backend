@@ -8,16 +8,16 @@ import {
 } from "class-validator";
 
 @InputType()
-export class CreateChatInput {
+export class CreateGroupInput {
   @Field(() => String)
   @IsString()
   @IsNotEmpty()
   @Length(1, 30)
-  public chatName: string;
+  public groupName: string;
 
   @Field(() => [String])
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(0)
   @IsString({ each: true })
   public userIds: string[];
 }

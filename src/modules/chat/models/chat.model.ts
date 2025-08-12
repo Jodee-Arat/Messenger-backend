@@ -2,6 +2,8 @@ import { Field, ID, ObjectType } from "@nestjs/graphql";
 
 import { Chat } from "@/prisma/generated";
 
+import { GroupModel } from "../../group/models/group.model";
+import { ChatDraftMessageModel } from "../message/models/chat-draft-message.model";
 import { ChatMessageModel } from "../message/models/chat-message.model";
 
 import { ChatMemberModel } from "./chat-member.model";
@@ -18,6 +20,9 @@ export class ChatModel implements Chat {
   isGroup: boolean;
 
   @Field(() => String, { nullable: true })
+  description: string | null;
+
+  @Field(() => String, { nullable: true })
   avatarUrl: string;
 
   @Field(() => Boolean)
@@ -26,14 +31,26 @@ export class ChatModel implements Chat {
   @Field(() => [ChatMemberModel])
   members: ChatMemberModel[];
 
+  @Field(() => GroupModel, { nullable: true })
+  group?: GroupModel | null;
+
+  @Field(() => String, { nullable: true })
+  groupId: string | null;
+
   @Field(() => String, { nullable: true })
   lastMessageId: string | null;
 
   @Field(() => ChatMessageModel, { nullable: true })
   lastMessage?: ChatMessageModel | null;
 
-  @Field(() => [ChatMessageModel], { nullable: true })
-  draftMessages?: ChatMessageModel[] | null;
+  @Field(() => String, { nullable: true })
+  pinnedMessageId: string | null;
+
+  @Field(() => ChatMessageModel, { nullable: true })
+  pinnedMessage?: ChatMessageModel | null;
+
+  @Field(() => [ChatDraftMessageModel], { nullable: true })
+  draftMessages?: ChatDraftMessageModel[] | null;
 
   @Field(() => Date, { nullable: true })
   lastMessageAt: Date | null;

@@ -6,5 +6,5 @@ export class AttachFileModel {
   fileId: string;
 
   @Field(() => String)
-  chatMessageId: string;
+  chatDraftMessageId: string;
 }
