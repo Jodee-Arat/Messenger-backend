@@ -23,20 +23,25 @@ export function getSessionMetadata(
           ? req.headers["x-forwarded-for"].split(",")[0]
           : req.ip);
 
-  const location = lookup(ip);
-  const device = new DeviceDetector().parse(userAgent);
+  const location = lookup(ip) || null;
+  const detector = new DeviceDetector();
+  const device = detector.parse(
+    userAgent || ""
+  ) as DeviceDetector.DeviceDetectorResult | null;
 
   return {
     location: {
-      country: countries.getName(location.country, "en") || "Неизвестно",
-      city: location.city || "Неизвестно",
-      latitude: location.ll[0] || 0,
-      longitude: location.ll[1] || 0
+      country: location?.country
+        ? countries.getName(location.country, "en") || "Неизвестно"
+        : "Неизвестно",
+      city: location?.city || "Неизвестно",
+      latitude: location?.ll?.[0] || 0,
+      longitude: location?.ll?.[1] || 0
     },
     device: {
-      browser: device.client.name,
-      os: device.os.name,
-      type: device.device.type
+      browser: device?.client?.name || "Unknown",
+      os: device?.os?.name || "Unknown",
+      type: device?.device?.type || "Unknown"
     },
     ip
   };

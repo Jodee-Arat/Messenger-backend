@@ -4,15 +4,15 @@ import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
 import { AccountService } from "./account.service";
-import { createUserWEmail } from "./inputs/create-user-with-email.input";
+import { CreateUserWEmailInput } from "./inputs/create-user-with-email.input";
 import { UserModel } from "./models/user.model";
 
 @Resolver("Account")
 export class AccountResolver {
   constructor(private readonly accountService: AccountService) {}
 
-  @Mutation(() => Boolean, { name: "createUserWEmail" })
-  public async create(@Args("data") input: createUserWEmail) {
+  @Mutation(() => UserModel, { name: "createUserWEmail" })
+  public async create(@Args("data") input: CreateUserWEmailInput) {
     return await this.accountService.create(input);
   }
 

@@ -3,13 +3,13 @@ import { hash } from "argon2";
 
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
-import { createUserWEmail } from "./inputs/create-user-with-email.input";
+import { CreateUserWEmailInput } from "./inputs/create-user-with-email.input";
 
 @Injectable()
 export class AccountService {
   public constructor(private readonly prismaService: PrismaService) {}
 
-  public async create(input: createUserWEmail) {
+  public async create(input: CreateUserWEmailInput) {
     const { email, password, username } = input;
 
     const isUsernameExists = await this.prismaService.user.findUnique({
@@ -32,7 +32,7 @@ export class AccountService {
       throw new ConflictException("Email already exists");
     }
 
-    await this.prismaService.user.create({
+    const newUser = await this.prismaService.user.create({
       data: {
         email,
         password: await hash(password),
@@ -40,7 +40,7 @@ export class AccountService {
       }
     });
 
-    return true;
+    return newUser;
   }
 
   public async me(id: string) {

@@ -122,6 +122,12 @@ input CreateGroupInput {
   userIds: [String!]!
 }
 
+input CreateUserWEmailInput {
+  email: String!
+  password: String!
+  username: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -210,7 +216,7 @@ type Mutation {
   clearSessionCookie: Boolean!
   createChat(data: CreateChatInput!, groupId: String!): ChatModel!
   createGroup(data: CreateGroupInput!): GroupModel!
-  createUserWEmail(data: createUserWEmail!): Boolean!
+  createUserWEmail(data: CreateUserWEmailInput!): UserModel!
   deleteChat(chatId: String!): Boolean!
   deleteGroup(groupId: String!): Boolean!
   downloadFile(chatId: String!, fileId: String!): FileDownloadData!
@@ -306,10 +312,4 @@ type chatDraftMessageReplyModel {
   repliedTo: ChatMessageModel!
   repliedToId: String!
   updatedAt: DateTime!
-}
-
-input createUserWEmail {
-  email: String!
-  password: String!
-  username: String!
 }
