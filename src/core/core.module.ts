@@ -7,7 +7,9 @@ import { AccountModule } from "../modules/auth/account/account.module";
 import { ProfileModule } from "../modules/auth/profile/profile.module";
 import { SessionModule } from "../modules/auth/session/session.module";
 import { ChatModule } from "../modules/chat/chat.module";
+import { FriendshipModule } from "../modules/friendship/friendship.module";
 import { StorageModule } from "../modules/libs/storage/storage.module";
+import { SecretModule } from "../modules/secret/secret.module";
 import { IS_DEV_ENV } from "../shared/utils/is-dev.util";
 
 import { getGraphqlConfig } from "./config/graphql.config";
@@ -32,7 +34,9 @@ import { RedisModule } from "./redis/redis.module";
     AccountModule,
     SessionModule,
     ChatModule,
-    ProfileModule
+    FriendshipModule,
+    ProfileModule,
+    SecretModule
   ]
 })
 export class CoreModule {}

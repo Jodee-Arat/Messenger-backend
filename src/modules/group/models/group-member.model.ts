@@ -3,6 +3,7 @@ import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { GroupMember } from "@/prisma/generated";
 
 import { UserModel } from "../../auth/account/models/user.model";
+import { GroupRoleModel } from "../role/models/group-role.model";
 
 import { GroupModel } from "./group.model";
 
@@ -34,4 +35,7 @@ export class GroupMemberModel implements GroupMember {
 
   @Field(() => Date)
   updatedAt: Date;
+
+  @Field(() => [GroupRoleModel], { nullable: true })
+  roles?: any[];
 }

@@ -145,4 +145,26 @@ export class GroupResolver {
     }
     return group ? true : false;
   }
+
+  @Authorization()
+  @IsMemberGroup()
+  @Mutation(() => Boolean, { name: "inviteMemberToGroup" })
+  public async inviteMemberToGroup(
+    @Authorized("id") userId: string,
+    @Args("groupId") groupId: string,
+    @Args("targetUserId") targetUserId: string
+  ) {
+    return this.groupService.inviteMember(userId, groupId, targetUserId);
+  }
+
+  @Authorization()
+  @IsMemberGroup()
+  @Mutation(() => Boolean, { name: "removeMemberFromGroup" })
+  public async removeMemberFromGroup(
+    @Authorized("id") userId: string,
+    @Args("groupId") groupId: string,
+    @Args("targetUserId") targetUserId: string
+  ) {
+    return this.groupService.removeMember(userId, groupId, targetUserId);
+  }
 }

@@ -3,6 +3,7 @@ import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { ChatMember } from "@/prisma/generated";
 
 import { UserModel } from "../../auth/account/models/user.model";
+import { ChatRoleModel } from "../role/models/chat-role.model";
 
 import { ChatModel } from "./chat.model";
 
@@ -34,4 +35,7 @@ export class ChatMemberModel implements ChatMember {
 
   @Field(() => Date)
   updatedAt: Date;
+
+  @Field(() => [ChatRoleModel], { nullable: true })
+  roles?: any[];
 }

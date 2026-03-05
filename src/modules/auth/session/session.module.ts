@@ -14,11 +14,13 @@ import { SessionService } from "./session.service";
       useFactory: (config: ConfigService) => ({
         secret: config.getOrThrow<string>("JWT_SECRET"),
         signOptions: {
-          expiresIn: config.getOrThrow<string>("JWT_EXPIRES_IN") || "1h"
+          expiresIn: (config.getOrThrow<string>("JWT_EXPIRES_IN") ||
+            "1h") as any
         }
       })
     })
   ],
-  providers: [SessionResolver, SessionService]
+  providers: [SessionResolver, SessionService],
+  exports: [JwtModule]
 })
 export class SessionModule {}

@@ -6,15 +6,15 @@ import { User } from "@/prisma/generated";
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
-import { IsMemberGroup } from "@/src/shared/decorators/group/is-member-group.decorator";
 import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
 
 import { FiltersInput } from "../inputs/filters.input";
 
 import { ChatService } from "./chat.service";
-import { ChangeChatInfoInput } from "./inputs/change-group-info.input";
+import { ChangeChatInfoInput } from "./inputs/change-chat-info.input";
 import { CreateChatInput } from "./inputs/create-chat.input";
 import { ChatModel } from "./models/chat.model";
+import { SecretKeyRotationModel } from "./models/secret-key-rotation.model";
 
 @Resolver("Chat")
 export class ChatResolver {
@@ -43,7 +43,6 @@ export class ChatResolver {
   }
 
   @Authorization()
-  @IsMemberGroup()
   @Query(() => [ChatModel], { name: "findAllChatsByUser" })
   public async findAllChatsByUser(
     @Authorized("id") userId: string,
@@ -165,6 +164,81 @@ export class ChatResolver {
   }
 
   @Authorization()
+  @IsMemberChat()
+  @Mutation(() => Boolean, { name: "leaveChat" })
+  public async leaveChat(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string
+  ) {
+    const chat = await this.chatService.leaveChat(userId, chatId);
+
+    // If secret chat — clear old keys and notify remaining members to rotate
+    if (chat && chat.isSecret) {
+      await this.chatService.clearChatSharedKeys(chatId);
+      this.pubSub.publish("SECRET_KEY_ROTATION", {
+        secretKeyRotation: { chatId, members: chat.members }
+      });
+    }
+
+    return chat ? true : false;
+  }
+
+  @Authorization()
+  @IsMemberChat()
+  @Mutation(() => Boolean, { name: "inviteMemberToChat" })
+  public async inviteMemberToChat(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("targetUserId") targetUserId: string
+  ) {
+    const chat = await this.chatService.inviteMember(
+      userId,
+      chatId,
+      targetUserId
+    );
+    return chat ? true : false;
+  }
+
+  @Authorization()
+  @IsMemberChat()
+  @Mutation(() => Boolean, { name: "removeMemberFromChat" })
+  public async removeMemberFromChat(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("targetUserId") targetUserId: string
+  ) {
+    const chat = await this.chatService.removeMember(
+      userId,
+      chatId,
+      targetUserId
+    );
+
+    // If secret chat — clear old keys and notify remaining members to rotate
+    if (chat && chat.isSecret) {
+      await this.chatService.clearChatSharedKeys(chatId);
+      this.pubSub.publish("SECRET_KEY_ROTATION", {
+        secretKeyRotation: { chatId, members: chat.members }
+      });
+    }
+
+    return chat ? true : false;
+  }
+
+  @Authorization()
+  @Mutation(() => ChatModel, { name: "findOrCreateDirectChat" })
+  public async findOrCreateDirectChat(
+    @Authorized("id") userId: string,
+    @Args("friendUserId") friendUserId: string,
+    @Args("isSecret", { nullable: true, defaultValue: false }) isSecret: boolean
+  ) {
+    return await this.chatService.findOrCreateDirectChat(
+      userId,
+      friendUserId,
+      isSecret
+    );
+  }
+
+  @Authorization()
   @Mutation(() => ChatModel, { name: "createChat" })
   public async createChat(
     @Authorized("id") creatorId: string,
@@ -217,5 +291,46 @@ export class ChatResolver {
     @Args("chatId") chatId: string
   ) {
     return await this.chatService.unPinChat(userId, chatId);
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "updatePinnedChatsOrder" })
+  public async updatePinnedChatsOrder(
+    @Authorized("id") userId: string,
+    @Args("chatIds", { type: () => [String] }) chatIds: string[]
+  ) {
+    return await this.chatService.updatePinnedChatsOrder(userId, chatIds);
+  }
+
+  @Subscription(() => SecretKeyRotationModel, {
+    name: "secretKeyRotation",
+    filter: (payload, variables) => {
+      const members = payload.secretKeyRotation.members || [];
+      return members.some((m: any) => m.userId === variables.userId);
+    }
+  })
+  public secretKeyRotation(@Args("userId") userId: string) {
+    return this.pubSub.asyncIterableIterator("SECRET_KEY_ROTATION");
+  }
+
+  @Authorization()
+  @IsMemberChat()
+  @Mutation(() => Boolean, { name: "toggleChatRequireTotp" })
+  public async toggleChatRequireTotp(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("enable") enable: boolean
+  ) {
+    return await this.chatService.toggleRequireTotp(userId, chatId, enable);
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "verifyChatTotp" })
+  public async verifyChatTotp(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("code") code: string
+  ) {
+    return await this.chatService.verifyChatTotp(userId, chatId, code);
   }
 }

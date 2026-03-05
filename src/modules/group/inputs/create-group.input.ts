@@ -17,7 +17,7 @@ export class CreateGroupInput {
 
   @Field(() => [String])
   @IsArray()
-  @ArrayMinSize(0)
+  @ArrayMinSize(1)
   @IsString({ each: true })
   public userIds: string[];
 }

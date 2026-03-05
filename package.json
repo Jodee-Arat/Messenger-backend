@@ -33,7 +33,7 @@
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.19.2",
     "argon2": "^0.43.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
@@ -49,9 +49,11 @@
     "graphql-upload": "13.0.0",
     "i18n-iso-countries": "^7.14.0",
     "ioredis": "^5.6.1",
+    "otplib": "^13.3.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "prisma": "^6.8.2",
+    "qrcode": "^1.5.4",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "sharp": "^0.34.2"
@@ -64,6 +66,7 @@
     "@nestjs/testing": "^11.0.1",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
+    "@swc/jest": "^0.2.39",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/cookie-parser": "^1.4.8",
     "@types/crypto-js": "^4.2.2",
@@ -73,6 +76,7 @@
     "@types/minimatch": "5",
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
+    "@types/qrcode": "^1.5.6",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -99,6 +103,11 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "moduleNameMapper": {
+      "^@/src/(.*)$": "<rootDir>/$1",
+      "^@/prisma/(.*)$": "<rootDir>/../prisma/$1",
+      "^@/(.*)$": "<rootDir>/../$1"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

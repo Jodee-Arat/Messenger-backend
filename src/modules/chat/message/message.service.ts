@@ -1,10 +1,22 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  forwardRef
+} from "@nestjs/common";
 
-import { Chat, ChatMessage, DraftMessage, Prisma } from "@/prisma/generated";
+import {
+  Chat,
+  ChatMessage,
+  ChatPermissionEnum,
+  DraftMessage,
+  Prisma
+} from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FiltersInput } from "../../inputs/filters.input";
 import { StorageService } from "../../libs/storage/storage.service";
+import { ChatService } from "../chat.service";
 
 import { RemoveMessagesInput } from "./inputs/remove-messages.input";
 import { SendChatMessageInput } from "./inputs/send-chat-message.input";
@@ -13,7 +25,9 @@ import { SendChatMessageInput } from "./inputs/send-chat-message.input";
 export class MessageService {
   public constructor(
     private readonly prismaService: PrismaService,
-    private readonly storageService: StorageService
+    private readonly storageService: StorageService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService
   ) {}
   public async findAllMessagesByChat(
     userId: string,
@@ -92,6 +106,45 @@ export class MessageService {
       editId,
       forwardedMessageIds = []
     } = input;
+
+    // Permission check for group chats
+    let chat = await this.prismaService.chat.findUnique({
+      where: { id: chatId, isGroup: true },
+      include: {
+        members: {
+          include: {
+            user: true
+          }
+        },
+        draftMessages: {
+          include: {
+            files: true,
+            user: true
+          }
+        },
+        lastMessage: {
+          include: {
+            files: true,
+            user: true
+          }
+        }
+      }
+    });
+    if (chat?.isGroup) {
+      if (editId) {
+        await this.chatService.validatePermission(
+          userId,
+          chatId,
+          ChatPermissionEnum.EDIT_MESSAGES
+        );
+      } else {
+        await this.chatService.validatePermission(
+          userId,
+          chatId,
+          ChatPermissionEnum.SEND_MESSAGES
+        );
+      }
+    }
 
     const includeOptions = {
       files: true,
@@ -259,7 +312,7 @@ export class MessageService {
 
       return { message, chat };
     }
-    const chat = await this.prismaService.chat.update({
+    chat = await this.prismaService.chat.update({
       where: { id: message.chatId },
       data: {
         lastMessageId: message.id,
@@ -474,6 +527,19 @@ export class MessageService {
     input: RemoveMessagesInput
   ) {
     const { messageIds } = input;
+
+    // Permission check for group chats
+    const chatInfo = await this.prismaService.chat.findUnique({
+      where: { id: chatId },
+      select: { isGroup: true }
+    });
+    if (chatInfo?.isGroup) {
+      await this.chatService.validatePermission(
+        userId,
+        chatId,
+        ChatPermissionEnum.DELETE_MESSAGES
+      );
+    }
 
     const messages = await this.prismaService.chatMessage.findMany({
       where: {

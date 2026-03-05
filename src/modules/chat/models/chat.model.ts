@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 import { Chat } from "@/prisma/generated";
 
@@ -27,6 +27,12 @@ export class ChatModel implements Chat {
 
   @Field(() => Boolean)
   isDeleted: boolean;
+
+  @Field(() => Boolean)
+  isSecret: boolean;
+
+  @Field(() => Boolean)
+  requireTotp: boolean;
 
   @Field(() => [ChatMemberModel])
   members: ChatMemberModel[];
@@ -59,4 +65,10 @@ export class ChatModel implements Chat {
 
   @Field(() => Date)
   updatedAt: Date;
+
+  @Field(() => Boolean, { nullable: true })
+  isPinned?: boolean;
+
+  @Field(() => Int, { nullable: true })
+  pinnedOrder?: number;
 }

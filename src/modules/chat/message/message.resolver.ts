@@ -109,8 +109,6 @@ export class MessageResolver {
     );
     if (messages.length > 1) {
       for (let message of messages) {
-        console.log(message);
-
         this.pubSub.publish("CHAT_MESSAGE_ADDED", {
           chatMessageAdded: message
         });

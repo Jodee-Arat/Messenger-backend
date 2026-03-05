@@ -22,6 +22,12 @@ export class UserModel implements User {
   @Field(() => String, { nullable: true })
   public avatarUrl: string | null;
 
+  @Field(() => String, { nullable: true })
+  public totpSecret: string | null;
+
+  @Field(() => Boolean)
+  public isTotpEnabled: boolean;
+
   @Field(() => Boolean)
   public isDeactivated: boolean;
 

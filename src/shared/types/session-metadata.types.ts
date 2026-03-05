@@ -11,8 +11,16 @@ export interface DeviceInfo {
   type: string;
 }
 
+export interface SessionPublicKey {
+  ikPub: string;
+  spkPub: string;
+  splSig: string;
+  opkPub: string[];
+}
+
 export interface SessionMetadata {
   location: LocationInfo;
   device: DeviceInfo;
   ip: string;
+  publicKey?: SessionPublicKey;
 }

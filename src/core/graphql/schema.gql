@@ -8,7 +8,10 @@ type AttachFileModel {
 }
 
 type AuthModel {
+  accessToken: String
   message: String
+  refreshToken: String
+  sessionId: String
   user: UserModel
 }
 
@@ -50,6 +53,7 @@ type ChatMemberModel {
   id: ID!
   isCreator: Boolean
   joinedAt: DateTime!
+  roles: [ChatRoleModel!]
   updatedAt: DateTime!
   user: UserModel!
   userId: String!
@@ -103,17 +107,49 @@ type ChatModel {
   id: ID!
   isDeleted: Boolean!
   isGroup: Boolean!
+  isPinned: Boolean
+  isSecret: Boolean!
   lastMessage: ChatMessageModel
   lastMessageAt: DateTime
   lastMessageId: String
   members: [ChatMemberModel!]!
   pinnedMessage: ChatMessageModel
   pinnedMessageId: String
+  pinnedOrder: Int
+  requireTotp: Boolean!
+  updatedAt: DateTime!
+}
+
+enum ChatPermissionEnum {
+  CHANGE_CHAT_AVATAR
+  CHANGE_CHAT_INFO
+  CHANGE_CHAT_NAME
+  CHANGE_ROLE_INFO
+  CREATE_ROLES
+  DELETE_MESSAGES
+  DELETE_ROLES
+  EDIT_MESSAGES
+  INVITE_MEMBERS
+  MANAGE_ROLES
+  PIN_MESSAGES
+  REMOVE_MEMBERS
+  SEND_MESSAGES
+}
+
+type ChatRoleModel {
+  chatId: String!
+  color: String!
+  createdAt: DateTime!
+  id: String!
+  name: String!
+  permissions: [ChatPermissionEnum!]!
   updatedAt: DateTime!
 }
 
 input CreateChatInput {
   chatName: String!
+  isGroup: Boolean!
+  isSecret: Boolean
   userIds: [String!]!
 }
 
@@ -169,6 +205,24 @@ input FiltersInput {
   take: Float
 }
 
+type FriendshipModel {
+  createdAt: DateTime!
+  friend: UserModel
+  friendId: String!
+  id: String!
+  status: FriendshipStatusEnum!
+  updatedAt: DateTime!
+  user: UserModel
+  userId: String!
+}
+
+enum FriendshipStatusEnum {
+  ACCEPTED
+  BLOCKED
+  DECLINED
+  PENDING
+}
+
 type GroupMemberModel {
   createdAt: DateTime!
   group: GroupModel!
@@ -176,6 +230,7 @@ type GroupMemberModel {
   id: ID!
   isCreator: Boolean
   joinedAt: DateTime!
+  roles: [GroupRoleModel!]
   updatedAt: DateTime!
   user: UserModel!
   userId: String!
@@ -193,6 +248,31 @@ type GroupModel {
   updatedAt: DateTime!
 }
 
+enum GroupPermissionEnum {
+  CHANGE_GROUP_AVATAR
+  CHANGE_GROUP_INFO
+  CHANGE_GROUP_NAME
+  CHANGE_ROLE_INFO
+  CREATE_CHATS
+  CREATE_ROLES
+  DELETE_CHATS
+  DELETE_GROUP
+  DELETE_ROLES
+  INVITE_MEMBERS
+  MANAGE_ROLES
+  REMOVE_MEMBERS
+}
+
+type GroupRoleModel {
+  color: String!
+  createdAt: DateTime!
+  groupId: String!
+  id: String!
+  name: String!
+  permissions: [GroupPermissionEnum!]!
+  updatedAt: DateTime!
+}
+
 type LocationModel {
   city: String!
   country: String!
@@ -206,7 +286,34 @@ input LoginInput {
   pin: String
 }
 
+type MemberChatRoleModel {
+  chatId: String!
+  color: String!
+  createdAt: DateTime!
+  id: String!
+  isCreator: Boolean!
+  name: String!
+  permissions: [ChatPermissionEnum!]!
+  updatedAt: DateTime!
+}
+
+type MemberRoleModel {
+  color: String!
+  createdAt: DateTime!
+  groupId: String!
+  id: String!
+  isCreator: Boolean!
+  name: String!
+  permissions: [GroupPermissionEnum!]!
+  updatedAt: DateTime!
+}
+
 type Mutation {
+  acceptFriendRequest(friendshipId: String!): Boolean!
+  assignGroupRoleToMember(groupId: String!, memberId: String!, roleId: String!): Boolean!
+  assignRoleToUser(chatId: String!, memberId: String!, roleId: String!): Boolean!
+  blockUser(targetUserId: String!): Boolean!
+  cancelFriendRequest(friendshipId: String!): Boolean!
   changeChatAvatar(avatar: Upload!, chatId: String!): String!
   changeChatInfo(chatId: String!, data: ChangeChatInfoInput!): Boolean!
   changeGroupAvatar(avatar: Upload!, groupId: String!): String!
@@ -216,26 +323,72 @@ type Mutation {
   clearSessionCookie: Boolean!
   createChat(data: CreateChatInput!, groupId: String!): ChatModel!
   createGroup(data: CreateGroupInput!): GroupModel!
-  createUserWEmail(data: CreateUserWEmailInput!): UserModel!
+  createUserWEmail(data: CreateUserWEmailInput!): Boolean!
+  declineFriendRequest(friendshipId: String!): Boolean!
   deleteChat(chatId: String!): Boolean!
+  deleteChatRole(chatId: String!, roleId: String!): Boolean!
   deleteGroup(groupId: String!): Boolean!
+  deleteGroupRole(groupId: String!, roleId: String!): Boolean!
+  disableTotp: Boolean!
   downloadFile(chatId: String!, fileId: String!): FileDownloadData!
+  enableTotp(token: String!): Boolean!
+  findOrCreateDirectChat(friendUserId: String!, isSecret: Boolean = false): ChatModel!
   forwardChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
+  generateTotpSecret: TotpSetupModel!
+  inviteMemberToChat(chatId: String!, targetUserId: String!): Boolean!
+  inviteMemberToGroup(groupId: String!, targetUserId: String!): Boolean!
+  leaveChat(chatId: String!): Boolean!
   loginUser(data: LoginInput!): AuthModel!
   logoutUser: Boolean!
   pinChat(chatId: String!): Boolean!
   pinMessage(chatId: String!, messageId: String!): Boolean!
+  refreshToken(data: String!): String!
   removeChatAvatar(chatId: String!): Boolean!
   removeDraft(chatId: String!): Boolean!
   removeFile(chatId: String!, fileId: String!): Boolean!
+  removeFriend(friendshipId: String!): Boolean!
   removeGroupAvatar(groupId: String!): Boolean!
+  removeGroupRoleFromMember(groupId: String!, memberId: String!, roleId: String!): Boolean!
+  removeMemberFromChat(chatId: String!, targetUserId: String!): Boolean!
+  removeMemberFromGroup(groupId: String!, targetUserId: String!): Boolean!
   removeMessages(chatId: String!, data: RemoveMessagesInput!): Boolean!
   removeProfileAvatar: Boolean!
+  removeRoleFromUser(chatId: String!, memberId: String!, roleId: String!): Boolean!
   sendChatDraftMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendFile(chatId: String!, file: Upload!, messageId: String): AttachFileModel!
+  sendFriendRequest(friendId: String!): Boolean!
+  sendFriendRequestByUsername(username: String!): Boolean!
+  sendPreKey(data: PreKeyInput!): Boolean!
+  sendSecretMessage(data: SendSecretMessageInput!): QueueSecretMessageModel!
+  sendSharedSecretKey(data: SharedSecretKeyInput!): QueueSharedSecretKeyModel!
+  toggleChatRequireTotp(chatId: String!, enable: Boolean!): Boolean!
   unPinChat(chatId: String!): Boolean!
   unPinMessage(chatId: String!): Boolean!
+  unblockUser(friendshipId: String!): Boolean!
+  updatePinnedChatsOrder(chatIds: [String!]!): Boolean!
+  upsertChatRole(chatId: String!, data: UpsertChatRoleInput!): Boolean!
+  upsertGroupRole(data: UpsertGroupRoleInput!, groupId: String!): Boolean!
+  verifyChatTotp(chatId: String!, code: String!): Boolean!
+}
+
+input PreKeyInput {
+  ikPub: String!
+  opkPubs: [String!]!
+  spkPub: String!
+  spkSig: String!
+}
+
+type PreKeyModel {
+  createdAt: DateTime!
+  id: ID!
+  ikPub: String!
+  indexOpkPub: Float!
+  opkPubs: [String!]!
+  spkPub: String!
+  spkSig: String!
+  updatedAt: DateTime!
+  userId: String!
 }
 
 type Query {
@@ -251,10 +404,61 @@ type Query {
   findGroupByGroupId(groupId: String!): GroupModel!
   findProfile: UserModel!
   findSessionsByUser: [SessionModel!]!
+  getBlockedUsers: [FriendshipModel!]!
+  getChatRoles(chatId: String!): [ChatRoleModel!]!
+  getFriends: [FriendshipModel!]!
+  getGroupRoles(groupId: String!): [GroupRoleModel!]!
+  getIncomingFriendRequests: [FriendshipModel!]!
+  getMemberChatRole(chatId: String!): MemberChatRoleModel!
+  getMemberRole(groupId: String!): MemberRoleModel!
+  getOutgoingFriendRequests: [FriendshipModel!]!
+  getPreKeys(chatId: String!): [PreKeyModel!]!
+  getSecretMessage(chatId: String!): QueueSecretMessageModel!
+  getSharedSecretKey(chatId: String!): [QueueSharedSecretKeyModel!]!
+}
+
+type QueueSecretMessageModel {
+  chatId: String!
+  createdAt: DateTime!
+  ekPub: String
+  encryptedMessage: String!
+  fromUserId: String!
+  groupId: String!
+  id: ID!
+  ikPub: String
+  isKey: Boolean!
+  iv: String!
+  sig: String!
+  toUserIds: [String!]!
+  ukm: String
+  updatedAt: DateTime!
+  usedOpk: String
+  whoCheckedIds: [String!]!
+}
+
+type QueueSharedSecretKeyModel {
+  chatId: String!
+  createdAt: DateTime!
+  ekPub: String!
+  encryptedKey: String!
+  fromUserId: String!
+  groupId: String!
+  id: ID!
+  ikPub: String!
+  iv: String!
+  sig: String!
+  toUserId: String!
+  ukm: String!
+  updatedAt: DateTime!
+  usedOpk: String
 }
 
 input RemoveMessagesInput {
   messageIds: [String!]!
+}
+
+type SecretKeyRotationModel {
+  chatId: String!
 }
 
 input SendChatMessageInput {
@@ -263,6 +467,17 @@ input SendChatMessageInput {
   forwardedMessageIds: [String!]
   targetChatsId: [String!]
   text: String
+}
+
+input SendSecretMessageInput {
+  chatId: String!
+  encryptedMessage: String!
+  groupId: String!
+  isKey: Boolean
+  iv: String!
+  sig: String!
+  toUserIds: [String!]!
+  ukm: String
 }
 
 type SessionMetadataModel {
@@ -278,18 +493,64 @@ type SessionModel {
   userId: String!
 }
 
+input SharedSecretKeyInput {
+  chatId: String!
+  ekPub: String!
+  encryptedKey: String!
+  groupId: String!
+  ikPub: String!
+  iv: String!
+  sig: String!
+  toUserId: String!
+  ukm: String!
+  usedOpk: String
+}
+
 type Subscription {
+  addSecretMessage(userId: String!): QueueSecretMessageModel!
+  addSharedSecretKey(userId: String!): QueueSharedSecretKeyModel
   chatAdded(groupId: String!, userId: String!): ChatModel!
+  chatAssignedRole(chatId: String!): ChatRoleModel!
   chatDeleted(groupId: String!, userId: String!): ChatModel!
+  chatDeletedRole(chatId: String!): ChatRoleModel!
   chatMessageAdded(chatId: String!, userId: String!): ChatMessageModel!
   chatMessageRemoved(chatId: String!, userId: String!): [ChatMessageIdModel!]!
+  chatRemovedRole(chatId: String!): ChatRoleModel!
   chatUpdated(userId: String!): ChatModel!
+  chatUpsertedRole(chatId: String!): ChatRoleModel!
+  friendRemoved(userId: String!): FriendshipModel!
+  friendRequestAccepted(userId: String!): FriendshipModel!
+  friendRequestCancelled(userId: String!): FriendshipModel!
+  friendRequestDeclined(userId: String!): FriendshipModel!
+  friendRequestSent(userId: String!): FriendshipModel!
   groupAdded(userId: String!): GroupModel!
+  groupAssignedRole(groupId: String!): GroupRoleModel!
   groupDeleted(userId: String!): GroupModel!
+  groupDeletedRole(groupId: String!): GroupRoleModel!
+  groupRemovedRole(groupId: String!): GroupRoleModel!
+  groupUpsertedRole(groupId: String!): GroupRoleModel!
+  secretKeyRotation(userId: String!): SecretKeyRotationModel!
+}
+
+type TotpSetupModel {
+  qrCodeUrl: String!
+  totpSecret: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input UpsertChatRoleInput {
+  color: String!
+  name: String!
+  permissions: [ChatPermissionEnum!]!
+}
+
+input UpsertGroupRoleInput {
+  color: String!
+  name: String!
+  permissions: [GroupPermissionEnum!]!
+}
 
 type UserModel {
   avatarUrl: String
@@ -299,7 +560,9 @@ type UserModel {
   email: String!
   id: ID!
   isDeactivated: Boolean!
+  isTotpEnabled: Boolean!
   password: String!
+  totpSecret: String
   updatedAt: DateTime!
   username: String!
 }

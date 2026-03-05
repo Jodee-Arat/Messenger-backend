@@ -9,4 +9,13 @@ export class AuthModel {
 
   @Field(() => String, { nullable: true })
   message: String;
+
+  @Field(() => String, { nullable: true })
+  sessionId: String;
+
+  @Field(() => String, { nullable: true })
+  accessToken: String;
+
+  @Field(() => String, { nullable: true })
+  refreshToken: String;
 }
