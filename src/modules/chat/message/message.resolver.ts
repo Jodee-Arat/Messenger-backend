@@ -14,6 +14,7 @@ import { SendChatMessageInput } from "./inputs/send-chat-message.input";
 import { MessageService } from "./message.service";
 import { ChatMessageIdModel } from "./models/chat-message-id.model";
 import { ChatMessageModel } from "./models/chat-message.model";
+import { TypingIndicatorModel } from "./models/typing-indicator.model";
 
 @Resolver("Message")
 export class MessageResolver {
@@ -227,5 +228,40 @@ export class MessageResolver {
       chatId
     );
     return !!messageDraft;
+  }
+
+  @Authorization()
+  @IsMemberChat()
+  @Mutation(() => Boolean, { name: "startTyping" })
+  public async startTyping(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string
+  ) {
+    const user = await this.messageService.findUserById(userId);
+    if (!user) return false;
+
+    this.pubSub.publish(`TYPING_${chatId}`, {
+      typingStarted: {
+        userId,
+        username: user.username,
+        chatId
+      }
+    });
+
+    return true;
+  }
+
+  @Subscription(() => TypingIndicatorModel, {
+    name: "typingStarted",
+    filter: (payload, variables) => {
+      // Не отправлять событие самому печатающему
+      return payload.typingStarted.userId !== variables.userId;
+    }
+  })
+  public typingStarted(
+    @Args("chatId") chatId: string,
+    @Args("userId") userId: string
+  ) {
+    return this.pubSub.asyncIterableIterator(`TYPING_${chatId}`);
   }
 }

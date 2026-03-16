@@ -852,4 +852,11 @@ export class MessageService {
       ]
     };
   }
+
+  public async findUserById(userId: string) {
+    return this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true }
+    });
+  }
 }

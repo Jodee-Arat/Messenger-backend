@@ -172,7 +172,6 @@ export class ChatResolver {
   ) {
     const chat = await this.chatService.leaveChat(userId, chatId);
 
-    // If secret chat — clear old keys and notify remaining members to rotate
     if (chat && chat.isSecret) {
       await this.chatService.clearChatSharedKeys(chatId);
       this.pubSub.publish("SECRET_KEY_ROTATION", {
@@ -213,7 +212,6 @@ export class ChatResolver {
       targetUserId
     );
 
-    // If secret chat — clear old keys and notify remaining members to rotate
     if (chat && chat.isSecret) {
       await this.chatService.clearChatSharedKeys(chatId);
       this.pubSub.publish("SECRET_KEY_ROTATION", {

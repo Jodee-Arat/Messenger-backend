@@ -362,6 +362,7 @@ type Mutation {
   sendPreKey(data: PreKeyInput!): Boolean!
   sendSecretMessage(data: SendSecretMessageInput!): QueueSecretMessageModel!
   sendSharedSecretKey(data: SharedSecretKeyInput!): QueueSharedSecretKeyModel!
+  startTyping(chatId: String!): Boolean!
   toggleChatRequireTotp(chatId: String!, enable: Boolean!): Boolean!
   unPinChat(chatId: String!): Boolean!
   unPinMessage(chatId: String!): Boolean!
@@ -530,11 +531,18 @@ type Subscription {
   groupRemovedRole(groupId: String!): GroupRoleModel!
   groupUpsertedRole(groupId: String!): GroupRoleModel!
   secretKeyRotation(userId: String!): SecretKeyRotationModel!
+  typingStarted(chatId: String!, userId: String!): TypingIndicatorModel!
 }
 
 type TotpSetupModel {
   qrCodeUrl: String!
   totpSecret: String!
+}
+
+type TypingIndicatorModel {
+  chatId: String!
+  userId: String!
+  username: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
