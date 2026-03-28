@@ -1,24 +1,30 @@
+import {
+  ForbiddenException,
+  Logger
+} from "@nestjs/common";
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { PubSub } from "graphql-subscriptions";
 
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
-import { CreateSecretChatInput } from "./input/create-secret-chat.input";
 import { PreKeyInput } from "./input/preKey.input";
 import { SendSecretMessageInput } from "./input/send-secret-message.input";
 import { SharedSecretKeyInput } from "./input/shared-secret-key.input";
-// import { MetadataChatModel } from "./models/metadata-chat.model";
+import { UploadSecretAttachmentInput } from "./input/upload-secret-attachment.input";
 import { PreKeyModel } from "./models/preKey.model";
-// import { QueueActionModel } from "./models/queue-action.model";
 import { QueueSecretMessageModel } from "./models/queue-secret-message.model";
 import { QueueSharedSecretKeyModel } from "./models/queue-shared-secret-key.model";
+import { SecretAttachmentDownloadModel } from "./models/secret-attachment-download.model";
+import { SecretAttachmentModel } from "./models/secret-attachment.model";
 import { SecretService } from "./secret.service";
 
 @Resolver("Secret")
 export class SecretResolver {
+  private readonly logger = new Logger(SecretResolver.name);
   private readonly pubSub: PubSub;
-  constructor(private readonly secretService: SecretService) {
+
+  public constructor(private readonly secretService: SecretService) {
     this.pubSub = new PubSub();
   }
 
@@ -39,6 +45,7 @@ export class SecretResolver {
   ) {
     return await this.secretService.getSharedSecretKey(userId, chatId);
   }
+
   @Authorization()
   @Query(() => QueueSecretMessageModel, {
     name: "getSecretMessage"
@@ -50,17 +57,44 @@ export class SecretResolver {
     return await this.secretService.getSecretMessage(userId, chatId);
   }
 
-  // @Authorization()
-  // @Mutation(() => Boolean, { name: "deleteAllPreKeys" })
-  // public async deleteAllPreKeys(@Authorized('id') userId: string) {
-  //   return await this.secretService.deleteAllPreKeys(userId);
-  // } написал я это в один день, во второй забыл зачем написал, мб случайно
+  @Authorization()
+  @Mutation(() => SecretAttachmentModel, { name: "uploadSecretAttachment" })
+  public async uploadSecretAttachment(
+    @Authorized("id") userId: string,
+    @Args("data") input: UploadSecretAttachmentInput
+  ) {
+    return await this.secretService.uploadSecretAttachment(userId, input);
+  }
 
-  // @Authorization()
-  // @Mutation(() => Boolean, { name: "regeneratePreKeys" })
-  // public async regeneratePreKeys(@Authorized() user: User) {
-  //   return await this.secretService.regeneratePreKeys(user);
-  // } аналогично
+  @Authorization()
+  @Mutation(() => SecretAttachmentDownloadModel, {
+    name: "downloadSecretAttachment"
+  })
+  public async downloadSecretAttachment(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("attachmentId") attachmentId: string
+  ) {
+    return await this.secretService.downloadSecretAttachment(
+      userId,
+      chatId,
+      attachmentId
+    );
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "discardSecretAttachment" })
+  public async discardSecretAttachment(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("attachmentId") attachmentId: string
+  ) {
+    return await this.secretService.discardSecretAttachment(
+      userId,
+      chatId,
+      attachmentId
+    );
+  }
 
   @Authorization()
   @Mutation(() => Boolean, { name: "sendPreKey" })
@@ -70,19 +104,6 @@ export class SecretResolver {
   ) {
     return await this.secretService.sendPreKey(userId, input);
   }
-
-  // @Authorization()
-  // @Mutation(() => Boolean, { name: "createSecretChat" })
-  // public async createSecretChat(
-  //   @Authorized("id") userId: string,
-  //   @Args("data") input: CreateSecretChatInput
-  // ) {
-  //   const newChat = await this.secretService.createSecretChat(userId, input);
-  //   this.pubSub.publish("CREATE_SECRET_CHAT", {
-  //     secretChat: newChat
-  //   });
-  //   return newChat ? true : false;
-  // }
 
   @Authorization()
   @Mutation(() => QueueSharedSecretKeyModel, { name: "sendSharedSecretKey" })
@@ -94,12 +115,12 @@ export class SecretResolver {
       fromUserId,
       input
     );
-    this.pubSub.publish("ADD_SHARED_SECRET_KEY", {
+
+    await this.pubSub.publish(`ADD_SHARED_SECRET_KEY_${input.toUserId}`, {
       sharedKey: sharedSecretKey
     });
 
     return sharedSecretKey;
-    //  ? true : false;
   }
 
   @Authorization()
@@ -113,14 +134,18 @@ export class SecretResolver {
       input
     );
 
-    this.pubSub.publish("ADD_SECRET_MESSAGE", {
-      addSecretMessage: secretMessage,
-      self: this
-    });
+    for (const recipientUserId of Array.from(new Set(secretMessage.toUserIds))) {
+      await this.pubSub.publish(`ADD_SECRET_MESSAGE_${recipientUserId}`, {
+        addSecretMessage: secretMessage,
+        recipientUserId,
+        self: this
+      });
+    }
+
     return secretMessage;
-    // ? true : false;
   }
 
+  @Authorization()
   @Subscription(() => QueueSharedSecretKeyModel, {
     name: "addSharedSecretKey",
     nullable: true,
@@ -128,48 +153,58 @@ export class SecretResolver {
       return payload.sharedKey.toUserId === variables.userId;
     }
   })
-  public addSharedSecretKey(@Args("userId") userId: string) {
-    return this.pubSub.asyncIterableIterator("ADD_SHARED_SECRET_KEY");
+  public addSharedSecretKey(
+    @Authorized("id") authorizedUserId: string,
+    @Args("userId") userId: string
+  ) {
+    this.assertAuthorizedSubscriptionUser(authorizedUserId, userId);
+    return this.pubSub.asyncIterableIterator(
+      `ADD_SHARED_SECRET_KEY_${authorizedUserId}`
+    );
   }
+
+  @Authorization()
   @Subscription(() => QueueSecretMessageModel, {
     name: "addSecretMessage",
-    filter: (payload, variables) => {
-      let isCorrectUser = false;
-
-      for (const userId of payload.addSecretMessage.toUserIds) {
-        if (userId === variables.userId) {
-          isCorrectUser = true;
-        }
+    filter: async (payload, variables) => {
+      if (payload.recipientUserId !== variables.userId) {
+        return false;
       }
-      if (isCorrectUser) {
-        payload.self.secretService.updateSecretMessageForReader(
+
+      try {
+        await payload.self.secretService.updateSecretMessageForReader(
           variables.userId,
           payload.addSecretMessage.chatId
         );
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "unknown error";
+        payload.self.logger.warn(
+          `Failed to mark secret message as read for ${variables.userId}: ${message}`
+        );
       }
-      return isCorrectUser;
+
+      return true;
     }
   })
-  public addSecretMessage(@Args("userId") userId: string) {
-    return this.pubSub.asyncIterableIterator("ADD_SECRET_MESSAGE");
+  public addSecretMessage(
+    @Authorized("id") authorizedUserId: string,
+    @Args("userId") userId: string
+  ) {
+    this.assertAuthorizedSubscriptionUser(authorizedUserId, userId);
+    return this.pubSub.asyncIterableIterator(
+      `ADD_SECRET_MESSAGE_${authorizedUserId}`
+    );
   }
-  // @Subscription(() => QueueActionModel, {
-  //   name: "addSecretChat",
-  //   filter: (payload, variables) => {
-  //     let isCorrectUser = false;
-  //     const metadataObject: MetadataChatModel = JSON.parse(
-  //       payload.secretChat.metadata
-  //     );
 
-  //     for (const user of metadataObject.members) {
-  //       if (user.id === variables.userId) {
-  //         isCorrectUser = true;
-  //       }
-  //     }
-  //     return isCorrectUser;
-  //   }
-  // })
-  // public addSecretChat(@Args("userId") userId: string) {
-  //   return this.pubSub.asyncIterableIterator("CREATE_SECRET_CHAT");
-  // }
+  private assertAuthorizedSubscriptionUser(
+    authorizedUserId: string,
+    requestedUserId: string
+  ) {
+    if (authorizedUserId !== requestedUserId) {
+      throw new ForbiddenException(
+        "Subscriptions can only be opened for the authenticated user"
+      );
+    }
+  }
 }

@@ -20,16 +20,21 @@ export class GqlAuthGuard implements CanActivate {
     const ctx = GqlExecutionContext.create(context);
     const request = ctx.getContext().req;
 
-    // Сначала пробуем авторизоваться через JWT (для мобильных клиентов)
+    if (request.user?.id) {
+      return true;
+    }
+
     const authHeader = request.headers.authorization;
     if (authHeader) {
       const [type, token] = authHeader.split(" ");
       if (type === "Bearer" && token) {
         try {
-          const payload = await this.jwtService.verifyAsync(token);
+          const payload = await this.jwtService.verifyAsync<{ userId: string }>(
+            token
+          );
           const user = await this.prismaService.user.findUnique({
             where: {
-              id: payload.userId // Предполагается, что в токене есть 'userId'
+              id: payload.userId
             }
           });
 
@@ -38,13 +43,13 @@ export class GqlAuthGuard implements CanActivate {
             return true;
           }
         } catch (error) {
-          // Логируем ошибку для отладки, но не выбрасываем её
-          console.error("JWT verification failed:", error.message);
+          const message =
+            error instanceof Error ? error.message : "unknown error";
+          console.error("JWT verification failed:", message);
         }
       }
     }
 
-    // Если JWT-токен не сработал, пробуем авторизоваться через сессию (для веб-версии)
     if (typeof request.session?.userId !== "undefined") {
       const user = await this.prismaService.user.findUnique({
         where: {
@@ -58,7 +63,6 @@ export class GqlAuthGuard implements CanActivate {
       }
     }
 
-    // Если ни один из методов не сработал
-    throw new UnauthorizedException("Пользователь не авторизован");
+    throw new UnauthorizedException("РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РЅРµ Р°РІС‚РѕСЂРёР·РѕРІР°РЅ");
   }
 }

@@ -12,6 +12,11 @@ import { UpsertGroupRoleInput } from "./inputs/upsert-group-role.input";
 const DEFAULT_ROLE_NAME = "Участник";
 const DEFAULT_ROLE_COLOR = "#808080";
 const DEFAULT_ROLE_PERMISSIONS: GroupPermissionEnum[] = [];
+const OWNER_ROLE_NAME = "Owner";
+const OWNER_ROLE_COLOR = "#FFD700";
+const OWNER_ROLE_PERMISSIONS: GroupPermissionEnum[] = Object.values(
+  GroupPermissionEnum
+);
 
 @Injectable()
 export class GroupRoleService {
@@ -70,8 +75,35 @@ export class GroupRoleService {
     });
     if (!member) throw new BadRequestException("Member not found");
 
+    if (member.isCreator) {
+      return {
+        id: `owner:${groupId}:${userId}`,
+        name: OWNER_ROLE_NAME,
+        color: OWNER_ROLE_COLOR,
+        groupId,
+        permissions: OWNER_ROLE_PERMISSIONS,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        isCreator: true
+      };
+    }
+
+    const currentRole = member.roles[0]?.groupRole;
+    if (!currentRole) {
+      return {
+        id: `member:${groupId}:${userId}`,
+        name: DEFAULT_ROLE_NAME,
+        color: DEFAULT_ROLE_COLOR,
+        groupId,
+        permissions: DEFAULT_ROLE_PERMISSIONS,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        isCreator: false
+      };
+    }
+
     return {
-      ...member.roles[0]?.groupRole,
+      ...currentRole,
       isCreator: member.isCreator
     };
   }

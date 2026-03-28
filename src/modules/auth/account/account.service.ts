@@ -3,8 +3,10 @@ import { hash } from "argon2";
 import { generateSecret, generateURI, verify as verifyTotp } from "otplib";
 import * as QRCode from "qrcode";
 
+import { FriendshipStatusEnum, Prisma, User } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
+import { FiltersInput } from "../../inputs/filters.input";
 import { PreKeyInput } from "../../secret/input/preKey.input";
 
 import { CreateUserWEmailInput } from "./inputs/create-user-with-email.input";
@@ -136,13 +138,121 @@ export class AccountService {
     return user;
   }
 
-  public async findAllUsers(userId: string) {
-    return await this.prismaService.user.findMany({
+  public async findAllUsers(userId: string, input?: FiltersInput) {
+    const normalizedSearchTerm = input?.searchTerm?.trim();
+    const take = this.normalizeTake(input?.take);
+    const skip = this.normalizeSkip(input?.skip);
+
+    const blockedFriendships = await this.prismaService.friendship.findMany({
       where: {
-        id: {
-          not: userId
+        status: FriendshipStatusEnum.BLOCKED,
+        OR: [{ userId }, { friendId: userId }]
+      },
+      select: { userId: true, friendId: true }
+    });
+
+    const blockedIds = blockedFriendships.map((f) =>
+      f.userId === userId ? f.friendId : f.userId
+    );
+
+    const users = await this.prismaService.user.findMany({
+      where: {
+        AND: [
+          { id: { not: userId } },
+          ...(blockedIds.length > 0 ? [{ id: { notIn: blockedIds } }] : []),
+          ...(normalizedSearchTerm
+            ? [this.findBySearchTermUserFilter(normalizedSearchTerm)]
+            : [])
+        ]
+      },
+      orderBy: { username: "asc" },
+      skip,
+      take: normalizedSearchTerm ? Math.max(take * 5, 30) : take
+    });
+
+    if (!normalizedSearchTerm) {
+      return users;
+    }
+
+    return this.rankUsersBySearchTerm(users, normalizedSearchTerm).slice(0, take);
+  }
+
+  private normalizeTake(take?: number | null) {
+    if (!take || Number.isNaN(take)) {
+      return 10;
+    }
+
+    return Math.min(Math.max(Math.floor(take), 1), 25);
+  }
+
+  private normalizeSkip(skip?: number | null) {
+    if (!skip || Number.isNaN(skip)) {
+      return 0;
+    }
+
+    return Math.max(Math.floor(skip), 0);
+  }
+
+  private findBySearchTermUserFilter(searchTerm: string): Prisma.UserWhereInput {
+    return {
+      OR: [
+        {
+          username: {
+            contains: searchTerm,
+            mode: "insensitive"
+          }
+        },
+        {
+          bio: {
+            contains: searchTerm,
+            mode: "insensitive"
+          }
         }
+      ]
+    };
+  }
+
+  private rankUsersBySearchTerm(users: User[], searchTerm: string) {
+    const normalizedSearchTerm = searchTerm.toLowerCase();
+
+    const getScore = (user: User) => {
+      const username = user.username.toLowerCase();
+      const bio = user.bio?.toLowerCase() ?? "";
+
+      if (username === normalizedSearchTerm) {
+        return 400;
       }
+
+      if (username.startsWith(normalizedSearchTerm)) {
+        return 300;
+      }
+
+      if (
+        username
+          .split(/[\s._-]+/)
+          .some((part) => part.startsWith(normalizedSearchTerm))
+      ) {
+        return 250;
+      }
+
+      if (username.includes(normalizedSearchTerm)) {
+        return 200;
+      }
+
+      if (bio.includes(normalizedSearchTerm)) {
+        return 100;
+      }
+
+      return 0;
+    };
+
+    return [...users].sort((left, right) => {
+      const scoreDelta = getScore(right) - getScore(left);
+      if (scoreDelta !== 0) {
+        return scoreDelta;
+      }
+
+      return left.username.localeCompare(right.username);
     });
   }
 }

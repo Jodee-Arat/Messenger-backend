@@ -3,6 +3,7 @@ import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
+import { FiltersInput } from "../../inputs/filters.input";
 import { PreKeyInput } from "../../secret/input/preKey.input";
 
 import { AccountService } from "./account.service";
@@ -48,7 +49,10 @@ export class AccountResolver {
 
   @Authorization()
   @Query(() => [UserModel], { name: "findAllUsers" })
-  public async findAllUsers(@Authorized("id") userId: string) {
-    return await this.accountService.findAllUsers(userId);
+  public async findAllUsers(
+    @Authorized("id") userId: string,
+    @Args("filters", { nullable: true }) input?: FiltersInput
+  ) {
+    return await this.accountService.findAllUsers(userId, input);
   }
 }

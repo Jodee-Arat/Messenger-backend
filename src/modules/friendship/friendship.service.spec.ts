@@ -1,4 +1,4 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 
 import { PrismaService } from "@/src/core/prisma/prisma.service";
@@ -59,9 +59,11 @@ describe("FriendshipService", () => {
       const result = await service.sendFriendRequest("user1", "user2");
 
       expect(result).toEqual(friendship);
-      expect(prisma.friendship.create).toHaveBeenCalledWith({
-        data: { userId: "user1", friendId: "user2", status: "PENDING" }
-      });
+      expect(prisma.friendship.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: { userId: "user1", friendId: "user2", status: "PENDING" }
+        })
+      );
     });
 
     it("should throw when sending to yourself", async () => {
@@ -447,6 +449,78 @@ describe("FriendshipService", () => {
       expect(prisma.friendship.findMany).toHaveBeenCalledWith({
         where: { userId: "user1", status: "BLOCKED" },
         include: { friend: true }
+      });
+    });
+  });
+
+  describe("findBlockingFriendshipBetweenUsers", () => {
+    it("should query blocked friendships in both directions", async () => {
+      prisma.friendship.findFirst.mockResolvedValue({ id: "fr1" });
+
+      const result = await service.findBlockingFriendshipBetweenUsers(
+        "user1",
+        "user2"
+      );
+
+      expect(result).toEqual({ id: "fr1" });
+      expect(prisma.friendship.findFirst).toHaveBeenCalledWith({
+        where: {
+          status: "BLOCKED",
+          OR: [
+            { userId: "user1", friendId: "user2" },
+            { userId: "user2", friendId: "user1" }
+          ]
+        }
+      });
+    });
+  });
+
+  describe("ensureUsersCanDirectContact", () => {
+    it("should allow direct contact when there is no blocking friendship", async () => {
+      prisma.friendship.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.ensureUsersCanDirectContact("user1", "user2")
+      ).resolves.toBeUndefined();
+    });
+
+    it("should throw when either side has blocked the other", async () => {
+      prisma.friendship.findFirst.mockResolvedValue({
+        id: "fr1",
+        status: "BLOCKED"
+      });
+
+      await expect(
+        service.ensureUsersCanDirectContact("user1", "user2")
+      ).rejects.toThrow(ForbiddenException);
+      await expect(
+        service.ensureUsersCanDirectContact("user1", "user2")
+      ).rejects.toThrow(
+        "Direct contact is unavailable because one of the users has blocked the other"
+      );
+    });
+  });
+
+  describe("getBlockedCounterpartIds", () => {
+    it("should return unique blocked counterpart ids from both directions", async () => {
+      prisma.friendship.findMany.mockResolvedValue([
+        { userId: "user1", friendId: "user2" },
+        { userId: "user3", friendId: "user1" },
+        { userId: "user1", friendId: "user2" }
+      ]);
+
+      const result = await service.getBlockedCounterpartIds("user1");
+
+      expect(result).toEqual(["user2", "user3"]);
+      expect(prisma.friendship.findMany).toHaveBeenCalledWith({
+        where: {
+          status: "BLOCKED",
+          OR: [{ userId: "user1" }, { friendId: "user1" }]
+        },
+        select: {
+          userId: true,
+          friendId: true
+        }
       });
     });
   });

@@ -199,6 +199,23 @@ type FileMessageModel {
   userId: String!
 }
 
+type SecretAttachmentDownloadModel {
+  attachmentId: String!
+  chatId: String!
+  ciphertextBase64: String!
+  ciphertextSize: String!
+}
+
+type SecretAttachmentModel {
+  chatId: String!
+  ciphertextSize: String!
+  committedAt: DateTime
+  createdAt: DateTime!
+  expiresAt: DateTime
+  id: ID!
+  updatedAt: DateTime!
+}
+
 input FiltersInput {
   searchTerm: String
   skip: Float
@@ -330,6 +347,8 @@ type Mutation {
   deleteGroup(groupId: String!): Boolean!
   deleteGroupRole(groupId: String!, roleId: String!): Boolean!
   disableTotp: Boolean!
+  discardSecretAttachment(attachmentId: String!, chatId: String!): Boolean!
+  downloadSecretAttachment(attachmentId: String!, chatId: String!): SecretAttachmentDownloadModel!
   downloadFile(chatId: String!, fileId: String!): FileDownloadData!
   enableTotp(token: String!): Boolean!
   findOrCreateDirectChat(friendUserId: String!, isSecret: Boolean = false): ChatModel!
@@ -367,6 +386,7 @@ type Mutation {
   unPinChat(chatId: String!): Boolean!
   unPinMessage(chatId: String!): Boolean!
   unblockUser(friendshipId: String!): Boolean!
+  uploadSecretAttachment(data: UploadSecretAttachmentInput!): SecretAttachmentModel!
   updatePinnedChatsOrder(chatIds: [String!]!): Boolean!
   upsertChatRole(chatId: String!, data: UpsertChatRoleInput!): Boolean!
   upsertGroupRole(data: UpsertGroupRoleInput!, groupId: String!): Boolean!
@@ -399,7 +419,7 @@ type Query {
   findAllChatsByUser(filters: FiltersInput!): [ChatModel!]!
   findAllGroupsByUser(filters: FiltersInput!): [GroupModel!]!
   findAllMessagesByChat(chatId: String!, filters: FiltersInput!): [ChatMessageModel!]!
-  findAllUsers: [UserModel!]!
+  findAllUsers(filters: FiltersInput): [UserModel!]!
   findChatByChatId(chatId: String!): ChatModel!
   findCurrentSession: SessionModel!
   findGroupByGroupId(groupId: String!): GroupModel!
@@ -429,6 +449,7 @@ type QueueSecretMessageModel {
   ikPub: String
   isKey: Boolean!
   iv: String!
+  secretAttachmentIds: [String!]!
   sig: String!
   toUserIds: [String!]!
   ukm: String
@@ -476,6 +497,7 @@ input SendSecretMessageInput {
   groupId: String!
   isKey: Boolean
   iv: String!
+  secretAttachmentIds: [String!]
   sig: String!
   toUserIds: [String!]!
   ukm: String
@@ -505,6 +527,11 @@ input SharedSecretKeyInput {
   toUserId: String!
   ukm: String!
   usedOpk: String
+}
+
+input UploadSecretAttachmentInput {
+  chatId: String!
+  ciphertextBase64: String!
 }
 
 type Subscription {
@@ -569,8 +596,6 @@ type UserModel {
   id: ID!
   isDeactivated: Boolean!
   isTotpEnabled: Boolean!
-  password: String!
-  totpSecret: String
   updatedAt: DateTime!
   username: String!
 }

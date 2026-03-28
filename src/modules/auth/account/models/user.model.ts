@@ -10,7 +10,7 @@ export class UserModel implements User {
   @Field(() => String)
   public email: string;
 
-  @Field(() => String)
+  // password is intentionally excluded from @Field to prevent exposure via GraphQL
   public password: string;
 
   @Field(() => String)
@@ -22,7 +22,7 @@ export class UserModel implements User {
   @Field(() => String, { nullable: true })
   public avatarUrl: string | null;
 
-  @Field(() => String, { nullable: true })
+  // totpSecret is intentionally excluded from @Field to prevent exposure via GraphQL
   public totpSecret: string | null;
 
   @Field(() => Boolean)

@@ -16,6 +16,7 @@ import {
 } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
+import { FriendshipService } from "../friendship/friendship.service";
 import { GroupService } from "../group/group.service";
 import { FiltersInput } from "../inputs/filters.input";
 import { StorageService } from "../libs/storage/storage.service";
@@ -24,13 +25,115 @@ import { ChangeChatInfoInput } from "./inputs/change-chat-info.input";
 import { CreateChatInput } from "./inputs/create-chat.input";
 import { RoleService } from "./role/role.service";
 
+type ChatAccessTarget = {
+  isGroup: boolean;
+  isSecret?: boolean;
+  members: Array<{ userId: string }>;
+};
+
+const leaveChatMessageInclude = {
+  files: true,
+  chat: {
+    include: {
+      members: {
+        include: {
+          user: true
+        }
+      }
+    }
+  },
+  repliedToLinks: {
+    include: {
+      repliedTo: {
+        select: {
+          id: true,
+          text: true,
+          files: true,
+          user: true
+        }
+      },
+      reply: {
+        select: {
+          id: true,
+          text: true,
+          files: true,
+          user: true
+        }
+      }
+    }
+  },
+  user: true
+} satisfies Prisma.ChatMessageInclude;
+
+const leaveChatUpdatedChatInclude = {
+  members: {
+    include: {
+      user: true
+    }
+  },
+  draftMessages: {
+    include: {
+      files: true,
+      user: true
+    }
+  },
+  lastMessage: {
+    include: {
+      files: true,
+      user: true
+    }
+  }
+} satisfies Prisma.ChatInclude;
+
+type LeaveChatMessagePayload = Prisma.ChatMessageGetPayload<{
+  include: typeof leaveChatMessageInclude;
+}>;
+
+type LeaveChatUpdatedChatPayload = Prisma.ChatGetPayload<{
+  include: typeof leaveChatUpdatedChatInclude;
+}>;
+
+const chatUpdatedBroadcastInclude = {
+  members: {
+    include: {
+      user: true
+    }
+  },
+  lastMessage: {
+    include: {
+      files: true,
+      user: true
+    }
+  }
+} satisfies Prisma.ChatInclude;
+
+// Per-user pin payload: same as broadcast but includes member pinnedMessageId
+const chatUpdatedWithPinInclude = {
+  members: {
+    include: {
+      user: true
+    }
+  },
+  lastMessage: {
+    include: {
+      files: true,
+      user: true
+    }
+  }
+} satisfies Prisma.ChatInclude;
+
+type ChatUpdatedBroadcastPayload = Prisma.ChatGetPayload<{
+  include: typeof chatUpdatedBroadcastInclude;
+}>;
+
 @Injectable()
 export class ChatService {
   public constructor(
     private readonly prismaService: PrismaService,
     private readonly storageService: StorageService,
     private readonly roleService: RoleService,
-    private readonly groupService: GroupService
+    private readonly groupService: GroupService,
+    private readonly friendshipService: FriendshipService
   ) {}
 
   /**
@@ -48,7 +151,16 @@ export class ChatService {
         roles: {
           include: { chatRole: true }
         },
-        chat: { select: { isGroup: true } }
+        chat: {
+          select: {
+            isGroup: true,
+            members: {
+              select: {
+                userId: true
+              }
+            }
+          }
+        }
       }
     });
 
@@ -56,8 +168,17 @@ export class ChatService {
       throw new BadRequestException("User is not a member of the chat");
     }
 
-    // In DM (1-on-1) chats both members have equal rights
-    if (!(member as any).chat?.isGroup) return member;
+    // In DM (1-on-1) chats both members have equal rights unless direct contact is blocked
+    if (!member.chat?.isGroup) {
+      const blockedCounterpartIds =
+        await this.getBlockedCounterpartIdsSet(userId);
+      this.assertDirectChatNotBlocked(
+        userId,
+        member.chat,
+        blockedCounterpartIds
+      );
+      return member;
+    }
 
     if (member.isCreator) return member;
 
@@ -72,19 +193,7 @@ export class ChatService {
   }
 
   public async checkChatAccess(userId: string, chatId: string) {
-    const chat = await this.prismaService.chat.findFirst({
-      where: {
-        id: chatId,
-        isDeleted: false,
-        members: {
-          some: {
-            userId
-          }
-        }
-      }
-    });
-
-    return !!chat;
+    return this.isUserInChat(userId, chatId);
   }
 
   public async findAllChatsByGroup(
@@ -93,9 +202,10 @@ export class ChatService {
     input: FiltersInput
   ) {
     const { searchTerm, skip, take } = input;
+    const normalizedSearchTerm = searchTerm?.trim();
 
-    const whereClause = searchTerm
-      ? this.findBySearchTermChatFilter(searchTerm)
+    const whereClause = normalizedSearchTerm
+      ? this.findBySearchTermChatFilter(normalizedSearchTerm)
       : undefined;
 
     const chats = await this.prismaService.chat.findMany({
@@ -104,6 +214,13 @@ export class ChatService {
       where: {
         isDeleted: false,
         groupId,
+        group: {
+          members: {
+            some: {
+              userId
+            }
+          }
+        },
         members: {
           some: {
             userId
@@ -152,9 +269,10 @@ export class ChatService {
 
   public async findAllChatsByUser(userId: string, input: FiltersInput) {
     const { searchTerm, skip, take } = input;
+    const normalizedSearchTerm = searchTerm?.trim();
 
-    const whereClause = searchTerm
-      ? this.findBySearchTermChatFilter(searchTerm)
+    const whereClause = normalizedSearchTerm
+      ? this.findBySearchTermChatFilter(normalizedSearchTerm)
       : undefined;
 
     const chats = await this.prismaService.chat.findMany({
@@ -162,6 +280,20 @@ export class ChatService {
       skip: skip ?? 0,
       where: {
         isDeleted: false,
+        OR: [
+          {
+            groupId: null
+          },
+          {
+            group: {
+              members: {
+                some: {
+                  userId
+                }
+              }
+            }
+          }
+        ],
         members: {
           some: {
             userId
@@ -199,7 +331,13 @@ export class ChatService {
       }
     });
 
-    return chats.map((chat) => ({
+    const blockedCounterpartIds =
+      await this.getBlockedCounterpartIdsSet(userId);
+    const visibleChats = chats.filter(
+      (chat) => !this.isDirectChatBlocked(userId, chat, blockedCounterpartIds)
+    );
+
+    return visibleChats.map((chat) => ({
       ...chat,
       isPinned: chat.pinnedByUser.length > 0,
       pinnedOrder:
@@ -213,6 +351,20 @@ export class ChatService {
       where: {
         id: chatId,
         isDeleted: false,
+        OR: [
+          {
+            groupId: null
+          },
+          {
+            group: {
+              members: {
+                some: {
+                  userId
+                }
+              }
+            }
+          }
+        ],
         members: {
           some: {
             userId
@@ -258,6 +410,22 @@ export class ChatService {
         members: {
           include: {
             user: true,
+            pinnedMessage: {
+              include: {
+                files: true,
+                user: true,
+                repliedToLinks: {
+                  include: {
+                    repliedTo: {
+                      include: {
+                        files: true,
+                        user: true
+                      }
+                    }
+                  }
+                }
+              }
+            },
             roles: {
               include: { chatRole: true }
             }
@@ -268,9 +436,19 @@ export class ChatService {
 
     if (!chat) return null;
 
+    const blockedCounterpartIds =
+      await this.getBlockedCounterpartIdsSet(userId);
+    this.assertDirectChatNotBlocked(userId, chat, blockedCounterpartIds);
+
+    // Per-user pinned message: take from current user's ChatMember record
+    const currentMember = chat.members.find((m) => m.userId === userId);
+    const userPinnedMessage = currentMember?.pinnedMessage ?? null;
+
     // Flatten join table: member.roles -> array of ChatRole objects
     return {
       ...chat,
+      pinnedMessage: userPinnedMessage,
+      pinnedMessageId: userPinnedMessage?.id ?? null,
       members: chat.members.map((member) => ({
         ...member,
         roles: member.roles.map((rm) => rm.chatRole)
@@ -384,6 +562,11 @@ export class ChatService {
     friendUserId: string,
     isSecret: boolean = false
   ) {
+    await this.friendshipService.ensureUsersCanDirectContact(
+      userId,
+      friendUserId
+    );
+
     // Find existing DM between these two users
     const existing = await this.prismaService.chat.findFirst({
       where: {
@@ -543,22 +726,63 @@ export class ChatService {
   public async deleteChat(userId: string, chatId: string) {
     const member = await this.prismaService.chatMember.findFirst({
       where: { chatId, userId },
-      include: { chat: { select: { isGroup: true } } }
+      include: {
+        chat: {
+          select: {
+            isGroup: true,
+            members: {
+              select: {
+                userId: true
+              }
+            }
+          }
+        }
+      }
     });
     if (!member) {
       throw new BadRequestException("User is not a member of the chat");
     }
-    // In DM chats both members can delete; in group chats only creator
-    const isGroup = (member as any).chat?.isGroup;
+    // DM chats: either party may delete (including after a block, so users can clean up).
+    // Group chats: only the creator may delete.
+    const isGroup = member.chat?.isGroup;
     if (isGroup && !member.isCreator) {
       throw new ForbiddenException("Only the chat creator can delete the chat");
     }
 
-    const chat = await this.prismaService.chat.delete({
-      where: { id: chatId },
-      include: {
-        members: true
+    const secretAttachmentStorageKeys = (
+      await this.prismaService.secretAttachment.findMany({
+        where: {
+          chatId
+        },
+        select: {
+          storageKey: true
+        }
+      })
+    ).map((attachment) => attachment.storageKey);
+
+    const chat = await this.prismaService.$transaction(async (tx) => {
+      for (const storageKey of secretAttachmentStorageKeys) {
+        await this.storageService.remove(storageKey);
       }
+
+      await tx.pinnedChat.deleteMany({
+        where: {
+          chatId
+        }
+      });
+
+      await tx.draftMessage.deleteMany({
+        where: {
+          chatId
+        }
+      });
+
+      return tx.chat.delete({
+        where: { id: chatId },
+        include: {
+          members: true
+        }
+      });
     });
 
     return chat;
@@ -571,8 +795,23 @@ export class ChatService {
       ChatPermissionEnum.PIN_MESSAGES
     );
 
-    await this.prismaService.chat.update({
-      where: { id: chatId },
+    const message = await this.prismaService.chatMessage.findFirst({
+      where: {
+        id: messageId,
+        chatId,
+        isDeleted: false
+      },
+      select: {
+        id: true
+      }
+    });
+
+    if (!message) {
+      throw new BadRequestException("Message not found in chat");
+    }
+
+    await this.prismaService.chatMember.updateMany({
+      where: { userId, chatId },
       data: {
         pinnedMessageId: messageId
       }
@@ -587,8 +826,8 @@ export class ChatService {
       ChatPermissionEnum.PIN_MESSAGES
     );
 
-    await this.prismaService.chat.update({
-      where: { id: chatId },
+    await this.prismaService.chatMember.updateMany({
+      where: { userId, chatId },
       data: {
         pinnedMessageId: null
       }
@@ -639,29 +878,63 @@ export class ChatService {
   }
 
   public async isUserInChat(userId: string, chatId: string) {
-    const chat = await this.prismaService.chat.findUnique({
-      where: { id: chatId },
-      select: {
-        members: {
-          where: {
-            userId
+    const chat = await this.prismaService.chat.findFirst({
+      where: {
+        id: chatId,
+        isDeleted: false,
+        OR: [
+          {
+            groupId: null
           },
+          {
+            group: {
+              members: {
+                some: {
+                  userId
+                }
+              }
+            }
+          }
+        ],
+        members: {
+          some: {
+            userId
+          }
+        }
+      },
+      select: {
+        id: true,
+        isGroup: true,
+        isSecret: true,
+        groupId: true,
+        members: {
           select: {
-            id: true
+            userId: true
           }
         }
       }
     });
 
-    if (!chat || chat.members.length === 0) {
+    if (!chat) {
       return false;
     }
-    return true;
+
+    const blockedCounterpartIds =
+      await this.getBlockedCounterpartIdsSet(userId);
+    return !this.isDirectChatBlocked(userId, chat, blockedCounterpartIds);
   }
 
   public async leaveChat(userId: string, chatId: string) {
     const member = await this.prismaService.chatMember.findFirst({
-      where: { chatId, userId }
+      where: { chatId, userId },
+      include: {
+        chat: {
+          select: {
+            isGroup: true,
+            isSecret: true
+          }
+        }
+      }
     });
     if (!member) {
       throw new BadRequestException("User is not a member of this chat");
@@ -677,9 +950,48 @@ export class ChatService {
       where: { chatMemberId: member.id }
     });
 
+    await this.prismaService.draftMessage.deleteMany({
+      where: { chatId, userId }
+    });
+
+    await this.prismaService.pinnedChat.deleteMany({
+      where: { chatId, userId }
+    });
+
     await this.prismaService.chatMember.delete({
       where: { id: member.id }
     });
+
+    let leaveMessage: LeaveChatMessagePayload | null = null;
+    let updatedChat: LeaveChatUpdatedChatPayload | null = null;
+
+    if (member.chat?.isGroup && !member.chat.isSecret) {
+      const leftUser = await this.prismaService.user.findUnique({
+        where: { id: userId },
+        select: { username: true }
+      });
+
+      if (leftUser) {
+        leaveMessage = await this.prismaService.chatMessage.create({
+          data: {
+            chatId,
+            text: `${leftUser.username} left the chat`,
+            userId,
+            isStarted: true
+          },
+          include: leaveChatMessageInclude
+        });
+
+        updatedChat = await this.prismaService.chat.update({
+          where: { id: chatId },
+          data: {
+            lastMessageId: leaveMessage.id,
+            lastMessageAt: leaveMessage.createdAt
+          },
+          include: leaveChatUpdatedChatInclude
+        });
+      }
+    }
 
     // Return chat with remaining members for subscriptions
     const chat = await this.prismaService.chat.findUnique({
@@ -687,7 +999,7 @@ export class ChatService {
       include: { members: true }
     });
 
-    return chat;
+    return { chat, leaveMessage, updatedChat };
   }
 
   public async inviteMember(
@@ -774,6 +1086,14 @@ export class ChatService {
       where: { chatMemberId: targetMember.id }
     });
 
+    await this.prismaService.draftMessage.deleteMany({
+      where: { chatId, userId: targetUserId }
+    });
+
+    await this.prismaService.pinnedChat.deleteMany({
+      where: { chatId, userId: targetUserId }
+    });
+
     await this.prismaService.chatMember.delete({
       where: { id: targetMember.id }
     });
@@ -809,12 +1129,32 @@ export class ChatService {
     // Only creator (or any member in DM) can toggle
     const member = await this.prismaService.chatMember.findFirst({
       where: { chatId, userId },
-      include: { chat: { select: { isGroup: true } } }
+      include: {
+        chat: {
+          select: {
+            isGroup: true,
+            members: {
+              select: {
+                userId: true
+              }
+            }
+          }
+        }
+      }
     });
     if (!member) {
       throw new BadRequestException("User is not a member of the chat");
     }
-    const isGroupChat = (member as any).chat?.isGroup;
+    const isGroupChat = member.chat?.isGroup;
+    if (!isGroupChat) {
+      const blockedCounterpartIds =
+        await this.getBlockedCounterpartIdsSet(userId);
+      this.assertDirectChatNotBlocked(
+        userId,
+        member.chat,
+        blockedCounterpartIds
+      );
+    }
     if (isGroupChat && !member.isCreator) {
       throw new ForbiddenException(
         "Only the chat creator can toggle TOTP requirement"
@@ -858,11 +1198,34 @@ export class ChatService {
     return true;
   }
 
+  public async getChatUpdatedBroadcastPayload(
+    chatId: string
+  ): Promise<ChatUpdatedBroadcastPayload | null> {
+    return this.prismaService.chat.findUnique({
+      where: { id: chatId },
+      include: chatUpdatedBroadcastInclude
+    });
+  }
+
+  public async getMemberPinnedMessageIds(
+    chatId: string
+  ): Promise<Record<string, string | null>> {
+    const members = await this.prismaService.chatMember.findMany({
+      where: { chatId },
+      select: { userId: true, pinnedMessageId: true }
+    });
+    return Object.fromEntries(
+      members.map((m) => [m.userId, m.pinnedMessageId ?? null])
+    );
+  }
+
   /**
    * Verify a user's TOTP code for chat access.
    * Returns true if the code is valid.
    */
   public async verifyChatTotp(userId: string, chatId: string, code: string) {
+    await this.ensureChatTargetsAccessible(userId, [chatId]);
+
     // Check chat requires TOTP
     const chat = await this.prismaService.chat.findUnique({
       where: { id: chatId }
@@ -908,8 +1271,135 @@ export class ChatService {
             contains: searchTerm,
             mode: "insensitive"
           }
+        },
+        {
+          description: {
+            contains: searchTerm,
+            mode: "insensitive"
+          }
+        },
+        {
+          members: {
+            some: {
+              user: {
+                username: {
+                  contains: searchTerm,
+                  mode: "insensitive"
+                }
+              }
+            }
+          }
+        },
+        {
+          lastMessage: {
+            is: {
+              text: {
+                contains: searchTerm,
+                mode: "insensitive"
+              }
+            }
+          }
         }
       ]
     };
+  }
+
+  public async ensureChatTargetsAccessible(userId: string, chatIds: string[]) {
+    const uniqueChatIds = Array.from(new Set(chatIds.filter(Boolean)));
+
+    if (uniqueChatIds.length === 0) {
+      return [];
+    }
+
+    const chats = await this.prismaService.chat.findMany({
+      where: {
+        id: {
+          in: uniqueChatIds
+        },
+        isDeleted: false,
+        OR: [
+          {
+            groupId: null
+          },
+          {
+            group: {
+              members: {
+                some: {
+                  userId
+                }
+              }
+            }
+          }
+        ],
+        members: {
+          some: {
+            userId
+          }
+        }
+      },
+      select: {
+        id: true,
+        isGroup: true,
+        isSecret: true,
+        groupId: true,
+        members: {
+          select: {
+            userId: true
+          }
+        }
+      }
+    });
+
+    if (chats.length !== uniqueChatIds.length) {
+      throw new ForbiddenException("Chat not found or user is not a member");
+    }
+
+    const blockedCounterpartIds =
+      await this.getBlockedCounterpartIdsSet(userId);
+    chats.forEach((chat) =>
+      this.assertDirectChatNotBlocked(userId, chat, blockedCounterpartIds)
+    );
+
+    return chats;
+  }
+
+  public async ensureDirectChatAccess(userId: string, chatId: string) {
+    const [chat] = await this.ensureChatTargetsAccessible(userId, [chatId]);
+    return chat;
+  }
+
+  private async getBlockedCounterpartIdsSet(userId: string) {
+    return new Set(
+      await this.friendshipService.getBlockedCounterpartIds(userId)
+    );
+  }
+
+  private getOtherDirectMemberId(userId: string, chat: ChatAccessTarget) {
+    return chat.members.find((member) => member.userId !== userId)?.userId;
+  }
+
+  private isDirectChatBlocked(
+    userId: string,
+    chat: ChatAccessTarget,
+    blockedCounterpartIds: ReadonlySet<string>
+  ) {
+    if (chat.isGroup) {
+      return false;
+    }
+
+    const otherMemberId = this.getOtherDirectMemberId(userId, chat);
+    return !!otherMemberId && blockedCounterpartIds.has(otherMemberId);
+  }
+
+  private assertDirectChatNotBlocked(
+    userId: string,
+    chat: ChatAccessTarget,
+    blockedCounterpartIds: ReadonlySet<string>
+  ) {
+    if (this.isDirectChatBlocked(userId, chat, blockedCounterpartIds)) {
+      throw new ForbiddenException(
+        "Direct contact is unavailable because one of the users has blocked the other"
+      );
+    }
   }
 }

@@ -239,6 +239,7 @@ exports.Prisma.ChatMemberScalarFieldEnum = {
   userId: 'userId',
   isCreator: 'isCreator',
   chatId: 'chatId',
+  pinnedMessageId: 'pinnedMessageId',
   joinedAt: 'joinedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -314,6 +315,21 @@ exports.Prisma.QueueSecretMessageScalarFieldEnum = {
   iv: 'iv',
   encryptedMessage: 'encryptedMessage',
   sig: 'sig',
+  secretAttachmentIds: 'secretAttachmentIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SecretAttachmentScalarFieldEnum = {
+  id: 'id',
+  chatId: 'chatId',
+  uploaderUserId: 'uploaderUserId',
+  storageKey: 'storageKey',
+  ciphertextSize: 'ciphertextSize',
+  allowedUserIds: 'allowedUserIds',
+  committedMessageId: 'committedMessageId',
+  committedAt: 'committedAt',
+  expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -406,6 +422,7 @@ exports.Prisma.ModelName = {
   GroupRoleMember: 'GroupRoleMember',
   PreKey: 'PreKey',
   QueueSecretMessage: 'QueueSecretMessage',
+  SecretAttachment: 'SecretAttachment',
   QueueSharedSecretKey: 'QueueSharedSecretKey'
 };
 

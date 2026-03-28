@@ -18,6 +18,11 @@ export class SendSecretMessageInput {
   @IsNotEmpty()
   toUserIds: string[];
 
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsOptional()
+  secretAttachmentIds?: string[];
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   ukm: string | null;

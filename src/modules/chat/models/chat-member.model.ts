@@ -36,6 +36,9 @@ export class ChatMemberModel implements ChatMember {
   @Field(() => Date)
   updatedAt: Date;
 
+  @Field(() => String, { nullable: true })
+  pinnedMessageId: string | null;
+
   @Field(() => [ChatRoleModel], { nullable: true })
   roles?: any[];
 }

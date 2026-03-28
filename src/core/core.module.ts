@@ -2,6 +2,7 @@ import { ApolloDriver } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
+import { JwtService } from "@nestjs/jwt";
 
 import { AccountModule } from "../modules/auth/account/account.module";
 import { ProfileModule } from "../modules/auth/profile/profile.module";
@@ -14,7 +15,9 @@ import { IS_DEV_ENV } from "../shared/utils/is-dev.util";
 
 import { getGraphqlConfig } from "./config/graphql.config";
 import { PrismaModule } from "./prisma/prisma.module";
+import { PrismaService } from "./prisma/prisma.service";
 import { RedisModule } from "./redis/redis.module";
+import { RedisService } from "./redis/redis.service";
 
 @Module({
   imports: [
@@ -24,8 +27,8 @@ import { RedisModule } from "./redis/redis.module";
     }),
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      imports: [ConfigModule],
-      inject: [ConfigService],
+      imports: [ConfigModule, SessionModule, PrismaModule, RedisModule],
+      inject: [ConfigService, PrismaService, RedisService, JwtService],
       useFactory: getGraphqlConfig
     }),
     PrismaModule,

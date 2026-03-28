@@ -34,9 +34,12 @@ export class MessageService {
     chatId: string,
     input: FiltersInput
   ) {
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+
     const { searchTerm, skip, take } = input;
-    const whereClause = searchTerm
-      ? this.findBySearchTermMessageFilter(searchTerm)
+    const normalizedSearchTerm = searchTerm?.trim();
+    const whereClause = normalizedSearchTerm
+      ? this.findBySearchTermMessageFilter(normalizedSearchTerm)
       : null;
 
     const messages = await this.prismaService.chatMessage.findMany({
@@ -106,6 +109,14 @@ export class MessageService {
       editId,
       forwardedMessageIds = []
     } = input;
+    const resolvedTargetChatsId =
+      targetChatsId && targetChatsId.length > 0 ? targetChatsId : [chatId];
+
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+    await this.chatService.ensureChatTargetsAccessible(
+      userId,
+      resolvedTargetChatsId
+    );
 
     // Permission check for group chats
     let chat = await this.prismaService.chat.findUnique({
@@ -211,7 +222,7 @@ export class MessageService {
           text: text ?? "",
           userId,
           isEdited: true,
-          chatId: targetChatsId[0],
+          chatId: resolvedTargetChatsId[0],
           files: {
             set: [...(fileIds ?? []).map((id) => ({ id }))]
           }
@@ -236,7 +247,7 @@ export class MessageService {
         data: {
           text: text ?? "",
           userId,
-          chatId: targetChatsId[0],
+          chatId: resolvedTargetChatsId[0],
           files: {
             connect: [
               ...(draftMessage?.files ?? []).map((file) => ({ id: file.id }))
@@ -359,6 +370,14 @@ export class MessageService {
       forwardedMessageIds = [],
       editId
     } = input;
+    const resolvedTargetChatsId =
+      targetChatsId && targetChatsId.length > 0 ? targetChatsId : [chatId];
+
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+    await this.chatService.ensureChatTargetsAccessible(
+      userId,
+      resolvedTargetChatsId
+    );
 
     let draftMessage = await this.prismaService.draftMessage.findFirst({
       where: {
@@ -395,7 +414,7 @@ export class MessageService {
         where: { id: draftMessage.id },
         data: {
           text: text ?? "",
-          chatId: targetChatsId[0],
+          chatId: resolvedTargetChatsId[0],
           editId: editId ?? undefined,
           filesEditId: fileIds ?? []
         },
@@ -448,7 +467,7 @@ export class MessageService {
         data: {
           text,
           userId,
-          chatId: targetChatsId[0],
+          chatId: resolvedTargetChatsId[0],
           editId: editId ?? undefined,
           files: {
             connect: [...(fileIds ?? []).map((id) => ({ id }))]
@@ -526,6 +545,8 @@ export class MessageService {
     chatId: string,
     input: RemoveMessagesInput
   ) {
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+
     const { messageIds } = input;
 
     // Permission check for group chats
@@ -615,16 +636,24 @@ export class MessageService {
     input: SendChatMessageInput
   ) {
     const { forwardedMessageIds, targetChatsId, text } = input;
+    const resolvedTargetChatsId =
+      targetChatsId && targetChatsId.length > 0 ? targetChatsId : [chatId];
 
     if (forwardedMessageIds.length === 0 && !text) {
       throw new BadRequestException("No messages to forward");
     }
 
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+    await this.chatService.ensureChatTargetsAccessible(
+      userId,
+      resolvedTargetChatsId
+    );
+
     let messages: any[] = [];
     let chats: any[] = [];
 
-    if (targetChatsId.length > 1) {
-      for (let targetChatId of targetChatsId) {
+    if (resolvedTargetChatsId.length > 1) {
+      for (let targetChatId of resolvedTargetChatsId) {
         this.removeDraftMessage(userId, targetChatId);
         let message = await this.prismaService.chatMessage.create({
           data: {
@@ -754,12 +783,12 @@ export class MessageService {
         chats.push(chat);
       }
     } else {
-      this.removeDraftMessage(userId, targetChatsId[0]);
+      this.removeDraftMessage(userId, resolvedTargetChatsId[0]);
       const draftMessage = await this.prismaService.draftMessage.create({
         data: {
           text: text ?? "",
           userId,
-          chatId: targetChatsId[0],
+          chatId: resolvedTargetChatsId[0],
           isForwarded: true
         },
         include: {
@@ -846,6 +875,16 @@ export class MessageService {
             username: {
               contains: searchTerm,
               mode: "insensitive"
+            }
+          }
+        },
+        {
+          files: {
+            some: {
+              fileName: {
+                contains: searchTerm,
+                mode: "insensitive"
+              }
             }
           }
         }

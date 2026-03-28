@@ -1,20 +1,47 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  forwardRef
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { fileTypeFromBuffer } from "file-type";
 import { Upload } from "graphql-upload";
 
-import { ChatMessage, DraftMessage, User } from "@/prisma/generated";
+import {
+  ChatMessage,
+  ChatPermissionEnum,
+  DraftMessage,
+  User
+} from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { StorageService } from "@/src/modules/libs/storage/storage.service";
+
+import { ChatService } from "../../chat.service";
 
 @Injectable()
 export class FileService {
   public constructor(
     private readonly prismaService: PrismaService,
     private readonly storageService: StorageService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    @Inject(forwardRef(() => ChatService))
+    private readonly chatService: ChatService
   ) {}
   public async sendFile(user: User, chatId: string, file: Upload) {
+    const chatAccess = await this.chatService.ensureDirectChatAccess(
+      user.id,
+      chatId
+    );
+
+    if (chatAccess.isGroup) {
+      await this.chatService.validatePermission(
+        user.id,
+        chatId,
+        ChatPermissionEnum.SEND_MESSAGES
+      );
+    }
+
     const { createReadStream, filename, mimetype } = await file;
 
     const chunks: Buffer[] = [];
@@ -93,7 +120,9 @@ export class FileService {
     };
   }
 
-  public async removeFile(fileId: string) {
+  public async removeFile(userId: string, chatId: string, fileId: string) {
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+
     const fileMessage = await this.prismaService.fileMessage.findUnique({
       where: {
         id: fileId
@@ -152,7 +181,9 @@ export class FileService {
     return true;
   }
 
-  public async downloadFile(fileId: string) {
+  public async downloadFile(userId: string, chatId: string, fileId: string) {
+    await this.chatService.ensureDirectChatAccess(userId, chatId);
+
     const fileMessage = await this.prismaService.fileMessage.findUnique({
       where: {
         id: fileId

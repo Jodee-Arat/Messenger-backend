@@ -1,4 +1,6 @@
 import {
+  GetObjectCommand,
+  GetObjectCommandInput,
   DeleteObjectCommand,
   DeleteObjectCommandInput,
   PutObjectCommand,
@@ -47,6 +49,29 @@ export class StorageService {
     };
     try {
       await this.client.send(new DeleteObjectCommand(command));
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async download(key: string) {
+    const command: GetObjectCommandInput = {
+      Bucket: this.bucket,
+      Key: key
+    };
+
+    try {
+      const response = await this.client.send(new GetObjectCommand(command));
+      if (!response.Body) {
+        throw new Error("Storage object body is empty");
+      }
+      const chunks: Buffer[] = [];
+
+      for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      }
+
+      return Buffer.concat(chunks);
     } catch (error) {
       throw error;
     }

@@ -17,6 +17,19 @@ import { ChangeGroupInfoInput } from "./inputs/change-group-info.input";
 import { CreateGroupInput } from "./inputs/create-group.input";
 import { GroupRoleService } from "./role/group-role.service";
 
+type RemovedGroupChat = {
+  id: string;
+  isSecret: boolean;
+  groupId: string | null;
+  members: Array<{ userId: string }>;
+};
+
+type RemoveGroupMemberResult = {
+  groupId: string;
+  removedUserId: string;
+  removedChats: RemovedGroupChat[];
+};
+
 @Injectable()
 export class GroupService {
   public constructor(
@@ -78,9 +91,10 @@ export class GroupService {
 
   public async findAllGroupsByUser(userId: string, input: FiltersInput) {
     const { searchTerm, skip, take } = input;
+    const normalizedSearchTerm = searchTerm?.trim();
 
-    const whereClause = searchTerm
-      ? this.findBySearchTermGroupFilter(searchTerm)
+    const whereClause = normalizedSearchTerm
+      ? this.findBySearchTermGroupFilter(normalizedSearchTerm)
       : undefined;
 
     const groups = await this.prismaService.group.findMany({
@@ -280,6 +294,23 @@ export class GroupService {
       GroupPermissionEnum.DELETE_GROUP
     );
 
+    const secretAttachmentStorageKeys = (
+      await this.prismaService.secretAttachment.findMany({
+        where: {
+          chat: {
+            groupId
+          }
+        },
+        select: {
+          storageKey: true
+        }
+      })
+    ).map((attachment) => attachment.storageKey);
+
+    for (const storageKey of secretAttachmentStorageKeys) {
+      await this.storageService.remove(storageKey);
+    }
+
     const group = await this.prismaService.group.delete({
       where: {
         id: groupId
@@ -337,11 +368,15 @@ export class GroupService {
     groupId: string,
     targetUserId: string
   ) {
-    await this.validatePermission(
-      userId,
-      groupId,
-      GroupPermissionEnum.REMOVE_MEMBERS
-    );
+    const isSelfLeave = userId === targetUserId;
+
+    if (!isSelfLeave) {
+      await this.validatePermission(
+        userId,
+        groupId,
+        GroupPermissionEnum.REMOVE_MEMBERS
+      );
+    }
 
     const group = await this.prismaService.group.findUnique({
       where: { id: groupId }
@@ -357,19 +392,111 @@ export class GroupService {
       throw new BadRequestException("User is not a member of this group");
     }
     if (targetMember.isCreator) {
-      throw new BadRequestException("Cannot remove the group creator");
+      throw new BadRequestException(
+        isSelfLeave
+          ? "Group creator cannot leave the group. Delete it instead."
+          : "Cannot remove the group creator"
+      );
     }
 
-    // Remove all role assignments first
-    await this.prismaService.groupRoleMember.deleteMany({
-      where: { groupMemberId: targetMember.id }
-    });
+    return this.prismaService.$transaction(async (tx) => {
+      const targetChatMemberships = await tx.chatMember.findMany({
+        where: {
+          userId: targetUserId,
+          chat: {
+            groupId
+          }
+        },
+        select: {
+          id: true,
+          chatId: true
+        }
+      });
 
-    await this.prismaService.groupMember.delete({
-      where: { id: targetMember.id }
-    });
+      const targetChatMemberIds = targetChatMemberships.map((item) => item.id);
+      const targetChatIds = Array.from(
+        new Set(targetChatMemberships.map((item) => item.chatId))
+      );
 
-    return true;
+      await tx.groupRoleMember.deleteMany({
+        where: { groupMemberId: targetMember.id }
+      });
+
+      if (targetChatMemberIds.length > 0) {
+        await tx.chatRoleMember.deleteMany({
+          where: {
+            chatMemberId: {
+              in: targetChatMemberIds
+            }
+          }
+        });
+
+        await tx.draftMessage.deleteMany({
+          where: {
+            userId: targetUserId,
+            chatId: {
+              in: targetChatIds
+            }
+          }
+        });
+
+        await tx.pinnedChat.deleteMany({
+          where: {
+            userId: targetUserId,
+            chatId: {
+              in: targetChatIds
+            }
+          }
+        });
+
+        await tx.chatMember.deleteMany({
+          where: {
+            id: {
+              in: targetChatMemberIds
+            }
+          }
+        });
+
+        await tx.queueSharedSecretKey.deleteMany({
+          where: {
+            chatId: {
+              in: targetChatIds
+            }
+          }
+        });
+      }
+
+      await tx.groupMember.delete({
+        where: { id: targetMember.id }
+      });
+
+      const removedChats =
+        targetChatIds.length > 0
+          ? await tx.chat.findMany({
+              where: {
+                id: {
+                  in: targetChatIds
+                }
+              },
+              select: {
+                id: true,
+                isSecret: true,
+                groupId: true,
+                members: {
+                  select: {
+                    userId: true
+                  }
+                }
+              }
+            })
+          : [];
+
+      return {
+        groupId,
+        removedUserId: targetUserId,
+        removedChats
+      } satisfies RemoveGroupMemberResult;
+    });
   }
 
   public async isUserInGroup(userId: string, groupId: string) {
@@ -402,6 +529,24 @@ export class GroupService {
           groupName: {
             contains: searchTerm,
             mode: "insensitive"
+          }
+        },
+        {
+          description: {
+            contains: searchTerm,
+            mode: "insensitive"
+          }
+        },
+        {
+          members: {
+            some: {
+              user: {
+                username: {
+                  contains: searchTerm,
+                  mode: "insensitive"
+                }
+              }
+            }
           }
         }
       ]

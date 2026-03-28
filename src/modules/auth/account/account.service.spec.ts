@@ -35,6 +35,9 @@ describe("AccountService", () => {
       create: jest.Mock;
       update: jest.Mock;
     };
+    friendship: {
+      findMany: jest.Mock;
+    };
   };
 
   beforeEach(async () => {
@@ -44,6 +47,9 @@ describe("AccountService", () => {
         findMany: jest.fn(),
         create: jest.fn(),
         update: jest.fn()
+      },
+      friendship: {
+        findMany: jest.fn()
       }
     };
 
@@ -223,15 +229,44 @@ describe("AccountService", () => {
   });
 
   describe("findAllUsers", () => {
-    it("should return all users except the given one", async () => {
+    it("should return all users except the given one (no blocks)", async () => {
       const users = [{ id: "user2", username: "other" }];
+      prisma.friendship.findMany.mockResolvedValue([]);
+      prisma.user.findMany.mockResolvedValue(users);
+
+      const result = await service.findAllUsers("user1");
+
+      expect(result).toEqual(users);
+      expect(prisma.friendship.findMany).toHaveBeenCalledWith({
+        where: {
+          status: "BLOCKED",
+          OR: [{ userId: "user1" }, { friendId: "user1" }]
+        },
+        select: { userId: true, friendId: true }
+      });
+      expect(prisma.user.findMany).toHaveBeenCalledWith({
+        where: {
+          AND: [{ id: { not: "user1" } }]
+        }
+      });
+    });
+
+    it("should exclude users in a blocked relationship (either direction)", async () => {
+      // user1 blocked user2; user3 blocked user1
+      prisma.friendship.findMany.mockResolvedValue([
+        { userId: "user1", friendId: "user2" },
+        { userId: "user3", friendId: "user1" }
+      ]);
+      const users = [{ id: "user4", username: "other" }];
       prisma.user.findMany.mockResolvedValue(users);
 
       const result = await service.findAllUsers("user1");
 
       expect(result).toEqual(users);
       expect(prisma.user.findMany).toHaveBeenCalledWith({
-        where: { id: { not: "user1" } }
+        where: {
+          AND: [{ id: { not: "user1" } }, { id: { notIn: ["user2", "user3"] } }]
+        }
       });
     });
   });

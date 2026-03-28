@@ -12,6 +12,11 @@ import { UpsertChatRoleInput } from "./inputs/upsert-chat-role.input";
 const DEFAULT_ROLE_NAME = "Участник";
 const DEFAULT_ROLE_COLOR = "#808080";
 const DEFAULT_ROLE_PERMISSIONS: ChatPermissionEnum[] = [];
+const OWNER_ROLE_NAME = "Owner";
+const OWNER_ROLE_COLOR = "#FFD700";
+const OWNER_ROLE_PERMISSIONS: ChatPermissionEnum[] = Object.values(
+  ChatPermissionEnum
+);
 
 @Injectable()
 export class RoleService {
@@ -58,8 +63,35 @@ export class RoleService {
     });
     if (!member) throw new BadRequestException("Member not found");
 
+    if (member.isCreator) {
+      return {
+        id: `owner:${chatId}:${userId}`,
+        name: OWNER_ROLE_NAME,
+        color: OWNER_ROLE_COLOR,
+        chatId,
+        permissions: OWNER_ROLE_PERMISSIONS,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        isCreator: true
+      };
+    }
+
+    const currentRole = member.roles[0]?.chatRole;
+    if (!currentRole) {
+      return {
+        id: `member:${chatId}:${userId}`,
+        name: DEFAULT_ROLE_NAME,
+        color: DEFAULT_ROLE_COLOR,
+        chatId,
+        permissions: DEFAULT_ROLE_PERMISSIONS,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        isCreator: false
+      };
+    }
+
     return {
-      ...member.roles[0]?.chatRole,
+      ...currentRole,
       isCreator: member.isCreator
     };
   }

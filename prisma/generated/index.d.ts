@@ -104,6 +104,11 @@ export type PreKey = $Result.DefaultSelection<Prisma.$PreKeyPayload>
  */
 export type QueueSecretMessage = $Result.DefaultSelection<Prisma.$QueueSecretMessagePayload>
 /**
+ * Model SecretAttachment
+ * 
+ */
+export type SecretAttachment = $Result.DefaultSelection<Prisma.$SecretAttachmentPayload>
+/**
  * Model QueueSharedSecretKey
  * 
  */
@@ -482,6 +487,16 @@ export class PrismaClient<
     * ```
     */
   get queueSecretMessage(): Prisma.QueueSecretMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.secretAttachment`: Exposes CRUD operations for the **SecretAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SecretAttachments
+    * const secretAttachments = await prisma.secretAttachment.findMany()
+    * ```
+    */
+  get secretAttachment(): Prisma.SecretAttachmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.queueSharedSecretKey`: Exposes CRUD operations for the **QueueSharedSecretKey** model.
@@ -951,6 +966,7 @@ export namespace Prisma {
     GroupRoleMember: 'GroupRoleMember',
     PreKey: 'PreKey',
     QueueSecretMessage: 'QueueSecretMessage',
+    SecretAttachment: 'SecretAttachment',
     QueueSharedSecretKey: 'QueueSharedSecretKey'
   };
 
@@ -970,7 +986,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "friendship" | "chatMessage" | "chatMessageReply" | "draftMessage" | "draftMessageReply" | "fileMessage" | "group" | "chat" | "pinnedChat" | "chatMember" | "groupMember" | "chatRole" | "groupRole" | "chatRoleMember" | "groupRoleMember" | "preKey" | "queueSecretMessage" | "queueSharedSecretKey"
+      modelProps: "user" | "friendship" | "chatMessage" | "chatMessageReply" | "draftMessage" | "draftMessageReply" | "fileMessage" | "group" | "chat" | "pinnedChat" | "chatMember" | "groupMember" | "chatRole" | "groupRole" | "chatRoleMember" | "groupRoleMember" | "preKey" | "queueSecretMessage" | "secretAttachment" | "queueSharedSecretKey"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2306,6 +2322,80 @@ export namespace Prisma {
           }
         }
       }
+      SecretAttachment: {
+        payload: Prisma.$SecretAttachmentPayload<ExtArgs>
+        fields: Prisma.SecretAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SecretAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SecretAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.SecretAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SecretAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.SecretAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.SecretAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.SecretAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SecretAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.SecretAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          update: {
+            args: Prisma.SecretAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.SecretAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SecretAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SecretAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.SecretAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SecretAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.SecretAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSecretAttachment>
+          }
+          groupBy: {
+            args: Prisma.SecretAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SecretAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SecretAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<SecretAttachmentCountAggregateOutputType> | number
+          }
+        }
+      }
       QueueSharedSecretKey: {
         payload: Prisma.$QueueSharedSecretKeyPayload<ExtArgs>
         fields: Prisma.QueueSharedSecretKeyFieldRefs
@@ -2494,6 +2584,7 @@ export namespace Prisma {
     groupRoleMember?: GroupRoleMemberOmit
     preKey?: PreKeyOmit
     queueSecretMessage?: QueueSecretMessageOmit
+    secretAttachment?: SecretAttachmentOmit
     queueSharedSecretKey?: QueueSharedSecretKeyOmit
   }
 
@@ -2583,6 +2674,7 @@ export namespace Prisma {
     groupMemberships: number
     pinnedChats: number
     files: number
+    secretAttachments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2594,6 +2686,7 @@ export namespace Prisma {
     groupMemberships?: boolean | UserCountOutputTypeCountGroupMembershipsArgs
     pinnedChats?: boolean | UserCountOutputTypeCountPinnedChatsArgs
     files?: boolean | UserCountOutputTypeCountFilesArgs
+    secretAttachments?: boolean | UserCountOutputTypeCountSecretAttachmentsArgs
   }
 
   // Custom InputTypes
@@ -2663,6 +2756,13 @@ export namespace Prisma {
     where?: FileMessageWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSecretAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SecretAttachmentWhereInput
+  }
+
 
   /**
    * Count Type ChatMessageCountOutputType
@@ -2672,6 +2772,7 @@ export namespace Prisma {
     files: number
     replies: number
     repliedToLinks: number
+    pinnedByMembers: number
     repliedFromDrafts: number
   }
 
@@ -2679,6 +2780,7 @@ export namespace Prisma {
     files?: boolean | ChatMessageCountOutputTypeCountFilesArgs
     replies?: boolean | ChatMessageCountOutputTypeCountRepliesArgs
     repliedToLinks?: boolean | ChatMessageCountOutputTypeCountRepliedToLinksArgs
+    pinnedByMembers?: boolean | ChatMessageCountOutputTypeCountPinnedByMembersArgs
     repliedFromDrafts?: boolean | ChatMessageCountOutputTypeCountRepliedFromDraftsArgs
   }
 
@@ -2712,6 +2814,13 @@ export namespace Prisma {
    */
   export type ChatMessageCountOutputTypeCountRepliedToLinksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ChatMessageReplyWhereInput
+  }
+
+  /**
+   * ChatMessageCountOutputType without action
+   */
+  export type ChatMessageCountOutputTypeCountPinnedByMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChatMemberWhereInput
   }
 
   /**
@@ -2821,6 +2930,7 @@ export namespace Prisma {
     messages: number
     members: number
     files: number
+    secretAttachments: number
     roles: number
   }
 
@@ -2830,6 +2940,7 @@ export namespace Prisma {
     messages?: boolean | ChatCountOutputTypeCountMessagesArgs
     members?: boolean | ChatCountOutputTypeCountMembersArgs
     files?: boolean | ChatCountOutputTypeCountFilesArgs
+    secretAttachments?: boolean | ChatCountOutputTypeCountSecretAttachmentsArgs
     roles?: boolean | ChatCountOutputTypeCountRolesArgs
   }
 
@@ -2877,6 +2988,13 @@ export namespace Prisma {
    */
   export type ChatCountOutputTypeCountFilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: FileMessageWhereInput
+  }
+
+  /**
+   * ChatCountOutputType without action
+   */
+  export type ChatCountOutputTypeCountSecretAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SecretAttachmentWhereInput
   }
 
   /**
@@ -3243,6 +3361,7 @@ export namespace Prisma {
     groupMemberships?: boolean | User$groupMembershipsArgs<ExtArgs>
     pinnedChats?: boolean | User$pinnedChatsArgs<ExtArgs>
     files?: boolean | User$filesArgs<ExtArgs>
+    secretAttachments?: boolean | User$secretAttachmentsArgs<ExtArgs>
     preKeys?: boolean | User$preKeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -3302,6 +3421,7 @@ export namespace Prisma {
     groupMemberships?: boolean | User$groupMembershipsArgs<ExtArgs>
     pinnedChats?: boolean | User$pinnedChatsArgs<ExtArgs>
     files?: boolean | User$filesArgs<ExtArgs>
+    secretAttachments?: boolean | User$secretAttachmentsArgs<ExtArgs>
     preKeys?: boolean | User$preKeysArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3319,6 +3439,7 @@ export namespace Prisma {
       groupMemberships: Prisma.$GroupMemberPayload<ExtArgs>[]
       pinnedChats: Prisma.$PinnedChatPayload<ExtArgs>[]
       files: Prisma.$FileMessagePayload<ExtArgs>[]
+      secretAttachments: Prisma.$SecretAttachmentPayload<ExtArgs>[]
       preKeys: Prisma.$PreKeyPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -3736,6 +3857,7 @@ export namespace Prisma {
     groupMemberships<T extends User$groupMembershipsArgs<ExtArgs> = {}>(args?: Subset<T, User$groupMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pinnedChats<T extends User$pinnedChatsArgs<ExtArgs> = {}>(args?: Subset<T, User$pinnedChatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinnedChatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     files<T extends User$filesArgs<ExtArgs> = {}>(args?: Subset<T, User$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    secretAttachments<T extends User$secretAttachmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$secretAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     preKeys<T extends User$preKeysArgs<ExtArgs> = {}>(args?: Subset<T, User$preKeysArgs<ExtArgs>>): Prisma__PreKeyClient<$Result.GetResult<Prisma.$PreKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4355,6 +4477,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * User.secretAttachments
+   */
+  export type User$secretAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    where?: SecretAttachmentWhereInput
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    cursor?: SecretAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SecretAttachmentScalarFieldEnum | SecretAttachmentScalarFieldEnum[]
   }
 
   /**
@@ -5699,6 +5845,7 @@ export namespace Prisma {
     repliedToLinks?: boolean | ChatMessage$repliedToLinksArgs<ExtArgs>
     lastMessageForChat?: boolean | ChatMessage$lastMessageForChatArgs<ExtArgs>
     pinnedInChat?: boolean | ChatMessage$pinnedInChatArgs<ExtArgs>
+    pinnedByMembers?: boolean | ChatMessage$pinnedByMembersArgs<ExtArgs>
     repliedFromDrafts?: boolean | ChatMessage$repliedFromDraftsArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
@@ -5761,6 +5908,7 @@ export namespace Prisma {
     repliedToLinks?: boolean | ChatMessage$repliedToLinksArgs<ExtArgs>
     lastMessageForChat?: boolean | ChatMessage$lastMessageForChatArgs<ExtArgs>
     pinnedInChat?: boolean | ChatMessage$pinnedInChatArgs<ExtArgs>
+    pinnedByMembers?: boolean | ChatMessage$pinnedByMembersArgs<ExtArgs>
     repliedFromDrafts?: boolean | ChatMessage$repliedFromDraftsArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
@@ -5783,6 +5931,7 @@ export namespace Prisma {
       repliedToLinks: Prisma.$ChatMessageReplyPayload<ExtArgs>[]
       lastMessageForChat: Prisma.$ChatPayload<ExtArgs> | null
       pinnedInChat: Prisma.$ChatPayload<ExtArgs> | null
+      pinnedByMembers: Prisma.$ChatMemberPayload<ExtArgs>[]
       repliedFromDrafts: Prisma.$DraftMessageReplyPayload<ExtArgs>[]
       user: Prisma.$UserPayload<ExtArgs>
       chat: Prisma.$ChatPayload<ExtArgs>
@@ -6199,6 +6348,7 @@ export namespace Prisma {
     repliedToLinks<T extends ChatMessage$repliedToLinksArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$repliedToLinksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessageReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     lastMessageForChat<T extends ChatMessage$lastMessageForChatArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$lastMessageForChatArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     pinnedInChat<T extends ChatMessage$pinnedInChatArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$pinnedInChatArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    pinnedByMembers<T extends ChatMessage$pinnedByMembersArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$pinnedByMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     repliedFromDrafts<T extends ChatMessage$repliedFromDraftsArgs<ExtArgs> = {}>(args?: Subset<T, ChatMessage$repliedFromDraftsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DraftMessageReplyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     chat<T extends ChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatDefaultArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -6746,6 +6896,30 @@ export namespace Prisma {
      */
     include?: ChatInclude<ExtArgs> | null
     where?: ChatWhereInput
+  }
+
+  /**
+   * ChatMessage.pinnedByMembers
+   */
+  export type ChatMessage$pinnedByMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMember
+     */
+    select?: ChatMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMember
+     */
+    omit?: ChatMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMemberInclude<ExtArgs> | null
+    where?: ChatMemberWhereInput
+    orderBy?: ChatMemberOrderByWithRelationInput | ChatMemberOrderByWithRelationInput[]
+    cursor?: ChatMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChatMemberScalarFieldEnum | ChatMemberScalarFieldEnum[]
   }
 
   /**
@@ -12650,6 +12824,7 @@ export namespace Prisma {
     messages?: boolean | Chat$messagesArgs<ExtArgs>
     members?: boolean | Chat$membersArgs<ExtArgs>
     files?: boolean | Chat$filesArgs<ExtArgs>
+    secretAttachments?: boolean | Chat$secretAttachmentsArgs<ExtArgs>
     roles?: boolean | Chat$rolesArgs<ExtArgs>
     _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["chat"]>
@@ -12721,6 +12896,7 @@ export namespace Prisma {
     messages?: boolean | Chat$messagesArgs<ExtArgs>
     members?: boolean | Chat$membersArgs<ExtArgs>
     files?: boolean | Chat$filesArgs<ExtArgs>
+    secretAttachments?: boolean | Chat$secretAttachmentsArgs<ExtArgs>
     roles?: boolean | Chat$rolesArgs<ExtArgs>
     _count?: boolean | ChatCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -12746,6 +12922,7 @@ export namespace Prisma {
       messages: Prisma.$ChatMessagePayload<ExtArgs>[]
       members: Prisma.$ChatMemberPayload<ExtArgs>[]
       files: Prisma.$FileMessagePayload<ExtArgs>[]
+      secretAttachments: Prisma.$SecretAttachmentPayload<ExtArgs>[]
       roles: Prisma.$ChatRolePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -13165,6 +13342,7 @@ export namespace Prisma {
     messages<T extends Chat$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Chat$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     members<T extends Chat$membersArgs<ExtArgs> = {}>(args?: Subset<T, Chat$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     files<T extends Chat$filesArgs<ExtArgs> = {}>(args?: Subset<T, Chat$filesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FileMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    secretAttachments<T extends Chat$secretAttachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Chat$secretAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends Chat$rolesArgs<ExtArgs> = {}>(args?: Subset<T, Chat$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -13779,6 +13957,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: FileMessageScalarFieldEnum | FileMessageScalarFieldEnum[]
+  }
+
+  /**
+   * Chat.secretAttachments
+   */
+  export type Chat$secretAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    where?: SecretAttachmentWhereInput
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    cursor?: SecretAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SecretAttachmentScalarFieldEnum | SecretAttachmentScalarFieldEnum[]
   }
 
   /**
@@ -14939,6 +15141,7 @@ export namespace Prisma {
     userId: string | null
     isCreator: boolean | null
     chatId: string | null
+    pinnedMessageId: string | null
     joinedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14949,6 +15152,7 @@ export namespace Prisma {
     userId: string | null
     isCreator: boolean | null
     chatId: string | null
+    pinnedMessageId: string | null
     joinedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -14959,6 +15163,7 @@ export namespace Prisma {
     userId: number
     isCreator: number
     chatId: number
+    pinnedMessageId: number
     joinedAt: number
     createdAt: number
     updatedAt: number
@@ -14971,6 +15176,7 @@ export namespace Prisma {
     userId?: true
     isCreator?: true
     chatId?: true
+    pinnedMessageId?: true
     joinedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -14981,6 +15187,7 @@ export namespace Prisma {
     userId?: true
     isCreator?: true
     chatId?: true
+    pinnedMessageId?: true
     joinedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -14991,6 +15198,7 @@ export namespace Prisma {
     userId?: true
     isCreator?: true
     chatId?: true
+    pinnedMessageId?: true
     joinedAt?: true
     createdAt?: true
     updatedAt?: true
@@ -15074,6 +15282,7 @@ export namespace Prisma {
     userId: string
     isCreator: boolean | null
     chatId: string
+    pinnedMessageId: string | null
     joinedAt: Date
     createdAt: Date
     updatedAt: Date
@@ -15101,12 +15310,14 @@ export namespace Prisma {
     userId?: boolean
     isCreator?: boolean
     chatId?: boolean
+    pinnedMessageId?: boolean
     joinedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
     roles?: boolean | ChatMember$rolesArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
     _count?: boolean | ChatMemberCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["chatMember"]>
 
@@ -15115,11 +15326,13 @@ export namespace Prisma {
     userId?: boolean
     isCreator?: boolean
     chatId?: boolean
+    pinnedMessageId?: boolean
     joinedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
   }, ExtArgs["result"]["chatMember"]>
 
   export type ChatMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15127,11 +15340,13 @@ export namespace Prisma {
     userId?: boolean
     isCreator?: boolean
     chatId?: boolean
+    pinnedMessageId?: boolean
     joinedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
   }, ExtArgs["result"]["chatMember"]>
 
   export type ChatMemberSelectScalar = {
@@ -15139,25 +15354,29 @@ export namespace Prisma {
     userId?: boolean
     isCreator?: boolean
     chatId?: boolean
+    pinnedMessageId?: boolean
     joinedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ChatMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "isCreator" | "chatId" | "joinedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["chatMember"]>
+  export type ChatMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "isCreator" | "chatId" | "pinnedMessageId" | "joinedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["chatMember"]>
   export type ChatMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
     roles?: boolean | ChatMember$rolesArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
     _count?: boolean | ChatMemberCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChatMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
   }
   export type ChatMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     chat?: boolean | ChatDefaultArgs<ExtArgs>
+    pinnedMessage?: boolean | ChatMember$pinnedMessageArgs<ExtArgs>
   }
 
   export type $ChatMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -15166,12 +15385,14 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       chat: Prisma.$ChatPayload<ExtArgs>
       roles: Prisma.$ChatRoleMemberPayload<ExtArgs>[]
+      pinnedMessage: Prisma.$ChatMessagePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
       isCreator: boolean | null
       chatId: string
+      pinnedMessageId: string | null
       joinedAt: Date
       createdAt: Date
       updatedAt: Date
@@ -15572,6 +15793,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     chat<T extends ChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatDefaultArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     roles<T extends ChatMember$rolesArgs<ExtArgs> = {}>(args?: Subset<T, ChatMember$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatRoleMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pinnedMessage<T extends ChatMember$pinnedMessageArgs<ExtArgs> = {}>(args?: Subset<T, ChatMember$pinnedMessageArgs<ExtArgs>>): Prisma__ChatMessageClient<$Result.GetResult<Prisma.$ChatMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15605,6 +15827,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"ChatMember", 'String'>
     readonly isCreator: FieldRef<"ChatMember", 'Boolean'>
     readonly chatId: FieldRef<"ChatMember", 'String'>
+    readonly pinnedMessageId: FieldRef<"ChatMember", 'String'>
     readonly joinedAt: FieldRef<"ChatMember", 'DateTime'>
     readonly createdAt: FieldRef<"ChatMember", 'DateTime'>
     readonly updatedAt: FieldRef<"ChatMember", 'DateTime'>
@@ -16025,6 +16248,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChatRoleMemberScalarFieldEnum | ChatRoleMemberScalarFieldEnum[]
+  }
+
+  /**
+   * ChatMember.pinnedMessage
+   */
+  export type ChatMember$pinnedMessageArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ChatMessage
+     */
+    select?: ChatMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ChatMessage
+     */
+    omit?: ChatMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ChatMessageInclude<ExtArgs> | null
+    where?: ChatMessageWhereInput
   }
 
   /**
@@ -22729,6 +22971,7 @@ export namespace Prisma {
     iv: number
     encryptedMessage: number
     sig: number
+    secretAttachmentIds: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -22775,6 +23018,7 @@ export namespace Prisma {
     iv?: true
     encryptedMessage?: true
     sig?: true
+    secretAttachmentIds?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -22864,6 +23108,7 @@ export namespace Prisma {
     iv: string
     encryptedMessage: string
     sig: string
+    secretAttachmentIds: string[]
     createdAt: Date
     updatedAt: Date
     _count: QueueSecretMessageCountAggregateOutputType | null
@@ -22897,6 +23142,7 @@ export namespace Prisma {
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
+    secretAttachmentIds?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["queueSecretMessage"]>
@@ -22913,6 +23159,7 @@ export namespace Prisma {
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
+    secretAttachmentIds?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["queueSecretMessage"]>
@@ -22929,6 +23176,7 @@ export namespace Prisma {
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
+    secretAttachmentIds?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["queueSecretMessage"]>
@@ -22945,11 +23193,12 @@ export namespace Prisma {
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
+    secretAttachmentIds?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type QueueSecretMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "isKey" | "fromUserId" | "toUserIds" | "whoCheckedIds" | "ukm" | "iv" | "encryptedMessage" | "sig" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSecretMessage"]>
+  export type QueueSecretMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "isKey" | "fromUserId" | "toUserIds" | "whoCheckedIds" | "ukm" | "iv" | "encryptedMessage" | "sig" | "secretAttachmentIds" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSecretMessage"]>
 
   export type $QueueSecretMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "QueueSecretMessage"
@@ -22966,6 +23215,7 @@ export namespace Prisma {
       iv: string
       encryptedMessage: string
       sig: string
+      secretAttachmentIds: string[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["queueSecretMessage"]>
@@ -23402,6 +23652,7 @@ export namespace Prisma {
     readonly iv: FieldRef<"QueueSecretMessage", 'String'>
     readonly encryptedMessage: FieldRef<"QueueSecretMessage", 'String'>
     readonly sig: FieldRef<"QueueSecretMessage", 'String'>
+    readonly secretAttachmentIds: FieldRef<"QueueSecretMessage", 'String[]'>
     readonly createdAt: FieldRef<"QueueSecretMessage", 'DateTime'>
     readonly updatedAt: FieldRef<"QueueSecretMessage", 'DateTime'>
   }
@@ -23767,6 +24018,1146 @@ export namespace Prisma {
      * Omit specific fields from the QueueSecretMessage
      */
     omit?: QueueSecretMessageOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SecretAttachment
+   */
+
+  export type AggregateSecretAttachment = {
+    _count: SecretAttachmentCountAggregateOutputType | null
+    _min: SecretAttachmentMinAggregateOutputType | null
+    _max: SecretAttachmentMaxAggregateOutputType | null
+  }
+
+  export type SecretAttachmentMinAggregateOutputType = {
+    id: string | null
+    chatId: string | null
+    uploaderUserId: string | null
+    storageKey: string | null
+    ciphertextSize: string | null
+    committedMessageId: string | null
+    committedAt: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SecretAttachmentMaxAggregateOutputType = {
+    id: string | null
+    chatId: string | null
+    uploaderUserId: string | null
+    storageKey: string | null
+    ciphertextSize: string | null
+    committedMessageId: string | null
+    committedAt: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SecretAttachmentCountAggregateOutputType = {
+    id: number
+    chatId: number
+    uploaderUserId: number
+    storageKey: number
+    ciphertextSize: number
+    allowedUserIds: number
+    committedMessageId: number
+    committedAt: number
+    expiresAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SecretAttachmentMinAggregateInputType = {
+    id?: true
+    chatId?: true
+    uploaderUserId?: true
+    storageKey?: true
+    ciphertextSize?: true
+    committedMessageId?: true
+    committedAt?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SecretAttachmentMaxAggregateInputType = {
+    id?: true
+    chatId?: true
+    uploaderUserId?: true
+    storageKey?: true
+    ciphertextSize?: true
+    committedMessageId?: true
+    committedAt?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SecretAttachmentCountAggregateInputType = {
+    id?: true
+    chatId?: true
+    uploaderUserId?: true
+    storageKey?: true
+    ciphertextSize?: true
+    allowedUserIds?: true
+    committedMessageId?: true
+    committedAt?: true
+    expiresAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SecretAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SecretAttachment to aggregate.
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SecretAttachments to fetch.
+     */
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SecretAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SecretAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SecretAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SecretAttachments
+    **/
+    _count?: true | SecretAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SecretAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SecretAttachmentMaxAggregateInputType
+  }
+
+  export type GetSecretAttachmentAggregateType<T extends SecretAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateSecretAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSecretAttachment[P]>
+      : GetScalarType<T[P], AggregateSecretAttachment[P]>
+  }
+
+
+
+
+  export type SecretAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SecretAttachmentWhereInput
+    orderBy?: SecretAttachmentOrderByWithAggregationInput | SecretAttachmentOrderByWithAggregationInput[]
+    by: SecretAttachmentScalarFieldEnum[] | SecretAttachmentScalarFieldEnum
+    having?: SecretAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SecretAttachmentCountAggregateInputType | true
+    _min?: SecretAttachmentMinAggregateInputType
+    _max?: SecretAttachmentMaxAggregateInputType
+  }
+
+  export type SecretAttachmentGroupByOutputType = {
+    id: string
+    chatId: string
+    uploaderUserId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds: string[]
+    committedMessageId: string | null
+    committedAt: Date | null
+    expiresAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SecretAttachmentCountAggregateOutputType | null
+    _min: SecretAttachmentMinAggregateOutputType | null
+    _max: SecretAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetSecretAttachmentGroupByPayload<T extends SecretAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SecretAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SecretAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SecretAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], SecretAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SecretAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    uploaderUserId?: boolean
+    storageKey?: boolean
+    ciphertextSize?: boolean
+    allowedUserIds?: boolean
+    committedMessageId?: boolean
+    committedAt?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["secretAttachment"]>
+
+  export type SecretAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    uploaderUserId?: boolean
+    storageKey?: boolean
+    ciphertextSize?: boolean
+    allowedUserIds?: boolean
+    committedMessageId?: boolean
+    committedAt?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["secretAttachment"]>
+
+  export type SecretAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    chatId?: boolean
+    uploaderUserId?: boolean
+    storageKey?: boolean
+    ciphertextSize?: boolean
+    allowedUserIds?: boolean
+    committedMessageId?: boolean
+    committedAt?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["secretAttachment"]>
+
+  export type SecretAttachmentSelectScalar = {
+    id?: boolean
+    chatId?: boolean
+    uploaderUserId?: boolean
+    storageKey?: boolean
+    ciphertextSize?: boolean
+    allowedUserIds?: boolean
+    committedMessageId?: boolean
+    committedAt?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SecretAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "chatId" | "uploaderUserId" | "storageKey" | "ciphertextSize" | "allowedUserIds" | "committedMessageId" | "committedAt" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["secretAttachment"]>
+  export type SecretAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SecretAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type SecretAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    chat?: boolean | ChatDefaultArgs<ExtArgs>
+    uploader?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $SecretAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SecretAttachment"
+    objects: {
+      chat: Prisma.$ChatPayload<ExtArgs>
+      uploader: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      chatId: string
+      uploaderUserId: string
+      storageKey: string
+      ciphertextSize: string
+      allowedUserIds: string[]
+      committedMessageId: string | null
+      committedAt: Date | null
+      expiresAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["secretAttachment"]>
+    composites: {}
+  }
+
+  type SecretAttachmentGetPayload<S extends boolean | null | undefined | SecretAttachmentDefaultArgs> = $Result.GetResult<Prisma.$SecretAttachmentPayload, S>
+
+  type SecretAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SecretAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SecretAttachmentCountAggregateInputType | true
+    }
+
+  export interface SecretAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SecretAttachment'], meta: { name: 'SecretAttachment' } }
+    /**
+     * Find zero or one SecretAttachment that matches the filter.
+     * @param {SecretAttachmentFindUniqueArgs} args - Arguments to find a SecretAttachment
+     * @example
+     * // Get one SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SecretAttachmentFindUniqueArgs>(args: SelectSubset<T, SecretAttachmentFindUniqueArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SecretAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SecretAttachmentFindUniqueOrThrowArgs} args - Arguments to find a SecretAttachment
+     * @example
+     * // Get one SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SecretAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, SecretAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SecretAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentFindFirstArgs} args - Arguments to find a SecretAttachment
+     * @example
+     * // Get one SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SecretAttachmentFindFirstArgs>(args?: SelectSubset<T, SecretAttachmentFindFirstArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SecretAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentFindFirstOrThrowArgs} args - Arguments to find a SecretAttachment
+     * @example
+     * // Get one SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SecretAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, SecretAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SecretAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SecretAttachments
+     * const secretAttachments = await prisma.secretAttachment.findMany()
+     * 
+     * // Get first 10 SecretAttachments
+     * const secretAttachments = await prisma.secretAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const secretAttachmentWithIdOnly = await prisma.secretAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SecretAttachmentFindManyArgs>(args?: SelectSubset<T, SecretAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SecretAttachment.
+     * @param {SecretAttachmentCreateArgs} args - Arguments to create a SecretAttachment.
+     * @example
+     * // Create one SecretAttachment
+     * const SecretAttachment = await prisma.secretAttachment.create({
+     *   data: {
+     *     // ... data to create a SecretAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends SecretAttachmentCreateArgs>(args: SelectSubset<T, SecretAttachmentCreateArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SecretAttachments.
+     * @param {SecretAttachmentCreateManyArgs} args - Arguments to create many SecretAttachments.
+     * @example
+     * // Create many SecretAttachments
+     * const secretAttachment = await prisma.secretAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SecretAttachmentCreateManyArgs>(args?: SelectSubset<T, SecretAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SecretAttachments and returns the data saved in the database.
+     * @param {SecretAttachmentCreateManyAndReturnArgs} args - Arguments to create many SecretAttachments.
+     * @example
+     * // Create many SecretAttachments
+     * const secretAttachment = await prisma.secretAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SecretAttachments and only return the `id`
+     * const secretAttachmentWithIdOnly = await prisma.secretAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SecretAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, SecretAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SecretAttachment.
+     * @param {SecretAttachmentDeleteArgs} args - Arguments to delete one SecretAttachment.
+     * @example
+     * // Delete one SecretAttachment
+     * const SecretAttachment = await prisma.secretAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one SecretAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SecretAttachmentDeleteArgs>(args: SelectSubset<T, SecretAttachmentDeleteArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SecretAttachment.
+     * @param {SecretAttachmentUpdateArgs} args - Arguments to update one SecretAttachment.
+     * @example
+     * // Update one SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SecretAttachmentUpdateArgs>(args: SelectSubset<T, SecretAttachmentUpdateArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SecretAttachments.
+     * @param {SecretAttachmentDeleteManyArgs} args - Arguments to filter SecretAttachments to delete.
+     * @example
+     * // Delete a few SecretAttachments
+     * const { count } = await prisma.secretAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SecretAttachmentDeleteManyArgs>(args?: SelectSubset<T, SecretAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SecretAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SecretAttachments
+     * const secretAttachment = await prisma.secretAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SecretAttachmentUpdateManyArgs>(args: SelectSubset<T, SecretAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SecretAttachments and returns the data updated in the database.
+     * @param {SecretAttachmentUpdateManyAndReturnArgs} args - Arguments to update many SecretAttachments.
+     * @example
+     * // Update many SecretAttachments
+     * const secretAttachment = await prisma.secretAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SecretAttachments and only return the `id`
+     * const secretAttachmentWithIdOnly = await prisma.secretAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SecretAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, SecretAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SecretAttachment.
+     * @param {SecretAttachmentUpsertArgs} args - Arguments to update or create a SecretAttachment.
+     * @example
+     * // Update or create a SecretAttachment
+     * const secretAttachment = await prisma.secretAttachment.upsert({
+     *   create: {
+     *     // ... data to create a SecretAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SecretAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SecretAttachmentUpsertArgs>(args: SelectSubset<T, SecretAttachmentUpsertArgs<ExtArgs>>): Prisma__SecretAttachmentClient<$Result.GetResult<Prisma.$SecretAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SecretAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentCountArgs} args - Arguments to filter SecretAttachments to count.
+     * @example
+     * // Count the number of SecretAttachments
+     * const count = await prisma.secretAttachment.count({
+     *   where: {
+     *     // ... the filter for the SecretAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends SecretAttachmentCountArgs>(
+      args?: Subset<T, SecretAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SecretAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SecretAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SecretAttachmentAggregateArgs>(args: Subset<T, SecretAttachmentAggregateArgs>): Prisma.PrismaPromise<GetSecretAttachmentAggregateType<T>>
+
+    /**
+     * Group by SecretAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SecretAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SecretAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SecretAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: SecretAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SecretAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSecretAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SecretAttachment model
+   */
+  readonly fields: SecretAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SecretAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SecretAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    chat<T extends ChatDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChatDefaultArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    uploader<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SecretAttachment model
+   */
+  interface SecretAttachmentFieldRefs {
+    readonly id: FieldRef<"SecretAttachment", 'String'>
+    readonly chatId: FieldRef<"SecretAttachment", 'String'>
+    readonly uploaderUserId: FieldRef<"SecretAttachment", 'String'>
+    readonly storageKey: FieldRef<"SecretAttachment", 'String'>
+    readonly ciphertextSize: FieldRef<"SecretAttachment", 'String'>
+    readonly allowedUserIds: FieldRef<"SecretAttachment", 'String[]'>
+    readonly committedMessageId: FieldRef<"SecretAttachment", 'String'>
+    readonly committedAt: FieldRef<"SecretAttachment", 'DateTime'>
+    readonly expiresAt: FieldRef<"SecretAttachment", 'DateTime'>
+    readonly createdAt: FieldRef<"SecretAttachment", 'DateTime'>
+    readonly updatedAt: FieldRef<"SecretAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SecretAttachment findUnique
+   */
+  export type SecretAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SecretAttachment to fetch.
+     */
+    where: SecretAttachmentWhereUniqueInput
+  }
+
+  /**
+   * SecretAttachment findUniqueOrThrow
+   */
+  export type SecretAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SecretAttachment to fetch.
+     */
+    where: SecretAttachmentWhereUniqueInput
+  }
+
+  /**
+   * SecretAttachment findFirst
+   */
+  export type SecretAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SecretAttachment to fetch.
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SecretAttachments to fetch.
+     */
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SecretAttachments.
+     */
+    cursor?: SecretAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SecretAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SecretAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SecretAttachments.
+     */
+    distinct?: SecretAttachmentScalarFieldEnum | SecretAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * SecretAttachment findFirstOrThrow
+   */
+  export type SecretAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SecretAttachment to fetch.
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SecretAttachments to fetch.
+     */
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SecretAttachments.
+     */
+    cursor?: SecretAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SecretAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SecretAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SecretAttachments.
+     */
+    distinct?: SecretAttachmentScalarFieldEnum | SecretAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * SecretAttachment findMany
+   */
+  export type SecretAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which SecretAttachments to fetch.
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SecretAttachments to fetch.
+     */
+    orderBy?: SecretAttachmentOrderByWithRelationInput | SecretAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SecretAttachments.
+     */
+    cursor?: SecretAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SecretAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SecretAttachments.
+     */
+    skip?: number
+    distinct?: SecretAttachmentScalarFieldEnum | SecretAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * SecretAttachment create
+   */
+  export type SecretAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SecretAttachment.
+     */
+    data: XOR<SecretAttachmentCreateInput, SecretAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * SecretAttachment createMany
+   */
+  export type SecretAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SecretAttachments.
+     */
+    data: SecretAttachmentCreateManyInput | SecretAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SecretAttachment createManyAndReturn
+   */
+  export type SecretAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many SecretAttachments.
+     */
+    data: SecretAttachmentCreateManyInput | SecretAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SecretAttachment update
+   */
+  export type SecretAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SecretAttachment.
+     */
+    data: XOR<SecretAttachmentUpdateInput, SecretAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which SecretAttachment to update.
+     */
+    where: SecretAttachmentWhereUniqueInput
+  }
+
+  /**
+   * SecretAttachment updateMany
+   */
+  export type SecretAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SecretAttachments.
+     */
+    data: XOR<SecretAttachmentUpdateManyMutationInput, SecretAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which SecretAttachments to update
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * Limit how many SecretAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SecretAttachment updateManyAndReturn
+   */
+  export type SecretAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update SecretAttachments.
+     */
+    data: XOR<SecretAttachmentUpdateManyMutationInput, SecretAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which SecretAttachments to update
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * Limit how many SecretAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SecretAttachment upsert
+   */
+  export type SecretAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SecretAttachment to update in case it exists.
+     */
+    where: SecretAttachmentWhereUniqueInput
+    /**
+     * In case the SecretAttachment found by the `where` argument doesn't exist, create a new SecretAttachment with this data.
+     */
+    create: XOR<SecretAttachmentCreateInput, SecretAttachmentUncheckedCreateInput>
+    /**
+     * In case the SecretAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SecretAttachmentUpdateInput, SecretAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * SecretAttachment delete
+   */
+  export type SecretAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which SecretAttachment to delete.
+     */
+    where: SecretAttachmentWhereUniqueInput
+  }
+
+  /**
+   * SecretAttachment deleteMany
+   */
+  export type SecretAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SecretAttachments to delete
+     */
+    where?: SecretAttachmentWhereInput
+    /**
+     * Limit how many SecretAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SecretAttachment without action
+   */
+  export type SecretAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SecretAttachment
+     */
+    select?: SecretAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SecretAttachment
+     */
+    omit?: SecretAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SecretAttachmentInclude<ExtArgs> | null
   }
 
 
@@ -25044,6 +26435,7 @@ export namespace Prisma {
     userId: 'userId',
     isCreator: 'isCreator',
     chatId: 'chatId',
+    pinnedMessageId: 'pinnedMessageId',
     joinedAt: 'joinedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -25140,11 +26532,29 @@ export namespace Prisma {
     iv: 'iv',
     encryptedMessage: 'encryptedMessage',
     sig: 'sig',
+    secretAttachmentIds: 'secretAttachmentIds',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type QueueSecretMessageScalarFieldEnum = (typeof QueueSecretMessageScalarFieldEnum)[keyof typeof QueueSecretMessageScalarFieldEnum]
+
+
+  export const SecretAttachmentScalarFieldEnum: {
+    id: 'id',
+    chatId: 'chatId',
+    uploaderUserId: 'uploaderUserId',
+    storageKey: 'storageKey',
+    ciphertextSize: 'ciphertextSize',
+    allowedUserIds: 'allowedUserIds',
+    committedMessageId: 'committedMessageId',
+    committedAt: 'committedAt',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SecretAttachmentScalarFieldEnum = (typeof SecretAttachmentScalarFieldEnum)[keyof typeof SecretAttachmentScalarFieldEnum]
 
 
   export const QueueSharedSecretKeyScalarFieldEnum: {
@@ -25328,6 +26738,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberListRelationFilter
     pinnedChats?: PinnedChatListRelationFilter
     files?: FileMessageListRelationFilter
+    secretAttachments?: SecretAttachmentListRelationFilter
     preKeys?: XOR<PreKeyNullableScalarRelationFilter, PreKeyWhereInput> | null
   }
 
@@ -25352,6 +26763,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberOrderByRelationAggregateInput
     pinnedChats?: PinnedChatOrderByRelationAggregateInput
     files?: FileMessageOrderByRelationAggregateInput
+    secretAttachments?: SecretAttachmentOrderByRelationAggregateInput
     preKeys?: PreKeyOrderByWithRelationInput
   }
 
@@ -25379,6 +26791,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberListRelationFilter
     pinnedChats?: PinnedChatListRelationFilter
     files?: FileMessageListRelationFilter
+    secretAttachments?: SecretAttachmentListRelationFilter
     preKeys?: XOR<PreKeyNullableScalarRelationFilter, PreKeyWhereInput> | null
   }, "id" | "username" | "email">
 
@@ -25503,6 +26916,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyListRelationFilter
     lastMessageForChat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null
     pinnedInChat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null
+    pinnedByMembers?: ChatMemberListRelationFilter
     repliedFromDrafts?: DraftMessageReplyListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
@@ -25526,6 +26940,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyOrderByRelationAggregateInput
     lastMessageForChat?: ChatOrderByWithRelationInput
     pinnedInChat?: ChatOrderByWithRelationInput
+    pinnedByMembers?: ChatMemberOrderByRelationAggregateInput
     repliedFromDrafts?: DraftMessageReplyOrderByRelationAggregateInput
     user?: UserOrderByWithRelationInput
     chat?: ChatOrderByWithRelationInput
@@ -25552,6 +26967,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyListRelationFilter
     lastMessageForChat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null
     pinnedInChat?: XOR<ChatNullableScalarRelationFilter, ChatWhereInput> | null
+    pinnedByMembers?: ChatMemberListRelationFilter
     repliedFromDrafts?: DraftMessageReplyListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
@@ -25971,6 +27387,7 @@ export namespace Prisma {
     messages?: ChatMessageListRelationFilter
     members?: ChatMemberListRelationFilter
     files?: FileMessageListRelationFilter
+    secretAttachments?: SecretAttachmentListRelationFilter
     roles?: ChatRoleListRelationFilter
   }
 
@@ -25997,6 +27414,7 @@ export namespace Prisma {
     messages?: ChatMessageOrderByRelationAggregateInput
     members?: ChatMemberOrderByRelationAggregateInput
     files?: FileMessageOrderByRelationAggregateInput
+    secretAttachments?: SecretAttachmentOrderByRelationAggregateInput
     roles?: ChatRoleOrderByRelationAggregateInput
   }
 
@@ -26026,6 +27444,7 @@ export namespace Prisma {
     messages?: ChatMessageListRelationFilter
     members?: ChatMemberListRelationFilter
     files?: FileMessageListRelationFilter
+    secretAttachments?: SecretAttachmentListRelationFilter
     roles?: ChatRoleListRelationFilter
   }, "id" | "lastMessageId" | "pinnedMessageId">
 
@@ -26138,12 +27557,14 @@ export namespace Prisma {
     userId?: StringFilter<"ChatMember"> | string
     isCreator?: BoolNullableFilter<"ChatMember"> | boolean | null
     chatId?: StringFilter<"ChatMember"> | string
+    pinnedMessageId?: StringNullableFilter<"ChatMember"> | string | null
     joinedAt?: DateTimeFilter<"ChatMember"> | Date | string
     createdAt?: DateTimeFilter<"ChatMember"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMember"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
     roles?: ChatRoleMemberListRelationFilter
+    pinnedMessage?: XOR<ChatMessageNullableScalarRelationFilter, ChatMessageWhereInput> | null
   }
 
   export type ChatMemberOrderByWithRelationInput = {
@@ -26151,12 +27572,14 @@ export namespace Prisma {
     userId?: SortOrder
     isCreator?: SortOrderInput | SortOrder
     chatId?: SortOrder
+    pinnedMessageId?: SortOrderInput | SortOrder
     joinedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     chat?: ChatOrderByWithRelationInput
     roles?: ChatRoleMemberOrderByRelationAggregateInput
+    pinnedMessage?: ChatMessageOrderByWithRelationInput
   }
 
   export type ChatMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -26167,12 +27590,14 @@ export namespace Prisma {
     userId?: StringFilter<"ChatMember"> | string
     isCreator?: BoolNullableFilter<"ChatMember"> | boolean | null
     chatId?: StringFilter<"ChatMember"> | string
+    pinnedMessageId?: StringNullableFilter<"ChatMember"> | string | null
     joinedAt?: DateTimeFilter<"ChatMember"> | Date | string
     createdAt?: DateTimeFilter<"ChatMember"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMember"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
     roles?: ChatRoleMemberListRelationFilter
+    pinnedMessage?: XOR<ChatMessageNullableScalarRelationFilter, ChatMessageWhereInput> | null
   }, "id">
 
   export type ChatMemberOrderByWithAggregationInput = {
@@ -26180,6 +27605,7 @@ export namespace Prisma {
     userId?: SortOrder
     isCreator?: SortOrderInput | SortOrder
     chatId?: SortOrder
+    pinnedMessageId?: SortOrderInput | SortOrder
     joinedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -26196,6 +27622,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"ChatMember"> | string
     isCreator?: BoolNullableWithAggregatesFilter<"ChatMember"> | boolean | null
     chatId?: StringWithAggregatesFilter<"ChatMember"> | string
+    pinnedMessageId?: StringNullableWithAggregatesFilter<"ChatMember"> | string | null
     joinedAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ChatMember"> | Date | string
@@ -26620,6 +28047,7 @@ export namespace Prisma {
     iv?: StringFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringFilter<"QueueSecretMessage"> | string
     sig?: StringFilter<"QueueSecretMessage"> | string
+    secretAttachmentIds?: StringNullableListFilter<"QueueSecretMessage">
     createdAt?: DateTimeFilter<"QueueSecretMessage"> | Date | string
     updatedAt?: DateTimeFilter<"QueueSecretMessage"> | Date | string
   }
@@ -26636,6 +28064,7 @@ export namespace Prisma {
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
+    secretAttachmentIds?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -26655,6 +28084,7 @@ export namespace Prisma {
     iv?: StringFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringFilter<"QueueSecretMessage"> | string
     sig?: StringFilter<"QueueSecretMessage"> | string
+    secretAttachmentIds?: StringNullableListFilter<"QueueSecretMessage">
     createdAt?: DateTimeFilter<"QueueSecretMessage"> | Date | string
     updatedAt?: DateTimeFilter<"QueueSecretMessage"> | Date | string
   }, "id">
@@ -26671,6 +28101,7 @@ export namespace Prisma {
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
+    secretAttachmentIds?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: QueueSecretMessageCountOrderByAggregateInput
@@ -26693,8 +28124,97 @@ export namespace Prisma {
     iv?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
     sig?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
+    secretAttachmentIds?: StringNullableListFilter<"QueueSecretMessage">
     createdAt?: DateTimeWithAggregatesFilter<"QueueSecretMessage"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"QueueSecretMessage"> | Date | string
+  }
+
+  export type SecretAttachmentWhereInput = {
+    AND?: SecretAttachmentWhereInput | SecretAttachmentWhereInput[]
+    OR?: SecretAttachmentWhereInput[]
+    NOT?: SecretAttachmentWhereInput | SecretAttachmentWhereInput[]
+    id?: StringFilter<"SecretAttachment"> | string
+    chatId?: StringFilter<"SecretAttachment"> | string
+    uploaderUserId?: StringFilter<"SecretAttachment"> | string
+    storageKey?: StringFilter<"SecretAttachment"> | string
+    ciphertextSize?: StringFilter<"SecretAttachment"> | string
+    allowedUserIds?: StringNullableListFilter<"SecretAttachment">
+    committedMessageId?: StringNullableFilter<"SecretAttachment"> | string | null
+    committedAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    createdAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type SecretAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    uploaderUserId?: SortOrder
+    storageKey?: SortOrder
+    ciphertextSize?: SortOrder
+    allowedUserIds?: SortOrder
+    committedMessageId?: SortOrderInput | SortOrder
+    committedAt?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    chat?: ChatOrderByWithRelationInput
+    uploader?: UserOrderByWithRelationInput
+  }
+
+  export type SecretAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    storageKey?: string
+    AND?: SecretAttachmentWhereInput | SecretAttachmentWhereInput[]
+    OR?: SecretAttachmentWhereInput[]
+    NOT?: SecretAttachmentWhereInput | SecretAttachmentWhereInput[]
+    chatId?: StringFilter<"SecretAttachment"> | string
+    uploaderUserId?: StringFilter<"SecretAttachment"> | string
+    ciphertextSize?: StringFilter<"SecretAttachment"> | string
+    allowedUserIds?: StringNullableListFilter<"SecretAttachment">
+    committedMessageId?: StringNullableFilter<"SecretAttachment"> | string | null
+    committedAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    createdAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+    chat?: XOR<ChatScalarRelationFilter, ChatWhereInput>
+    uploader?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "storageKey">
+
+  export type SecretAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    uploaderUserId?: SortOrder
+    storageKey?: SortOrder
+    ciphertextSize?: SortOrder
+    allowedUserIds?: SortOrder
+    committedMessageId?: SortOrderInput | SortOrder
+    committedAt?: SortOrderInput | SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SecretAttachmentCountOrderByAggregateInput
+    _max?: SecretAttachmentMaxOrderByAggregateInput
+    _min?: SecretAttachmentMinOrderByAggregateInput
+  }
+
+  export type SecretAttachmentScalarWhereWithAggregatesInput = {
+    AND?: SecretAttachmentScalarWhereWithAggregatesInput | SecretAttachmentScalarWhereWithAggregatesInput[]
+    OR?: SecretAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: SecretAttachmentScalarWhereWithAggregatesInput | SecretAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SecretAttachment"> | string
+    chatId?: StringWithAggregatesFilter<"SecretAttachment"> | string
+    uploaderUserId?: StringWithAggregatesFilter<"SecretAttachment"> | string
+    storageKey?: StringWithAggregatesFilter<"SecretAttachment"> | string
+    ciphertextSize?: StringWithAggregatesFilter<"SecretAttachment"> | string
+    allowedUserIds?: StringNullableListFilter<"SecretAttachment">
+    committedMessageId?: StringNullableWithAggregatesFilter<"SecretAttachment"> | string | null
+    committedAt?: DateTimeNullableWithAggregatesFilter<"SecretAttachment"> | Date | string | null
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"SecretAttachment"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SecretAttachment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SecretAttachment"> | Date | string
   }
 
   export type QueueSharedSecretKeyWhereInput = {
@@ -26815,6 +28335,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -26839,6 +28360,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -26863,6 +28385,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -26887,6 +28410,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -27012,6 +28536,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -27035,6 +28560,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -27054,6 +28580,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -27077,6 +28604,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -27496,6 +29024,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -27519,6 +29048,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -27542,6 +29072,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -27565,6 +29096,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -27679,6 +29211,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutChatMembershipsInput
     chat: ChatCreateNestedOneWithoutMembersInput
     roles?: ChatRoleMemberCreateNestedManyWithoutChatMemberInput
+    pinnedMessage?: ChatMessageCreateNestedOneWithoutPinnedByMembersInput
   }
 
   export type ChatMemberUncheckedCreateInput = {
@@ -27686,6 +29219,7 @@ export namespace Prisma {
     userId: string
     isCreator?: boolean | null
     chatId: string
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27701,6 +29235,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutChatMembershipsNestedInput
     chat?: ChatUpdateOneRequiredWithoutMembersNestedInput
     roles?: ChatRoleMemberUpdateManyWithoutChatMemberNestedInput
+    pinnedMessage?: ChatMessageUpdateOneWithoutPinnedByMembersNestedInput
   }
 
   export type ChatMemberUncheckedUpdateInput = {
@@ -27708,6 +29243,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     chatId?: StringFieldUpdateOperationsInput | string
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27719,6 +29255,7 @@ export namespace Prisma {
     userId: string
     isCreator?: boolean | null
     chatId: string
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -27737,6 +29274,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     chatId?: StringFieldUpdateOperationsInput | string
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -28163,6 +29701,7 @@ export namespace Prisma {
     iv: string
     encryptedMessage: string
     sig: string
+    secretAttachmentIds?: QueueSecretMessageCreatesecretAttachmentIdsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28179,6 +29718,7 @@ export namespace Prisma {
     iv: string
     encryptedMessage: string
     sig: string
+    secretAttachmentIds?: QueueSecretMessageCreatesecretAttachmentIdsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28195,6 +29735,7 @@ export namespace Prisma {
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
+    secretAttachmentIds?: QueueSecretMessageUpdatesecretAttachmentIdsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28211,6 +29752,7 @@ export namespace Prisma {
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
+    secretAttachmentIds?: QueueSecretMessageUpdatesecretAttachmentIdsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28227,6 +29769,7 @@ export namespace Prisma {
     iv: string
     encryptedMessage: string
     sig: string
+    secretAttachmentIds?: QueueSecretMessageCreatesecretAttachmentIdsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28243,6 +29786,7 @@ export namespace Prisma {
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
+    secretAttachmentIds?: QueueSecretMessageUpdatesecretAttachmentIdsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28259,6 +29803,103 @@ export namespace Prisma {
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
+    secretAttachmentIds?: QueueSecretMessageUpdatesecretAttachmentIdsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentCreateInput = {
+    id?: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chat: ChatCreateNestedOneWithoutSecretAttachmentsInput
+    uploader: UserCreateNestedOneWithoutSecretAttachmentsInput
+  }
+
+  export type SecretAttachmentUncheckedCreateInput = {
+    id?: string
+    chatId: string
+    uploaderUserId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat?: ChatUpdateOneRequiredWithoutSecretAttachmentsNestedInput
+    uploader?: UserUpdateOneRequiredWithoutSecretAttachmentsNestedInput
+  }
+
+  export type SecretAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    uploaderUserId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentCreateManyInput = {
+    id?: string
+    chatId: string
+    uploaderUserId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    uploaderUserId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28481,6 +30122,12 @@ export namespace Prisma {
     none?: FileMessageWhereInput
   }
 
+  export type SecretAttachmentListRelationFilter = {
+    every?: SecretAttachmentWhereInput
+    some?: SecretAttachmentWhereInput
+    none?: SecretAttachmentWhereInput
+  }
+
   export type PreKeyNullableScalarRelationFilter = {
     is?: PreKeyWhereInput | null
     isNot?: PreKeyWhereInput | null
@@ -28516,6 +30163,10 @@ export namespace Prisma {
   }
 
   export type FileMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SecretAttachmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -29118,6 +30769,7 @@ export namespace Prisma {
     userId?: SortOrder
     isCreator?: SortOrder
     chatId?: SortOrder
+    pinnedMessageId?: SortOrder
     joinedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29128,6 +30780,7 @@ export namespace Prisma {
     userId?: SortOrder
     isCreator?: SortOrder
     chatId?: SortOrder
+    pinnedMessageId?: SortOrder
     joinedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29138,6 +30791,7 @@ export namespace Prisma {
     userId?: SortOrder
     isCreator?: SortOrder
     chatId?: SortOrder
+    pinnedMessageId?: SortOrder
     joinedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -29410,6 +31064,7 @@ export namespace Prisma {
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
+    secretAttachmentIds?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29438,6 +31093,46 @@ export namespace Prisma {
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SecretAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    uploaderUserId?: SortOrder
+    storageKey?: SortOrder
+    ciphertextSize?: SortOrder
+    allowedUserIds?: SortOrder
+    committedMessageId?: SortOrder
+    committedAt?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SecretAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    uploaderUserId?: SortOrder
+    storageKey?: SortOrder
+    ciphertextSize?: SortOrder
+    committedMessageId?: SortOrder
+    committedAt?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SecretAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    chatId?: SortOrder
+    uploaderUserId?: SortOrder
+    storageKey?: SortOrder
+    ciphertextSize?: SortOrder
+    committedMessageId?: SortOrder
+    committedAt?: SortOrder
+    expiresAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -29549,6 +31244,13 @@ export namespace Prisma {
     connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
   }
 
+  export type SecretAttachmentCreateNestedManyWithoutUploaderInput = {
+    create?: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput> | SecretAttachmentCreateWithoutUploaderInput[] | SecretAttachmentUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutUploaderInput | SecretAttachmentCreateOrConnectWithoutUploaderInput[]
+    createMany?: SecretAttachmentCreateManyUploaderInputEnvelope
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+  }
+
   export type PreKeyCreateNestedOneWithoutUserInput = {
     create?: XOR<PreKeyCreateWithoutUserInput, PreKeyUncheckedCreateWithoutUserInput>
     connectOrCreate?: PreKeyCreateOrConnectWithoutUserInput
@@ -29609,6 +31311,13 @@ export namespace Prisma {
     connectOrCreate?: FileMessageCreateOrConnectWithoutUserInput | FileMessageCreateOrConnectWithoutUserInput[]
     createMany?: FileMessageCreateManyUserInputEnvelope
     connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
+  export type SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput = {
+    create?: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput> | SecretAttachmentCreateWithoutUploaderInput[] | SecretAttachmentUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutUploaderInput | SecretAttachmentCreateOrConnectWithoutUploaderInput[]
+    createMany?: SecretAttachmentCreateManyUploaderInputEnvelope
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
   }
 
   export type PreKeyUncheckedCreateNestedOneWithoutUserInput = {
@@ -29749,6 +31458,20 @@ export namespace Prisma {
     deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
   }
 
+  export type SecretAttachmentUpdateManyWithoutUploaderNestedInput = {
+    create?: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput> | SecretAttachmentCreateWithoutUploaderInput[] | SecretAttachmentUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutUploaderInput | SecretAttachmentCreateOrConnectWithoutUploaderInput[]
+    upsert?: SecretAttachmentUpsertWithWhereUniqueWithoutUploaderInput | SecretAttachmentUpsertWithWhereUniqueWithoutUploaderInput[]
+    createMany?: SecretAttachmentCreateManyUploaderInputEnvelope
+    set?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    disconnect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    delete?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    update?: SecretAttachmentUpdateWithWhereUniqueWithoutUploaderInput | SecretAttachmentUpdateWithWhereUniqueWithoutUploaderInput[]
+    updateMany?: SecretAttachmentUpdateManyWithWhereWithoutUploaderInput | SecretAttachmentUpdateManyWithWhereWithoutUploaderInput[]
+    deleteMany?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+  }
+
   export type PreKeyUpdateOneWithoutUserNestedInput = {
     create?: XOR<PreKeyCreateWithoutUserInput, PreKeyUncheckedCreateWithoutUserInput>
     connectOrCreate?: PreKeyCreateOrConnectWithoutUserInput
@@ -29871,6 +31594,20 @@ export namespace Prisma {
     deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
   }
 
+  export type SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput = {
+    create?: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput> | SecretAttachmentCreateWithoutUploaderInput[] | SecretAttachmentUncheckedCreateWithoutUploaderInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutUploaderInput | SecretAttachmentCreateOrConnectWithoutUploaderInput[]
+    upsert?: SecretAttachmentUpsertWithWhereUniqueWithoutUploaderInput | SecretAttachmentUpsertWithWhereUniqueWithoutUploaderInput[]
+    createMany?: SecretAttachmentCreateManyUploaderInputEnvelope
+    set?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    disconnect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    delete?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    update?: SecretAttachmentUpdateWithWhereUniqueWithoutUploaderInput | SecretAttachmentUpdateWithWhereUniqueWithoutUploaderInput[]
+    updateMany?: SecretAttachmentUpdateManyWithWhereWithoutUploaderInput | SecretAttachmentUpdateManyWithWhereWithoutUploaderInput[]
+    deleteMany?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+  }
+
   export type PreKeyUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<PreKeyCreateWithoutUserInput, PreKeyUncheckedCreateWithoutUserInput>
     connectOrCreate?: PreKeyCreateOrConnectWithoutUserInput
@@ -29946,6 +31683,13 @@ export namespace Prisma {
     connect?: ChatWhereUniqueInput
   }
 
+  export type ChatMemberCreateNestedManyWithoutPinnedMessageInput = {
+    create?: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput> | ChatMemberCreateWithoutPinnedMessageInput[] | ChatMemberUncheckedCreateWithoutPinnedMessageInput[]
+    connectOrCreate?: ChatMemberCreateOrConnectWithoutPinnedMessageInput | ChatMemberCreateOrConnectWithoutPinnedMessageInput[]
+    createMany?: ChatMemberCreateManyPinnedMessageInputEnvelope
+    connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+  }
+
   export type DraftMessageReplyCreateNestedManyWithoutRepliedToInput = {
     create?: XOR<DraftMessageReplyCreateWithoutRepliedToInput, DraftMessageReplyUncheckedCreateWithoutRepliedToInput> | DraftMessageReplyCreateWithoutRepliedToInput[] | DraftMessageReplyUncheckedCreateWithoutRepliedToInput[]
     connectOrCreate?: DraftMessageReplyCreateOrConnectWithoutRepliedToInput | DraftMessageReplyCreateOrConnectWithoutRepliedToInput[]
@@ -29996,6 +31740,13 @@ export namespace Prisma {
     create?: XOR<ChatCreateWithoutPinnedMessageInput, ChatUncheckedCreateWithoutPinnedMessageInput>
     connectOrCreate?: ChatCreateOrConnectWithoutPinnedMessageInput
     connect?: ChatWhereUniqueInput
+  }
+
+  export type ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput = {
+    create?: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput> | ChatMemberCreateWithoutPinnedMessageInput[] | ChatMemberUncheckedCreateWithoutPinnedMessageInput[]
+    connectOrCreate?: ChatMemberCreateOrConnectWithoutPinnedMessageInput | ChatMemberCreateOrConnectWithoutPinnedMessageInput[]
+    createMany?: ChatMemberCreateManyPinnedMessageInputEnvelope
+    connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
   }
 
   export type DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput = {
@@ -30065,6 +31816,20 @@ export namespace Prisma {
     delete?: ChatWhereInput | boolean
     connect?: ChatWhereUniqueInput
     update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutPinnedMessageInput, ChatUpdateWithoutPinnedMessageInput>, ChatUncheckedUpdateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberUpdateManyWithoutPinnedMessageNestedInput = {
+    create?: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput> | ChatMemberCreateWithoutPinnedMessageInput[] | ChatMemberUncheckedCreateWithoutPinnedMessageInput[]
+    connectOrCreate?: ChatMemberCreateOrConnectWithoutPinnedMessageInput | ChatMemberCreateOrConnectWithoutPinnedMessageInput[]
+    upsert?: ChatMemberUpsertWithWhereUniqueWithoutPinnedMessageInput | ChatMemberUpsertWithWhereUniqueWithoutPinnedMessageInput[]
+    createMany?: ChatMemberCreateManyPinnedMessageInputEnvelope
+    set?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    disconnect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    delete?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    update?: ChatMemberUpdateWithWhereUniqueWithoutPinnedMessageInput | ChatMemberUpdateWithWhereUniqueWithoutPinnedMessageInput[]
+    updateMany?: ChatMemberUpdateManyWithWhereWithoutPinnedMessageInput | ChatMemberUpdateManyWithWhereWithoutPinnedMessageInput[]
+    deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
   }
 
   export type DraftMessageReplyUpdateManyWithoutRepliedToNestedInput = {
@@ -30157,6 +31922,20 @@ export namespace Prisma {
     delete?: ChatWhereInput | boolean
     connect?: ChatWhereUniqueInput
     update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutPinnedMessageInput, ChatUpdateWithoutPinnedMessageInput>, ChatUncheckedUpdateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput = {
+    create?: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput> | ChatMemberCreateWithoutPinnedMessageInput[] | ChatMemberUncheckedCreateWithoutPinnedMessageInput[]
+    connectOrCreate?: ChatMemberCreateOrConnectWithoutPinnedMessageInput | ChatMemberCreateOrConnectWithoutPinnedMessageInput[]
+    upsert?: ChatMemberUpsertWithWhereUniqueWithoutPinnedMessageInput | ChatMemberUpsertWithWhereUniqueWithoutPinnedMessageInput[]
+    createMany?: ChatMemberCreateManyPinnedMessageInputEnvelope
+    set?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    disconnect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    delete?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    connect?: ChatMemberWhereUniqueInput | ChatMemberWhereUniqueInput[]
+    update?: ChatMemberUpdateWithWhereUniqueWithoutPinnedMessageInput | ChatMemberUpdateWithWhereUniqueWithoutPinnedMessageInput[]
+    updateMany?: ChatMemberUpdateManyWithWhereWithoutPinnedMessageInput | ChatMemberUpdateManyWithWhereWithoutPinnedMessageInput[]
+    deleteMany?: ChatMemberScalarWhereInput | ChatMemberScalarWhereInput[]
   }
 
   export type DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput = {
@@ -30589,6 +32368,13 @@ export namespace Prisma {
     connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
   }
 
+  export type SecretAttachmentCreateNestedManyWithoutChatInput = {
+    create?: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput> | SecretAttachmentCreateWithoutChatInput[] | SecretAttachmentUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutChatInput | SecretAttachmentCreateOrConnectWithoutChatInput[]
+    createMany?: SecretAttachmentCreateManyChatInputEnvelope
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+  }
+
   export type ChatRoleCreateNestedManyWithoutChatInput = {
     create?: XOR<ChatRoleCreateWithoutChatInput, ChatRoleUncheckedCreateWithoutChatInput> | ChatRoleCreateWithoutChatInput[] | ChatRoleUncheckedCreateWithoutChatInput[]
     connectOrCreate?: ChatRoleCreateOrConnectWithoutChatInput | ChatRoleCreateOrConnectWithoutChatInput[]
@@ -30629,6 +32415,13 @@ export namespace Prisma {
     connectOrCreate?: FileMessageCreateOrConnectWithoutChatInput | FileMessageCreateOrConnectWithoutChatInput[]
     createMany?: FileMessageCreateManyChatInputEnvelope
     connect?: FileMessageWhereUniqueInput | FileMessageWhereUniqueInput[]
+  }
+
+  export type SecretAttachmentUncheckedCreateNestedManyWithoutChatInput = {
+    create?: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput> | SecretAttachmentCreateWithoutChatInput[] | SecretAttachmentUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutChatInput | SecretAttachmentCreateOrConnectWithoutChatInput[]
+    createMany?: SecretAttachmentCreateManyChatInputEnvelope
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
   }
 
   export type ChatRoleUncheckedCreateNestedManyWithoutChatInput = {
@@ -30738,6 +32531,20 @@ export namespace Prisma {
     deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
   }
 
+  export type SecretAttachmentUpdateManyWithoutChatNestedInput = {
+    create?: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput> | SecretAttachmentCreateWithoutChatInput[] | SecretAttachmentUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutChatInput | SecretAttachmentCreateOrConnectWithoutChatInput[]
+    upsert?: SecretAttachmentUpsertWithWhereUniqueWithoutChatInput | SecretAttachmentUpsertWithWhereUniqueWithoutChatInput[]
+    createMany?: SecretAttachmentCreateManyChatInputEnvelope
+    set?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    disconnect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    delete?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    update?: SecretAttachmentUpdateWithWhereUniqueWithoutChatInput | SecretAttachmentUpdateWithWhereUniqueWithoutChatInput[]
+    updateMany?: SecretAttachmentUpdateManyWithWhereWithoutChatInput | SecretAttachmentUpdateManyWithWhereWithoutChatInput[]
+    deleteMany?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+  }
+
   export type ChatRoleUpdateManyWithoutChatNestedInput = {
     create?: XOR<ChatRoleCreateWithoutChatInput, ChatRoleUncheckedCreateWithoutChatInput> | ChatRoleCreateWithoutChatInput[] | ChatRoleUncheckedCreateWithoutChatInput[]
     connectOrCreate?: ChatRoleCreateOrConnectWithoutChatInput | ChatRoleCreateOrConnectWithoutChatInput[]
@@ -30822,6 +32629,20 @@ export namespace Prisma {
     deleteMany?: FileMessageScalarWhereInput | FileMessageScalarWhereInput[]
   }
 
+  export type SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput = {
+    create?: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput> | SecretAttachmentCreateWithoutChatInput[] | SecretAttachmentUncheckedCreateWithoutChatInput[]
+    connectOrCreate?: SecretAttachmentCreateOrConnectWithoutChatInput | SecretAttachmentCreateOrConnectWithoutChatInput[]
+    upsert?: SecretAttachmentUpsertWithWhereUniqueWithoutChatInput | SecretAttachmentUpsertWithWhereUniqueWithoutChatInput[]
+    createMany?: SecretAttachmentCreateManyChatInputEnvelope
+    set?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    disconnect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    delete?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    connect?: SecretAttachmentWhereUniqueInput | SecretAttachmentWhereUniqueInput[]
+    update?: SecretAttachmentUpdateWithWhereUniqueWithoutChatInput | SecretAttachmentUpdateWithWhereUniqueWithoutChatInput[]
+    updateMany?: SecretAttachmentUpdateManyWithWhereWithoutChatInput | SecretAttachmentUpdateManyWithWhereWithoutChatInput[]
+    deleteMany?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+  }
+
   export type ChatRoleUncheckedUpdateManyWithoutChatNestedInput = {
     create?: XOR<ChatRoleCreateWithoutChatInput, ChatRoleUncheckedCreateWithoutChatInput> | ChatRoleCreateWithoutChatInput[] | ChatRoleUncheckedCreateWithoutChatInput[]
     connectOrCreate?: ChatRoleCreateOrConnectWithoutChatInput | ChatRoleCreateOrConnectWithoutChatInput[]
@@ -30891,6 +32712,12 @@ export namespace Prisma {
     connect?: ChatRoleMemberWhereUniqueInput | ChatRoleMemberWhereUniqueInput[]
   }
 
+  export type ChatMessageCreateNestedOneWithoutPinnedByMembersInput = {
+    create?: XOR<ChatMessageCreateWithoutPinnedByMembersInput, ChatMessageUncheckedCreateWithoutPinnedByMembersInput>
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutPinnedByMembersInput
+    connect?: ChatMessageWhereUniqueInput
+  }
+
   export type ChatRoleMemberUncheckedCreateNestedManyWithoutChatMemberInput = {
     create?: XOR<ChatRoleMemberCreateWithoutChatMemberInput, ChatRoleMemberUncheckedCreateWithoutChatMemberInput> | ChatRoleMemberCreateWithoutChatMemberInput[] | ChatRoleMemberUncheckedCreateWithoutChatMemberInput[]
     connectOrCreate?: ChatRoleMemberCreateOrConnectWithoutChatMemberInput | ChatRoleMemberCreateOrConnectWithoutChatMemberInput[]
@@ -30930,6 +32757,16 @@ export namespace Prisma {
     update?: ChatRoleMemberUpdateWithWhereUniqueWithoutChatMemberInput | ChatRoleMemberUpdateWithWhereUniqueWithoutChatMemberInput[]
     updateMany?: ChatRoleMemberUpdateManyWithWhereWithoutChatMemberInput | ChatRoleMemberUpdateManyWithWhereWithoutChatMemberInput[]
     deleteMany?: ChatRoleMemberScalarWhereInput | ChatRoleMemberScalarWhereInput[]
+  }
+
+  export type ChatMessageUpdateOneWithoutPinnedByMembersNestedInput = {
+    create?: XOR<ChatMessageCreateWithoutPinnedByMembersInput, ChatMessageUncheckedCreateWithoutPinnedByMembersInput>
+    connectOrCreate?: ChatMessageCreateOrConnectWithoutPinnedByMembersInput
+    upsert?: ChatMessageUpsertWithoutPinnedByMembersInput
+    disconnect?: ChatMessageWhereInput | boolean
+    delete?: ChatMessageWhereInput | boolean
+    connect?: ChatMessageWhereUniqueInput
+    update?: XOR<XOR<ChatMessageUpdateToOneWithWhereWithoutPinnedByMembersInput, ChatMessageUpdateWithoutPinnedByMembersInput>, ChatMessageUncheckedUpdateWithoutPinnedByMembersInput>
   }
 
   export type ChatRoleMemberUncheckedUpdateManyWithoutChatMemberNestedInput = {
@@ -31235,6 +33072,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type QueueSecretMessageCreatesecretAttachmentIdsInput = {
+    set: string[]
+  }
+
   export type QueueSecretMessageUpdatetoUserIdsInput = {
     set?: string[]
     push?: string | string[]
@@ -31243,6 +33084,48 @@ export namespace Prisma {
   export type QueueSecretMessageUpdatewhoCheckedIdsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type QueueSecretMessageUpdatesecretAttachmentIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type SecretAttachmentCreateallowedUserIdsInput = {
+    set: string[]
+  }
+
+  export type ChatCreateNestedOneWithoutSecretAttachmentsInput = {
+    create?: XOR<ChatCreateWithoutSecretAttachmentsInput, ChatUncheckedCreateWithoutSecretAttachmentsInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutSecretAttachmentsInput
+    connect?: ChatWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutSecretAttachmentsInput = {
+    create?: XOR<UserCreateWithoutSecretAttachmentsInput, UserUncheckedCreateWithoutSecretAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSecretAttachmentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SecretAttachmentUpdateallowedUserIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ChatUpdateOneRequiredWithoutSecretAttachmentsNestedInput = {
+    create?: XOR<ChatCreateWithoutSecretAttachmentsInput, ChatUncheckedCreateWithoutSecretAttachmentsInput>
+    connectOrCreate?: ChatCreateOrConnectWithoutSecretAttachmentsInput
+    upsert?: ChatUpsertWithoutSecretAttachmentsInput
+    connect?: ChatWhereUniqueInput
+    update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutSecretAttachmentsInput, ChatUpdateWithoutSecretAttachmentsInput>, ChatUncheckedUpdateWithoutSecretAttachmentsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSecretAttachmentsNestedInput = {
+    create?: XOR<UserCreateWithoutSecretAttachmentsInput, UserUncheckedCreateWithoutSecretAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSecretAttachmentsInput
+    upsert?: UserUpsertWithoutSecretAttachmentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSecretAttachmentsInput, UserUpdateWithoutSecretAttachmentsInput>, UserUncheckedUpdateWithoutSecretAttachmentsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -31517,6 +33400,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     chat: ChatCreateNestedOneWithoutMessagesInput
   }
@@ -31538,6 +33422,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -31595,12 +33480,14 @@ export namespace Prisma {
     updatedAt?: Date | string
     chat: ChatCreateNestedOneWithoutMembersInput
     roles?: ChatRoleMemberCreateNestedManyWithoutChatMemberInput
+    pinnedMessage?: ChatMessageCreateNestedOneWithoutPinnedByMembersInput
   }
 
   export type ChatMemberUncheckedCreateWithoutUserInput = {
     id?: string
     isCreator?: boolean | null
     chatId: string
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31706,6 +33593,42 @@ export namespace Prisma {
 
   export type FileMessageCreateManyUserInputEnvelope = {
     data: FileMessageCreateManyUserInput | FileMessageCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SecretAttachmentCreateWithoutUploaderInput = {
+    id?: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    chat: ChatCreateNestedOneWithoutSecretAttachmentsInput
+  }
+
+  export type SecretAttachmentUncheckedCreateWithoutUploaderInput = {
+    id?: string
+    chatId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentCreateOrConnectWithoutUploaderInput = {
+    where: SecretAttachmentWhereUniqueInput
+    create: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput>
+  }
+
+  export type SecretAttachmentCreateManyUploaderInputEnvelope = {
+    data: SecretAttachmentCreateManyUploaderInput | SecretAttachmentCreateManyUploaderInput[]
     skipDuplicates?: boolean
   }
 
@@ -31869,6 +33792,7 @@ export namespace Prisma {
     userId?: StringFilter<"ChatMember"> | string
     isCreator?: BoolNullableFilter<"ChatMember"> | boolean | null
     chatId?: StringFilter<"ChatMember"> | string
+    pinnedMessageId?: StringNullableFilter<"ChatMember"> | string | null
     joinedAt?: DateTimeFilter<"ChatMember"> | Date | string
     createdAt?: DateTimeFilter<"ChatMember"> | Date | string
     updatedAt?: DateTimeFilter<"ChatMember"> | Date | string
@@ -31964,6 +33888,39 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FileMessage"> | Date | string
   }
 
+  export type SecretAttachmentUpsertWithWhereUniqueWithoutUploaderInput = {
+    where: SecretAttachmentWhereUniqueInput
+    update: XOR<SecretAttachmentUpdateWithoutUploaderInput, SecretAttachmentUncheckedUpdateWithoutUploaderInput>
+    create: XOR<SecretAttachmentCreateWithoutUploaderInput, SecretAttachmentUncheckedCreateWithoutUploaderInput>
+  }
+
+  export type SecretAttachmentUpdateWithWhereUniqueWithoutUploaderInput = {
+    where: SecretAttachmentWhereUniqueInput
+    data: XOR<SecretAttachmentUpdateWithoutUploaderInput, SecretAttachmentUncheckedUpdateWithoutUploaderInput>
+  }
+
+  export type SecretAttachmentUpdateManyWithWhereWithoutUploaderInput = {
+    where: SecretAttachmentScalarWhereInput
+    data: XOR<SecretAttachmentUpdateManyMutationInput, SecretAttachmentUncheckedUpdateManyWithoutUploaderInput>
+  }
+
+  export type SecretAttachmentScalarWhereInput = {
+    AND?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+    OR?: SecretAttachmentScalarWhereInput[]
+    NOT?: SecretAttachmentScalarWhereInput | SecretAttachmentScalarWhereInput[]
+    id?: StringFilter<"SecretAttachment"> | string
+    chatId?: StringFilter<"SecretAttachment"> | string
+    uploaderUserId?: StringFilter<"SecretAttachment"> | string
+    storageKey?: StringFilter<"SecretAttachment"> | string
+    ciphertextSize?: StringFilter<"SecretAttachment"> | string
+    allowedUserIds?: StringNullableListFilter<"SecretAttachment">
+    committedMessageId?: StringNullableFilter<"SecretAttachment"> | string | null
+    committedAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    expiresAt?: DateTimeNullableFilter<"SecretAttachment"> | Date | string | null
+    createdAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+    updatedAt?: DateTimeFilter<"SecretAttachment"> | Date | string
+  }
+
   export type PreKeyUpsertWithoutUserInput = {
     update: XOR<PreKeyUpdateWithoutUserInput, PreKeyUncheckedUpdateWithoutUserInput>
     create: XOR<PreKeyCreateWithoutUserInput, PreKeyUncheckedCreateWithoutUserInput>
@@ -32017,6 +33974,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -32040,6 +33998,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -32068,6 +34027,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -32091,6 +34051,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -32130,6 +34091,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -32153,6 +34115,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -32187,6 +34150,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -32210,6 +34174,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -32310,6 +34275,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -32332,6 +34298,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -32359,6 +34326,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -32381,12 +34349,45 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
   export type ChatCreateOrConnectWithoutPinnedMessageInput = {
     where: ChatWhereUniqueInput
     create: XOR<ChatCreateWithoutPinnedMessageInput, ChatUncheckedCreateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberCreateWithoutPinnedMessageInput = {
+    id?: string
+    isCreator?: boolean | null
+    joinedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutChatMembershipsInput
+    chat: ChatCreateNestedOneWithoutMembersInput
+    roles?: ChatRoleMemberCreateNestedManyWithoutChatMemberInput
+  }
+
+  export type ChatMemberUncheckedCreateWithoutPinnedMessageInput = {
+    id?: string
+    userId: string
+    isCreator?: boolean | null
+    chatId: string
+    joinedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roles?: ChatRoleMemberUncheckedCreateNestedManyWithoutChatMemberInput
+  }
+
+  export type ChatMemberCreateOrConnectWithoutPinnedMessageInput = {
+    where: ChatMemberWhereUniqueInput
+    create: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberCreateManyPinnedMessageInputEnvelope = {
+    data: ChatMemberCreateManyPinnedMessageInput | ChatMemberCreateManyPinnedMessageInput[]
+    skipDuplicates?: boolean
   }
 
   export type DraftMessageReplyCreateWithoutRepliedToInput = {
@@ -32429,6 +34430,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -32452,6 +34454,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -32479,6 +34482,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -32501,6 +34505,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -32596,6 +34601,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -32618,6 +34624,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -32651,6 +34658,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -32673,7 +34681,24 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
+  }
+
+  export type ChatMemberUpsertWithWhereUniqueWithoutPinnedMessageInput = {
+    where: ChatMemberWhereUniqueInput
+    update: XOR<ChatMemberUpdateWithoutPinnedMessageInput, ChatMemberUncheckedUpdateWithoutPinnedMessageInput>
+    create: XOR<ChatMemberCreateWithoutPinnedMessageInput, ChatMemberUncheckedCreateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberUpdateWithWhereUniqueWithoutPinnedMessageInput = {
+    where: ChatMemberWhereUniqueInput
+    data: XOR<ChatMemberUpdateWithoutPinnedMessageInput, ChatMemberUncheckedUpdateWithoutPinnedMessageInput>
+  }
+
+  export type ChatMemberUpdateManyWithWhereWithoutPinnedMessageInput = {
+    where: ChatMemberScalarWhereInput
+    data: XOR<ChatMemberUpdateManyMutationInput, ChatMemberUncheckedUpdateManyWithoutPinnedMessageInput>
   }
 
   export type DraftMessageReplyUpsertWithWhereUniqueWithoutRepliedToInput = {
@@ -32732,6 +34757,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -32755,6 +34781,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -32788,6 +34815,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -32810,6 +34838,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -32828,6 +34857,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyCreateNestedManyWithoutRepliedToInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -32850,6 +34880,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -32873,6 +34904,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -32895,6 +34927,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -32929,6 +34962,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUpdateManyWithoutRepliedToNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -32951,6 +34985,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -32980,6 +35015,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -33002,6 +35038,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -33083,6 +35120,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -33106,6 +35144,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -33133,6 +35172,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -33155,6 +35195,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -33226,6 +35267,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -33249,6 +35291,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -33282,6 +35325,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -33304,6 +35348,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -33354,6 +35399,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
   }
@@ -33376,6 +35422,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
   }
 
   export type ChatMessageCreateOrConnectWithoutRepliedFromDraftsInput = {
@@ -33447,6 +35494,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
   }
@@ -33469,6 +35517,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
   }
 
   export type ChatMessageCreateWithoutFilesInput = {
@@ -33486,6 +35535,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -33508,6 +35558,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -33567,6 +35618,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -33590,6 +35642,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -33617,6 +35670,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageCreateNestedManyWithoutChatInput
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -33639,6 +35693,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedCreateNestedManyWithoutChatInput
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -33673,6 +35728,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -33695,6 +35751,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -33766,6 +35823,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -33789,6 +35847,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -33822,6 +35881,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUpdateManyWithoutChatNestedInput
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -33844,6 +35904,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedUpdateManyWithoutChatNestedInput
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -33896,6 +35957,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -33918,6 +35980,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -34086,6 +36149,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyCreateNestedManyWithoutRepliedToInput
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -34108,6 +36172,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -34131,6 +36196,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyCreateNestedManyWithoutRepliedToInput
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
     chat: ChatCreateNestedOneWithoutMessagesInput
@@ -34153,6 +36219,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -34237,6 +36304,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
     user: UserCreateNestedOneWithoutMessagesInput
   }
@@ -34258,6 +36326,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
     lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
     pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    pinnedByMembers?: ChatMemberUncheckedCreateNestedManyWithoutPinnedMessageInput
     repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
   }
 
@@ -34279,12 +36348,14 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutChatMembershipsInput
     roles?: ChatRoleMemberCreateNestedManyWithoutChatMemberInput
+    pinnedMessage?: ChatMessageCreateNestedOneWithoutPinnedByMembersInput
   }
 
   export type ChatMemberUncheckedCreateWithoutChatInput = {
     id?: string
     userId: string
     isCreator?: boolean | null
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -34336,6 +36407,42 @@ export namespace Prisma {
 
   export type FileMessageCreateManyChatInputEnvelope = {
     data: FileMessageCreateManyChatInput | FileMessageCreateManyChatInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SecretAttachmentCreateWithoutChatInput = {
+    id?: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    uploader: UserCreateNestedOneWithoutSecretAttachmentsInput
+  }
+
+  export type SecretAttachmentUncheckedCreateWithoutChatInput = {
+    id?: string
+    uploaderUserId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentCreateOrConnectWithoutChatInput = {
+    where: SecretAttachmentWhereUniqueInput
+    create: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput>
+  }
+
+  export type SecretAttachmentCreateManyChatInputEnvelope = {
+    data: SecretAttachmentCreateManyChatInput | SecretAttachmentCreateManyChatInput[]
     skipDuplicates?: boolean
   }
 
@@ -34430,6 +36537,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUpdateManyWithoutRepliedToNestedInput
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -34452,6 +36560,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -34481,6 +36590,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUpdateManyWithoutRepliedToNestedInput
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
@@ -34503,6 +36613,7 @@ export namespace Prisma {
     replies?: ChatMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -34586,6 +36697,22 @@ export namespace Prisma {
     data: XOR<FileMessageUpdateManyMutationInput, FileMessageUncheckedUpdateManyWithoutChatInput>
   }
 
+  export type SecretAttachmentUpsertWithWhereUniqueWithoutChatInput = {
+    where: SecretAttachmentWhereUniqueInput
+    update: XOR<SecretAttachmentUpdateWithoutChatInput, SecretAttachmentUncheckedUpdateWithoutChatInput>
+    create: XOR<SecretAttachmentCreateWithoutChatInput, SecretAttachmentUncheckedCreateWithoutChatInput>
+  }
+
+  export type SecretAttachmentUpdateWithWhereUniqueWithoutChatInput = {
+    where: SecretAttachmentWhereUniqueInput
+    data: XOR<SecretAttachmentUpdateWithoutChatInput, SecretAttachmentUncheckedUpdateWithoutChatInput>
+  }
+
+  export type SecretAttachmentUpdateManyWithWhereWithoutChatInput = {
+    where: SecretAttachmentScalarWhereInput
+    data: XOR<SecretAttachmentUpdateManyMutationInput, SecretAttachmentUncheckedUpdateManyWithoutChatInput>
+  }
+
   export type ChatRoleUpsertWithWhereUniqueWithoutChatInput = {
     where: ChatRoleWhereUniqueInput
     update: XOR<ChatRoleUpdateWithoutChatInput, ChatRoleUncheckedUpdateWithoutChatInput>
@@ -34635,6 +36762,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -34658,6 +36786,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -34685,6 +36814,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -34707,6 +36837,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -34746,6 +36877,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -34769,6 +36901,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -34802,6 +36935,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -34824,6 +36958,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -34847,6 +36982,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -34870,6 +37006,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -34897,6 +37034,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageCreateNestedManyWithoutChatInput
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
     roles?: ChatRoleCreateNestedManyWithoutChatInput
   }
 
@@ -34919,6 +37057,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedCreateNestedManyWithoutChatInput
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
     roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
   }
 
@@ -34949,6 +37088,53 @@ export namespace Prisma {
   export type ChatRoleMemberCreateManyChatMemberInputEnvelope = {
     data: ChatRoleMemberCreateManyChatMemberInput | ChatRoleMemberCreateManyChatMemberInput[]
     skipDuplicates?: boolean
+  }
+
+  export type ChatMessageCreateWithoutPinnedByMembersInput = {
+    id?: string
+    text?: string | null
+    isStarted?: boolean
+    isEdited?: boolean
+    isDeleted?: boolean
+    isForwarded?: boolean
+    isReply?: boolean
+    readCount?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    files?: FileMessageCreateNestedManyWithoutChatMessageInput
+    replies?: ChatMessageReplyCreateNestedManyWithoutRepliedToInput
+    repliedToLinks?: ChatMessageReplyCreateNestedManyWithoutReplyInput
+    lastMessageForChat?: ChatCreateNestedOneWithoutLastMessageInput
+    pinnedInChat?: ChatCreateNestedOneWithoutPinnedMessageInput
+    repliedFromDrafts?: DraftMessageReplyCreateNestedManyWithoutRepliedToInput
+    user: UserCreateNestedOneWithoutMessagesInput
+    chat: ChatCreateNestedOneWithoutMessagesInput
+  }
+
+  export type ChatMessageUncheckedCreateWithoutPinnedByMembersInput = {
+    id?: string
+    text?: string | null
+    isStarted?: boolean
+    isEdited?: boolean
+    isDeleted?: boolean
+    isForwarded?: boolean
+    isReply?: boolean
+    userId: string
+    chatId: string
+    readCount?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatMessageInput
+    replies?: ChatMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
+    repliedToLinks?: ChatMessageReplyUncheckedCreateNestedManyWithoutReplyInput
+    lastMessageForChat?: ChatUncheckedCreateNestedOneWithoutLastMessageInput
+    pinnedInChat?: ChatUncheckedCreateNestedOneWithoutPinnedMessageInput
+    repliedFromDrafts?: DraftMessageReplyUncheckedCreateNestedManyWithoutRepliedToInput
+  }
+
+  export type ChatMessageCreateOrConnectWithoutPinnedByMembersInput = {
+    where: ChatMessageWhereUniqueInput
+    create: XOR<ChatMessageCreateWithoutPinnedByMembersInput, ChatMessageUncheckedCreateWithoutPinnedByMembersInput>
   }
 
   export type UserUpsertWithoutChatMembershipsInput = {
@@ -34982,6 +37168,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -35005,6 +37192,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -35038,6 +37226,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUpdateManyWithoutChatNestedInput
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -35060,6 +37249,7 @@ export namespace Prisma {
     draftMessages?: DraftMessageUncheckedUpdateManyWithoutChatNestedInput
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -35090,6 +37280,59 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"ChatRoleMember"> | Date | string
   }
 
+  export type ChatMessageUpsertWithoutPinnedByMembersInput = {
+    update: XOR<ChatMessageUpdateWithoutPinnedByMembersInput, ChatMessageUncheckedUpdateWithoutPinnedByMembersInput>
+    create: XOR<ChatMessageCreateWithoutPinnedByMembersInput, ChatMessageUncheckedCreateWithoutPinnedByMembersInput>
+    where?: ChatMessageWhereInput
+  }
+
+  export type ChatMessageUpdateToOneWithWhereWithoutPinnedByMembersInput = {
+    where?: ChatMessageWhereInput
+    data: XOR<ChatMessageUpdateWithoutPinnedByMembersInput, ChatMessageUncheckedUpdateWithoutPinnedByMembersInput>
+  }
+
+  export type ChatMessageUpdateWithoutPinnedByMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    isForwarded?: BoolFieldUpdateOperationsInput | boolean
+    isReply?: BoolFieldUpdateOperationsInput | boolean
+    readCount?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUpdateManyWithoutChatMessageNestedInput
+    replies?: ChatMessageReplyUpdateManyWithoutRepliedToNestedInput
+    repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
+    lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
+    pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
+    user?: UserUpdateOneRequiredWithoutMessagesNestedInput
+    chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type ChatMessageUncheckedUpdateWithoutPinnedByMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    isStarted?: BoolFieldUpdateOperationsInput | boolean
+    isEdited?: BoolFieldUpdateOperationsInput | boolean
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    isForwarded?: BoolFieldUpdateOperationsInput | boolean
+    isReply?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    readCount?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    files?: FileMessageUncheckedUpdateManyWithoutChatMessageNestedInput
+    replies?: ChatMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
+    repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
+    lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
+    pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
+  }
+
   export type UserCreateWithoutGroupMembershipsInput = {
     id?: string
     username: string
@@ -35110,6 +37353,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyCreateNestedOneWithoutUserInput
   }
 
@@ -35133,6 +37377,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
     preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
   }
 
@@ -35225,6 +37470,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUpdateOneWithoutUserNestedInput
   }
 
@@ -35248,6 +37494,7 @@ export namespace Prisma {
     chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
     preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
@@ -35333,6 +37580,7 @@ export namespace Prisma {
     messages?: ChatMessageCreateNestedManyWithoutChatInput
     members?: ChatMemberCreateNestedManyWithoutChatInput
     files?: FileMessageCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutChatInput
   }
 
   export type ChatUncheckedCreateWithoutRolesInput = {
@@ -35355,6 +37603,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
     members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
     files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutChatInput
   }
 
   export type ChatCreateOrConnectWithoutRolesInput = {
@@ -35417,6 +37666,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
   }
 
   export type ChatUncheckedUpdateWithoutRolesInput = {
@@ -35439,6 +37689,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
   }
 
   export type ChatRoleMemberUpsertWithWhereUniqueWithoutChatRoleInput = {
@@ -35569,6 +37820,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutChatMembershipsInput
     chat: ChatCreateNestedOneWithoutMembersInput
+    pinnedMessage?: ChatMessageCreateNestedOneWithoutPinnedByMembersInput
   }
 
   export type ChatMemberUncheckedCreateWithoutRolesInput = {
@@ -35576,6 +37828,7 @@ export namespace Prisma {
     userId: string
     isCreator?: boolean | null
     chatId: string
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35630,6 +37883,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutChatMembershipsNestedInput
     chat?: ChatUpdateOneRequiredWithoutMembersNestedInput
+    pinnedMessage?: ChatMessageUpdateOneWithoutPinnedByMembersNestedInput
   }
 
   export type ChatMemberUncheckedUpdateWithoutRolesInput = {
@@ -35637,6 +37891,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     chatId?: StringFieldUpdateOperationsInput | string
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35806,6 +38061,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
     files?: FileMessageCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentCreateNestedManyWithoutUploaderInput
   }
 
   export type UserUncheckedCreateWithoutPreKeysInput = {
@@ -35829,6 +38085,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
     pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
     files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    secretAttachments?: SecretAttachmentUncheckedCreateNestedManyWithoutUploaderInput
   }
 
   export type UserCreateOrConnectWithoutPreKeysInput = {
@@ -35868,6 +38125,7 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
     files?: FileMessageUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutUploaderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPreKeysInput = {
@@ -35891,6 +38149,227 @@ export namespace Prisma {
     groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
     pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutUploaderNestedInput
+  }
+
+  export type ChatCreateWithoutSecretAttachmentsInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    description?: string | null
+    isSecret?: boolean
+    requireTotp?: boolean
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    group?: GroupCreateNestedOneWithoutChatsInput
+    lastMessage?: ChatMessageCreateNestedOneWithoutLastMessageForChatInput
+    pinnedMessage?: ChatMessageCreateNestedOneWithoutPinnedInChatInput
+    pinnedByUser?: PinnedChatCreateNestedManyWithoutChatInput
+    draftMessages?: DraftMessageCreateNestedManyWithoutChatInput
+    messages?: ChatMessageCreateNestedManyWithoutChatInput
+    members?: ChatMemberCreateNestedManyWithoutChatInput
+    files?: FileMessageCreateNestedManyWithoutChatInput
+    roles?: ChatRoleCreateNestedManyWithoutChatInput
+  }
+
+  export type ChatUncheckedCreateWithoutSecretAttachmentsInput = {
+    id?: string
+    chatName?: string | null
+    isGroup?: boolean
+    avatarUrl?: string | null
+    isDeleted?: boolean
+    description?: string | null
+    isSecret?: boolean
+    requireTotp?: boolean
+    groupId?: string | null
+    lastMessageId?: string | null
+    pinnedMessageId?: string | null
+    lastMessageAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    pinnedByUser?: PinnedChatUncheckedCreateNestedManyWithoutChatInput
+    draftMessages?: DraftMessageUncheckedCreateNestedManyWithoutChatInput
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutChatInput
+    members?: ChatMemberUncheckedCreateNestedManyWithoutChatInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutChatInput
+    roles?: ChatRoleUncheckedCreateNestedManyWithoutChatInput
+  }
+
+  export type ChatCreateOrConnectWithoutSecretAttachmentsInput = {
+    where: ChatWhereUniqueInput
+    create: XOR<ChatCreateWithoutSecretAttachmentsInput, ChatUncheckedCreateWithoutSecretAttachmentsInput>
+  }
+
+  export type UserCreateWithoutSecretAttachmentsInput = {
+    id?: string
+    username: string
+    bio?: string | null
+    email: string
+    password: string
+    avatarUrl?: string | null
+    totpSecret?: string | null
+    isTotpEnabled?: boolean
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    friendsInitiated?: FriendshipCreateNestedManyWithoutUserInput
+    friendsReceived?: FriendshipCreateNestedManyWithoutFriendInput
+    messages?: ChatMessageCreateNestedManyWithoutUserInput
+    draftMessages?: DraftMessageCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberCreateNestedManyWithoutUserInput
+    groupMemberships?: GroupMemberCreateNestedManyWithoutUserInput
+    pinnedChats?: PinnedChatCreateNestedManyWithoutUserInput
+    files?: FileMessageCreateNestedManyWithoutUserInput
+    preKeys?: PreKeyCreateNestedOneWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSecretAttachmentsInput = {
+    id?: string
+    username: string
+    bio?: string | null
+    email: string
+    password: string
+    avatarUrl?: string | null
+    totpSecret?: string | null
+    isTotpEnabled?: boolean
+    isDeactivated?: boolean
+    deactivatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    friendsInitiated?: FriendshipUncheckedCreateNestedManyWithoutUserInput
+    friendsReceived?: FriendshipUncheckedCreateNestedManyWithoutFriendInput
+    messages?: ChatMessageUncheckedCreateNestedManyWithoutUserInput
+    draftMessages?: DraftMessageUncheckedCreateNestedManyWithoutUserInput
+    chatMemberships?: ChatMemberUncheckedCreateNestedManyWithoutUserInput
+    groupMemberships?: GroupMemberUncheckedCreateNestedManyWithoutUserInput
+    pinnedChats?: PinnedChatUncheckedCreateNestedManyWithoutUserInput
+    files?: FileMessageUncheckedCreateNestedManyWithoutUserInput
+    preKeys?: PreKeyUncheckedCreateNestedOneWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSecretAttachmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSecretAttachmentsInput, UserUncheckedCreateWithoutSecretAttachmentsInput>
+  }
+
+  export type ChatUpsertWithoutSecretAttachmentsInput = {
+    update: XOR<ChatUpdateWithoutSecretAttachmentsInput, ChatUncheckedUpdateWithoutSecretAttachmentsInput>
+    create: XOR<ChatCreateWithoutSecretAttachmentsInput, ChatUncheckedCreateWithoutSecretAttachmentsInput>
+    where?: ChatWhereInput
+  }
+
+  export type ChatUpdateToOneWithWhereWithoutSecretAttachmentsInput = {
+    where?: ChatWhereInput
+    data: XOR<ChatUpdateWithoutSecretAttachmentsInput, ChatUncheckedUpdateWithoutSecretAttachmentsInput>
+  }
+
+  export type ChatUpdateWithoutSecretAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isSecret?: BoolFieldUpdateOperationsInput | boolean
+    requireTotp?: BoolFieldUpdateOperationsInput | boolean
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    group?: GroupUpdateOneWithoutChatsNestedInput
+    lastMessage?: ChatMessageUpdateOneWithoutLastMessageForChatNestedInput
+    pinnedMessage?: ChatMessageUpdateOneWithoutPinnedInChatNestedInput
+    pinnedByUser?: PinnedChatUpdateManyWithoutChatNestedInput
+    draftMessages?: DraftMessageUpdateManyWithoutChatNestedInput
+    messages?: ChatMessageUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUpdateManyWithoutChatNestedInput
+    files?: FileMessageUpdateManyWithoutChatNestedInput
+    roles?: ChatRoleUpdateManyWithoutChatNestedInput
+  }
+
+  export type ChatUncheckedUpdateWithoutSecretAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatName?: NullableStringFieldUpdateOperationsInput | string | null
+    isGroup?: BoolFieldUpdateOperationsInput | boolean
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isSecret?: BoolFieldUpdateOperationsInput | boolean
+    requireTotp?: BoolFieldUpdateOperationsInput | boolean
+    groupId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    lastMessageAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pinnedByUser?: PinnedChatUncheckedUpdateManyWithoutChatNestedInput
+    draftMessages?: DraftMessageUncheckedUpdateManyWithoutChatNestedInput
+    messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
+    members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
+  }
+
+  export type UserUpsertWithoutSecretAttachmentsInput = {
+    update: XOR<UserUpdateWithoutSecretAttachmentsInput, UserUncheckedUpdateWithoutSecretAttachmentsInput>
+    create: XOR<UserCreateWithoutSecretAttachmentsInput, UserUncheckedCreateWithoutSecretAttachmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSecretAttachmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSecretAttachmentsInput, UserUncheckedUpdateWithoutSecretAttachmentsInput>
+  }
+
+  export type UserUpdateWithoutSecretAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    totpSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    isTotpEnabled?: BoolFieldUpdateOperationsInput | boolean
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    friendsInitiated?: FriendshipUpdateManyWithoutUserNestedInput
+    friendsReceived?: FriendshipUpdateManyWithoutFriendNestedInput
+    messages?: ChatMessageUpdateManyWithoutUserNestedInput
+    draftMessages?: DraftMessageUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUpdateManyWithoutUserNestedInput
+    groupMemberships?: GroupMemberUpdateManyWithoutUserNestedInput
+    pinnedChats?: PinnedChatUpdateManyWithoutUserNestedInput
+    files?: FileMessageUpdateManyWithoutUserNestedInput
+    preKeys?: PreKeyUpdateOneWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSecretAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    totpSecret?: NullableStringFieldUpdateOperationsInput | string | null
+    isTotpEnabled?: BoolFieldUpdateOperationsInput | boolean
+    isDeactivated?: BoolFieldUpdateOperationsInput | boolean
+    deactivatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    friendsInitiated?: FriendshipUncheckedUpdateManyWithoutUserNestedInput
+    friendsReceived?: FriendshipUncheckedUpdateManyWithoutFriendNestedInput
+    messages?: ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+    draftMessages?: DraftMessageUncheckedUpdateManyWithoutUserNestedInput
+    chatMemberships?: ChatMemberUncheckedUpdateManyWithoutUserNestedInput
+    groupMemberships?: GroupMemberUncheckedUpdateManyWithoutUserNestedInput
+    pinnedChats?: PinnedChatUncheckedUpdateManyWithoutUserNestedInput
+    files?: FileMessageUncheckedUpdateManyWithoutUserNestedInput
+    preKeys?: PreKeyUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type FriendshipCreateManyUserInput = {
@@ -35938,6 +38417,7 @@ export namespace Prisma {
     id?: string
     isCreator?: boolean | null
     chatId: string
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -35969,6 +38449,19 @@ export namespace Prisma {
     chatMessageId?: string | null
     draftMessageId?: string | null
     chatId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentCreateManyUploaderInput = {
+    id?: string
+    chatId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -36037,6 +38530,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     chat?: ChatUpdateOneRequiredWithoutMessagesNestedInput
   }
@@ -36058,6 +38552,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -36120,12 +38615,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     chat?: ChatUpdateOneRequiredWithoutMembersNestedInput
     roles?: ChatRoleMemberUpdateManyWithoutChatMemberNestedInput
+    pinnedMessage?: ChatMessageUpdateOneWithoutPinnedByMembersNestedInput
   }
 
   export type ChatMemberUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     chatId?: StringFieldUpdateOperationsInput | string
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36136,6 +38633,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
     chatId?: StringFieldUpdateOperationsInput | string
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36233,6 +38731,45 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SecretAttachmentUpdateWithoutUploaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat?: ChatUpdateOneRequiredWithoutSecretAttachmentsNestedInput
+  }
+
+  export type SecretAttachmentUncheckedUpdateWithoutUploaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentUncheckedUpdateManyWithoutUploaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FileMessageCreateManyChatMessageInput = {
     id?: string
     fileUrl: string
@@ -36255,6 +38792,16 @@ export namespace Prisma {
   export type ChatMessageReplyCreateManyReplyInput = {
     id?: string
     repliedToId: string
+  }
+
+  export type ChatMemberCreateManyPinnedMessageInput = {
+    id?: string
+    userId: string
+    isCreator?: boolean | null
+    chatId: string
+    joinedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type DraftMessageReplyCreateManyRepliedToInput = {
@@ -36332,6 +38879,38 @@ export namespace Prisma {
   export type ChatMessageReplyUncheckedUpdateManyWithoutReplyInput = {
     id?: StringFieldUpdateOperationsInput | string
     repliedToId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ChatMemberUpdateWithoutPinnedMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutChatMembershipsNestedInput
+    chat?: ChatUpdateOneRequiredWithoutMembersNestedInput
+    roles?: ChatRoleMemberUpdateManyWithoutChatMemberNestedInput
+  }
+
+  export type ChatMemberUncheckedUpdateWithoutPinnedMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chatId?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roles?: ChatRoleMemberUncheckedUpdateManyWithoutChatMemberNestedInput
+  }
+
+  export type ChatMemberUncheckedUpdateManyWithoutPinnedMessageInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    chatId?: StringFieldUpdateOperationsInput | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DraftMessageReplyUpdateWithoutRepliedToInput = {
@@ -36507,6 +39086,7 @@ export namespace Prisma {
     messages?: ChatMessageUpdateManyWithoutChatNestedInput
     members?: ChatMemberUpdateManyWithoutChatNestedInput
     files?: FileMessageUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUpdateManyWithoutChatNestedInput
   }
 
@@ -36529,6 +39109,7 @@ export namespace Prisma {
     messages?: ChatMessageUncheckedUpdateManyWithoutChatNestedInput
     members?: ChatMemberUncheckedUpdateManyWithoutChatNestedInput
     files?: FileMessageUncheckedUpdateManyWithoutChatNestedInput
+    secretAttachments?: SecretAttachmentUncheckedUpdateManyWithoutChatNestedInput
     roles?: ChatRoleUncheckedUpdateManyWithoutChatNestedInput
   }
 
@@ -36613,6 +39194,7 @@ export namespace Prisma {
     id?: string
     userId: string
     isCreator?: boolean | null
+    pinnedMessageId?: string | null
     joinedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36628,6 +39210,19 @@ export namespace Prisma {
     chatMessageId?: string | null
     draftMessageId?: string | null
     userId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SecretAttachmentCreateManyChatInput = {
+    id?: string
+    uploaderUserId: string
+    storageKey: string
+    ciphertextSize: string
+    allowedUserIds?: SecretAttachmentCreateallowedUserIdsInput | string[]
+    committedMessageId?: string | null
+    committedAt?: Date | string | null
+    expiresAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -36715,6 +39310,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUpdateManyWithoutRepliedToNestedInput
     user?: UserUpdateOneRequiredWithoutMessagesNestedInput
   }
@@ -36736,6 +39332,7 @@ export namespace Prisma {
     repliedToLinks?: ChatMessageReplyUncheckedUpdateManyWithoutReplyNestedInput
     lastMessageForChat?: ChatUncheckedUpdateOneWithoutLastMessageNestedInput
     pinnedInChat?: ChatUncheckedUpdateOneWithoutPinnedMessageNestedInput
+    pinnedByMembers?: ChatMemberUncheckedUpdateManyWithoutPinnedMessageNestedInput
     repliedFromDrafts?: DraftMessageReplyUncheckedUpdateManyWithoutRepliedToNestedInput
   }
 
@@ -36761,12 +39358,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutChatMembershipsNestedInput
     roles?: ChatRoleMemberUpdateManyWithoutChatMemberNestedInput
+    pinnedMessage?: ChatMessageUpdateOneWithoutPinnedByMembersNestedInput
   }
 
   export type ChatMemberUncheckedUpdateWithoutChatInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36777,6 +39376,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     isCreator?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    pinnedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36820,6 +39420,45 @@ export namespace Prisma {
     chatMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     draftMessageId?: NullableStringFieldUpdateOperationsInput | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploader?: UserUpdateOneRequiredWithoutSecretAttachmentsNestedInput
+  }
+
+  export type SecretAttachmentUncheckedUpdateWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    uploaderUserId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SecretAttachmentUncheckedUpdateManyWithoutChatInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    uploaderUserId?: StringFieldUpdateOperationsInput | string
+    storageKey?: StringFieldUpdateOperationsInput | string
+    ciphertextSize?: StringFieldUpdateOperationsInput | string
+    allowedUserIds?: SecretAttachmentUpdateallowedUserIdsInput | string[]
+    committedMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    committedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

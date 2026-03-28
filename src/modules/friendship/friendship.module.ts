@@ -7,6 +7,7 @@ import { FriendshipService } from "./friendship.service";
 
 @Module({
   imports: [SessionModule],
-  providers: [FriendshipResolver, FriendshipService]
+  providers: [FriendshipResolver, FriendshipService],
+  exports: [FriendshipService]
 })
 export class FriendshipModule {}

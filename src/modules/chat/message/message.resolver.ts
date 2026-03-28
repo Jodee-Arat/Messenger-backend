@@ -1,10 +1,10 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import e from "express";
-import { PubSub } from "graphql-subscriptions";
 
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
+import { appPubSub } from "@/src/shared/utils/pubsub.util";
 
 import { FiltersInput } from "../../inputs/filters.input";
 import { ChatModel } from "../models/chat.model";
@@ -18,10 +18,7 @@ import { TypingIndicatorModel } from "./models/typing-indicator.model";
 
 @Resolver("Message")
 export class MessageResolver {
-  private readonly pubSub: PubSub;
-  constructor(private readonly messageService: MessageService) {
-    this.pubSub = new PubSub();
-  }
+  constructor(private readonly messageService: MessageService) {}
   @Authorization()
   @IsMemberChat()
   @Query(() => [ChatMessageModel], { name: "findAllMessagesByChat" })
@@ -59,7 +56,7 @@ export class MessageResolver {
     @Args("chatId") chatId: string,
     @Args("userId") userId: string
   ) {
-    return this.pubSub.asyncIterableIterator("CHAT_MESSAGE_ADDED");
+    return appPubSub.asyncIterableIterator("CHAT_MESSAGE_ADDED");
   }
 
   @Authorization()
@@ -76,7 +73,7 @@ export class MessageResolver {
       input
     );
 
-    this.pubSub.publish("CHAT_MESSAGE_ADDED", {
+    appPubSub.publish("CHAT_MESSAGE_ADDED", {
       chatMessageAdded: message
     });
 
@@ -86,7 +83,7 @@ export class MessageResolver {
       );
 
       if (!hasDraft) {
-        this.pubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+        appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
           chatUpdated: { ...chat, draftMessages: null }
         });
       }
@@ -110,7 +107,7 @@ export class MessageResolver {
     );
     if (messages.length > 1) {
       for (let message of messages) {
-        this.pubSub.publish("CHAT_MESSAGE_ADDED", {
+        appPubSub.publish("CHAT_MESSAGE_ADDED", {
           chatMessageAdded: message
         });
       }
@@ -121,7 +118,7 @@ export class MessageResolver {
           );
 
           if (!hasDraft) {
-            this.pubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+            appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
               chatUpdated: { ...chat, draftMessages: null }
             });
           }
@@ -142,7 +139,7 @@ export class MessageResolver {
   ) {
     const { draftMessage, chat } =
       await this.messageService.sendChatDraftMessage(userId, chatId, input);
-    this.pubSub.publish(`CHAT_UPDATED_${draftMessage.userId}`, {
+    appPubSub.publish(`CHAT_UPDATED_${draftMessage.userId}`, {
       chatUpdated: chat
     });
 
@@ -172,7 +169,7 @@ export class MessageResolver {
     @Args("chatId") chatId: string,
     @Args("userId") userId: string
   ) {
-    return this.pubSub.asyncIterableIterator("CHAT_MESSAGE_REMOVED");
+    return appPubSub.asyncIterableIterator("CHAT_MESSAGE_REMOVED");
   }
 
   @Authorization()
@@ -189,7 +186,7 @@ export class MessageResolver {
       input
     );
 
-    this.pubSub.publish("CHAT_MESSAGE_REMOVED", {
+    appPubSub.publish("CHAT_MESSAGE_REMOVED", {
       chatMessageRemoved: { messageIds, chat }
     });
 
@@ -213,7 +210,7 @@ export class MessageResolver {
     }
   })
   public chatUpdated(@Args("userId") userId: string) {
-    return this.pubSub.asyncIterableIterator(`CHAT_UPDATED_${userId}`);
+    return appPubSub.asyncIterableIterator(`CHAT_UPDATED_${userId}`);
   }
 
   @Authorization()
@@ -240,7 +237,7 @@ export class MessageResolver {
     const user = await this.messageService.findUserById(userId);
     if (!user) return false;
 
-    this.pubSub.publish(`TYPING_${chatId}`, {
+    appPubSub.publish(`TYPING_${chatId}`, {
       typingStarted: {
         userId,
         username: user.username,
@@ -262,6 +259,6 @@ export class MessageResolver {
     @Args("chatId") chatId: string,
     @Args("userId") userId: string
   ) {
-    return this.pubSub.asyncIterableIterator(`TYPING_${chatId}`);
+    return appPubSub.asyncIterableIterator(`TYPING_${chatId}`);
   }
 }

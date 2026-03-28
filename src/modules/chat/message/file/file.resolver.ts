@@ -30,19 +30,21 @@ export class FileResolver {
   @IsMemberChat()
   @Mutation(() => Boolean, { name: "removeFile" })
   async removeFile(
+    @Authorized("id") userId: string,
     @Args("fileId") fileId: string,
     @Args("chatId") chatId: string
   ) {
-    return this.fileService.removeFile(fileId);
+    return this.fileService.removeFile(userId, chatId, fileId);
   }
 
   @Authorization()
   @IsMemberChat()
   @Mutation(() => FileDownloadData, { name: "downloadFile" })
   async downloadFile(
+    @Authorized("id") userId: string,
     @Args("fileId") fileId: string,
     @Args("chatId") chatId: string
   ) {
-    return this.fileService.downloadFile(fileId);
+    return this.fileService.downloadFile(userId, chatId, fileId);
   }
 }

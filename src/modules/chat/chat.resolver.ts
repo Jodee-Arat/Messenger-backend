@@ -1,5 +1,4 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
-import { PubSub } from "graphql-subscriptions";
 import { GraphQLUpload, Upload } from "graphql-upload";
 
 import { User } from "@/prisma/generated";
@@ -7,6 +6,7 @@ import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
 import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
+import { appPubSub } from "@/src/shared/utils/pubsub.util";
 
 import { FiltersInput } from "../inputs/filters.input";
 
@@ -18,9 +18,25 @@ import { SecretKeyRotationModel } from "./models/secret-key-rotation.model";
 
 @Resolver("Chat")
 export class ChatResolver {
-  private readonly pubSub: PubSub;
-  constructor(private readonly chatService: ChatService) {
-    this.pubSub = new PubSub();
+  constructor(private readonly chatService: ChatService) {}
+
+  private async publishChatUpdated(chatId: string) {
+    const chat = await this.chatService.getChatUpdatedBroadcastPayload(chatId);
+    if (!chat) return;
+
+    const memberPinnedIds =
+      await this.chatService.getMemberPinnedMessageIds(chatId);
+
+    for (const member of chat.members) {
+      const pinnedMessageId = memberPinnedIds[member.userId] ?? null;
+      await appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+        chatUpdated: {
+          ...chat,
+          pinnedMessageId,
+          draftMessages: null
+        }
+      });
+    }
   }
 
   @Authorization()
@@ -118,7 +134,7 @@ export class ChatResolver {
     @Args("userId") userId: string,
     @Args("groupId") groupId: string
   ) {
-    return this.pubSub.asyncIterableIterator("CHAT_ADDED");
+    return appPubSub.asyncIterableIterator("CHAT_ADDED");
   }
 
   @Subscription(() => ChatModel, {
@@ -145,7 +161,7 @@ export class ChatResolver {
     @Args("userId") userId: string,
     @Args("groupId") groupId: string
   ) {
-    return this.pubSub.asyncIterableIterator("CHAT_DELETED");
+    return appPubSub.asyncIterableIterator("CHAT_DELETED");
   }
 
   @Authorization()
@@ -157,7 +173,7 @@ export class ChatResolver {
   ) {
     const chat = await this.chatService.deleteChat(userId, chatId);
 
-    this.pubSub.publish("CHAT_DELETED", {
+    appPubSub.publish("CHAT_DELETED", {
       chatDeleted: chat
     });
     return chat ? true : false;
@@ -170,11 +186,43 @@ export class ChatResolver {
     @Authorized("id") userId: string,
     @Args("chatId") chatId: string
   ) {
-    const chat = await this.chatService.leaveChat(userId, chatId);
+    const { chat, leaveMessage, updatedChat } =
+      await this.chatService.leaveChat(userId, chatId);
+
+    if (leaveMessage) {
+      appPubSub.publish("CHAT_MESSAGE_ADDED", {
+        chatMessageAdded: leaveMessage
+      });
+    }
+
+    if (chat?.groupId) {
+      appPubSub.publish("CHAT_DELETED", {
+        chatDeleted: {
+          id: chat.id,
+          isSecret: chat.isSecret,
+          groupId: chat.groupId,
+          members: [{ userId }]
+        }
+      });
+    }
+
+    if (updatedChat) {
+      for (const member of updatedChat.members) {
+        const hasDraft = updatedChat.draftMessages?.some(
+          (msg) => msg.user.id === member.userId
+        );
+
+        if (!hasDraft) {
+          appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+            chatUpdated: { ...updatedChat, draftMessages: null }
+          });
+        }
+      }
+    }
 
     if (chat && chat.isSecret) {
       await this.chatService.clearChatSharedKeys(chatId);
-      this.pubSub.publish("SECRET_KEY_ROTATION", {
+      appPubSub.publish("SECRET_KEY_ROTATION", {
         secretKeyRotation: { chatId, members: chat.members }
       });
     }
@@ -214,8 +262,19 @@ export class ChatResolver {
 
     if (chat && chat.isSecret) {
       await this.chatService.clearChatSharedKeys(chatId);
-      this.pubSub.publish("SECRET_KEY_ROTATION", {
+      appPubSub.publish("SECRET_KEY_ROTATION", {
         secretKeyRotation: { chatId, members: chat.members }
+      });
+    }
+
+    if (chat?.groupId) {
+      appPubSub.publish("CHAT_DELETED", {
+        chatDeleted: {
+          id: chat.id,
+          isSecret: chat.isSecret,
+          groupId: chat.groupId,
+          members: [{ userId: targetUserId }]
+        }
       });
     }
 
@@ -245,7 +304,7 @@ export class ChatResolver {
   ) {
     const chat = await this.chatService.createChat(creatorId, groupId, input);
 
-    this.pubSub.publish("CHAT_ADDED", {
+    appPubSub.publish("CHAT_ADDED", {
       chatAdded: chat
     });
 
@@ -260,7 +319,13 @@ export class ChatResolver {
     @Args("chatId") chatId: string,
     @Args("messageId") messageId: string
   ) {
-    return await this.chatService.pinMessage(userId, chatId, messageId);
+    const result = await this.chatService.pinMessage(userId, chatId, messageId);
+
+    if (result) {
+      await this.publishChatUpdated(chatId);
+    }
+
+    return result;
   }
   @Authorization()
   @IsMemberChat()
@@ -269,7 +334,13 @@ export class ChatResolver {
     @Authorized("id") userId: string,
     @Args("chatId") chatId: string
   ) {
-    return await this.chatService.unPinMessage(userId, chatId);
+    const result = await this.chatService.unPinMessage(userId, chatId);
+
+    if (result) {
+      await this.publishChatUpdated(chatId);
+    }
+
+    return result;
   }
 
   @Authorization()
@@ -308,7 +379,7 @@ export class ChatResolver {
     }
   })
   public secretKeyRotation(@Args("userId") userId: string) {
-    return this.pubSub.asyncIterableIterator("SECRET_KEY_ROTATION");
+    return appPubSub.asyncIterableIterator("SECRET_KEY_ROTATION");
   }
 
   @Authorization()

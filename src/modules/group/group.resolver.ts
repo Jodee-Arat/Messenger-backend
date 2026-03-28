@@ -7,6 +7,7 @@ import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberGroup } from "@/src/shared/decorators/group/is-member-group.decorator";
 import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
+import { appPubSub } from "@/src/shared/utils/pubsub.util";
 
 import { FiltersInput } from "../inputs/filters.input";
 
@@ -165,6 +166,36 @@ export class GroupResolver {
     @Args("groupId") groupId: string,
     @Args("targetUserId") targetUserId: string
   ) {
-    return this.groupService.removeMember(userId, groupId, targetUserId);
+    const result = await this.groupService.removeMember(
+      userId,
+      groupId,
+      targetUserId
+    );
+
+    this.pubSub.publish("GROUP_DELETED", {
+      groupDeleted: {
+        id: result.groupId,
+        members: [{ userId: result.removedUserId }]
+      }
+    });
+
+    for (const chat of result.removedChats) {
+      appPubSub.publish("CHAT_DELETED", {
+        chatDeleted: {
+          id: chat.id,
+          isSecret: chat.isSecret,
+          groupId: chat.groupId,
+          members: [{ userId: result.removedUserId }]
+        }
+      });
+
+      if (chat.isSecret) {
+        appPubSub.publish("SECRET_KEY_ROTATION", {
+          secretKeyRotation: { chatId: chat.id, members: chat.members }
+        });
+      }
+    }
+
+    return true;
   }
 }

@@ -13,8 +13,13 @@ export class GqlChatMembershipGuard implements CanActivate {
   public constructor(private readonly chatService: ChatService) {}
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context);
-    const { userId } = ctx.getContext().req.session;
+    const request = ctx.getContext().req;
+    const userId = request.user?.id ?? request.session?.userId;
     const chatId = ctx.getArgs().chatId;
+
+    if (!userId) {
+      throw new ForbiddenException("User is not authorized");
+    }
 
     const isUserInChat = await this.chatService.isUserInChat(userId, chatId);
     if (!isUserInChat) {

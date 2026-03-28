@@ -1,8 +1,5 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-// Note: Do not implement Prisma interface here; GraphQL allows nullable ukm
-// import { QueueSecretMessage } from "@/prisma/generated";
-
 @ObjectType()
 export class QueueSecretMessageModel {
   @Field(() => ID)
@@ -38,12 +35,14 @@ export class QueueSecretMessageModel {
   @Field(() => String)
   sig: string;
 
-  // Дополнительные поля для восстановления начальной сессии
+  @Field(() => [String])
+  secretAttachmentIds: string[];
+
   @Field(() => String, { nullable: true })
   ikPub?: string | null;
 
   @Field(() => String, { nullable: true })
-  ekPub?: string;
+  ekPub?: string | null;
 
   @Field(() => String, { nullable: true })
   usedOpk?: string | null;

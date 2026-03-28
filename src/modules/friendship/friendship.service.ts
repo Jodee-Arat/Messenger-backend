@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable
+} from "@nestjs/common";
 
 import { FriendshipStatusEnum } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
@@ -6,6 +10,58 @@ import { PrismaService } from "@/src/core/prisma/prisma.service";
 @Injectable()
 export class FriendshipService {
   public constructor(private readonly prismaService: PrismaService) {}
+
+  public async findBlockingFriendshipBetweenUsers(
+    userId: string,
+    targetUserId: string
+  ) {
+    return this.prismaService.friendship.findFirst({
+      where: {
+        status: FriendshipStatusEnum.BLOCKED,
+        OR: [
+          { userId, friendId: targetUserId },
+          { userId: targetUserId, friendId: userId }
+        ]
+      }
+    });
+  }
+
+  public async ensureUsersCanDirectContact(
+    userId: string,
+    targetUserId: string
+  ) {
+    const blockingFriendship = await this.findBlockingFriendshipBetweenUsers(
+      userId,
+      targetUserId
+    );
+
+    if (blockingFriendship) {
+      throw new ForbiddenException(
+        "Direct contact is unavailable because one of the users has blocked the other"
+      );
+    }
+  }
+
+  public async getBlockedCounterpartIds(userId: string) {
+    const blockedFriendships = await this.prismaService.friendship.findMany({
+      where: {
+        status: FriendshipStatusEnum.BLOCKED,
+        OR: [{ userId }, { friendId: userId }]
+      },
+      select: {
+        userId: true,
+        friendId: true
+      }
+    });
+
+    return Array.from(
+      new Set(
+        blockedFriendships.map((friendship) =>
+          friendship.userId === userId ? friendship.friendId : friendship.userId
+        )
+      )
+    );
+  }
 
   /**
    * Отправить заявку в друзья по username

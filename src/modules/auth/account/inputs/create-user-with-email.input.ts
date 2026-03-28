@@ -14,7 +14,7 @@ export class CreateUserWEmailInput {
   @IsString()
   @IsNotEmpty()
   @Matches(/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/)
-  @Length(6, 30)
+  @Length(3, 30)
   public username: string;
 
   @Field(() => String)
