@@ -143,7 +143,10 @@ export class ChatResolver {
       let isCorrectUser = false;
       let isCorrectGroup = false;
 
-      if (payload.chatDeleted.groupId === variables.groupId) {
+      const payloadGroupId = payload.chatDeleted.groupId ?? "";
+      const requestedGroupId = variables.groupId ?? "";
+
+      if (payloadGroupId === requestedGroupId) {
         isCorrectGroup = true;
       }
 
@@ -288,11 +291,22 @@ export class ChatResolver {
     @Args("friendUserId") friendUserId: string,
     @Args("isSecret", { nullable: true, defaultValue: false }) isSecret: boolean
   ) {
-    return await this.chatService.findOrCreateDirectChat(
+    const chat = await this.chatService.findOrCreateDirectChat(
       userId,
       friendUserId,
       isSecret
     );
+
+    // Notify the other user so the chat appears in their DM list
+    for (const member of chat.members) {
+      if (member.userId !== userId) {
+        await appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+          chatUpdated: chat
+        });
+      }
+    }
+
+    return chat;
   }
 
   @Authorization()

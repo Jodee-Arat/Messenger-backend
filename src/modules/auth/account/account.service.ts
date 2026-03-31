@@ -107,13 +107,26 @@ export class AccountService {
     return true;
   }
 
-  public async disableTotp(userId: string) {
+  public async disableTotp(userId: string, token: string) {
     const user = await this.prismaService.user.findUnique({
       where: { id: userId }
     });
 
     if (!user) {
       throw new ConflictException("User not found");
+    }
+
+    if (!user.isTotpEnabled || !user.totpSecret) {
+      throw new ConflictException("TOTP is not enabled");
+    }
+
+    const result = await verifyTotp({
+      token,
+      secret: user.totpSecret
+    });
+
+    if (!result.valid) {
+      throw new ConflictException("Invalid TOTP code");
     }
 
     await this.prismaService.user.update({
@@ -143,17 +156,16 @@ export class AccountService {
     const take = this.normalizeTake(input?.take);
     const skip = this.normalizeSkip(input?.skip);
 
-    const blockedFriendships = await this.prismaService.friendship.findMany({
+    // Only hide users who blocked ME (friendId = me means someone else blocked me)
+    const blockedByOthers = await this.prismaService.friendship.findMany({
       where: {
         status: FriendshipStatusEnum.BLOCKED,
-        OR: [{ userId }, { friendId: userId }]
+        friendId: userId
       },
-      select: { userId: true, friendId: true }
+      select: { userId: true }
     });
 
-    const blockedIds = blockedFriendships.map((f) =>
-      f.userId === userId ? f.friendId : f.userId
-    );
+    const blockedIds = blockedByOthers.map((f) => f.userId);
 
     const users = await this.prismaService.user.findMany({
       where: {
@@ -174,7 +186,10 @@ export class AccountService {
       return users;
     }
 
-    return this.rankUsersBySearchTerm(users, normalizedSearchTerm).slice(0, take);
+    return this.rankUsersBySearchTerm(users, normalizedSearchTerm).slice(
+      0,
+      take
+    );
   }
 
   private normalizeTake(take?: number | null) {
@@ -193,7 +208,9 @@ export class AccountService {
     return Math.max(Math.floor(skip), 0);
   }
 
-  private findBySearchTermUserFilter(searchTerm: string): Prisma.UserWhereInput {
+  private findBySearchTermUserFilter(
+    searchTerm: string
+  ): Prisma.UserWhereInput {
     return {
       OR: [
         {

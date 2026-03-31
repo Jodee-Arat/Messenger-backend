@@ -105,7 +105,7 @@ export class MessageResolver {
       chatId,
       input
     );
-    if (messages.length > 1) {
+    if (messages.length > 0) {
       for (let message of messages) {
         appPubSub.publish("CHAT_MESSAGE_ADDED", {
           chatMessageAdded: message
@@ -113,15 +113,9 @@ export class MessageResolver {
       }
       for (let chat of chats) {
         for (const member of chat.members) {
-          const hasDraft = chat.draftMessages?.some(
-            (msg) => msg.user.id === member.userId
-          );
-
-          if (!hasDraft) {
-            appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
-              chatUpdated: { ...chat, draftMessages: null }
-            });
-          }
+          appPubSub.publish(`CHAT_UPDATED_${member.userId}`, {
+            chatUpdated: { ...chat, draftMessages: null }
+          });
         }
       }
     }

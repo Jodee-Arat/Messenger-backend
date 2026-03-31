@@ -475,6 +475,28 @@ describe("FriendshipService", () => {
     });
   });
 
+  describe("findAcceptedFriendshipBetweenUsers", () => {
+    it("should query accepted friendships in both directions", async () => {
+      prisma.friendship.findFirst.mockResolvedValue({ id: "fr1" });
+
+      const result = await service.findAcceptedFriendshipBetweenUsers(
+        "user1",
+        "user2"
+      );
+
+      expect(result).toEqual({ id: "fr1" });
+      expect(prisma.friendship.findFirst).toHaveBeenCalledWith({
+        where: {
+          status: "ACCEPTED",
+          OR: [
+            { userId: "user1", friendId: "user2" },
+            { userId: "user2", friendId: "user1" }
+          ]
+        }
+      });
+    });
+  });
+
   describe("ensureUsersCanDirectContact", () => {
     it("should allow direct contact when there is no blocking friendship", async () => {
       prisma.friendship.findFirst.mockResolvedValue(null);
@@ -497,6 +519,34 @@ describe("FriendshipService", () => {
         service.ensureUsersCanDirectContact("user1", "user2")
       ).rejects.toThrow(
         "Direct contact is unavailable because one of the users has blocked the other"
+      );
+    });
+  });
+
+  describe("ensureUsersCanDirectMessage", () => {
+    it("should allow direct messaging for accepted friends without block", async () => {
+      prisma.friendship.findFirst
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({
+          id: "fr1",
+          status: "ACCEPTED"
+        });
+
+      await expect(
+        service.ensureUsersCanDirectMessage("user1", "user2")
+      ).resolves.toBeUndefined();
+    });
+
+    it("should throw when users are not accepted friends", async () => {
+      prisma.friendship.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.ensureUsersCanDirectMessage("user1", "user2")
+      ).rejects.toThrow(ForbiddenException);
+      await expect(
+        service.ensureUsersCanDirectMessage("user1", "user2")
+      ).rejects.toThrow(
+        "Direct messages are only available between friends"
       );
     });
   });

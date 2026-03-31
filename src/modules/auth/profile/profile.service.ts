@@ -1,8 +1,6 @@
 import { ConflictException, Injectable } from "@nestjs/common";
 import { GraphQLUpload, Upload } from "graphql-upload";
-import sharp from "sharp";
-
-// import * as sharp from "sharp"; так было
+import * as sharp from "sharp";
 
 import { User } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";

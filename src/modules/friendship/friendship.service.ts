@@ -26,6 +26,21 @@ export class FriendshipService {
     });
   }
 
+  public async findAcceptedFriendshipBetweenUsers(
+    userId: string,
+    targetUserId: string
+  ) {
+    return this.prismaService.friendship.findFirst({
+      where: {
+        status: FriendshipStatusEnum.ACCEPTED,
+        OR: [
+          { userId, friendId: targetUserId },
+          { userId: targetUserId, friendId: userId }
+        ]
+      }
+    });
+  }
+
   public async ensureUsersCanDirectContact(
     userId: string,
     targetUserId: string
@@ -38,6 +53,24 @@ export class FriendshipService {
     if (blockingFriendship) {
       throw new ForbiddenException(
         "Direct contact is unavailable because one of the users has blocked the other"
+      );
+    }
+  }
+
+  public async ensureUsersCanDirectMessage(
+    userId: string,
+    targetUserId: string
+  ) {
+    await this.ensureUsersCanDirectContact(userId, targetUserId);
+
+    const acceptedFriendship = await this.findAcceptedFriendshipBetweenUsers(
+      userId,
+      targetUserId
+    );
+
+    if (!acceptedFriendship) {
+      throw new ForbiddenException(
+        "Direct messages are only available between friends"
       );
     }
   }

@@ -53,6 +53,7 @@ type ChatMemberModel {
   id: ID!
   isCreator: Boolean
   joinedAt: DateTime!
+  pinnedMessageId: String
   roles: [ChatRoleModel!]
   updatedAt: DateTime!
   user: UserModel!
@@ -199,23 +200,6 @@ type FileMessageModel {
   userId: String!
 }
 
-type SecretAttachmentDownloadModel {
-  attachmentId: String!
-  chatId: String!
-  ciphertextBase64: String!
-  ciphertextSize: String!
-}
-
-type SecretAttachmentModel {
-  chatId: String!
-  ciphertextSize: String!
-  committedAt: DateTime
-  createdAt: DateTime!
-  expiresAt: DateTime
-  id: ID!
-  updatedAt: DateTime!
-}
-
 input FiltersInput {
   searchTerm: String
   skip: Float
@@ -327,6 +311,8 @@ type MemberRoleModel {
 
 type Mutation {
   acceptFriendRequest(friendshipId: String!): Boolean!
+  ackSecretMessages(chatId: String!, messageIds: [String!]!): Boolean!
+  ackSharedSecretKeys(chatId: String!, sharedKeyIds: [String!]!): Boolean!
   assignGroupRoleToMember(groupId: String!, memberId: String!, roleId: String!): Boolean!
   assignRoleToUser(chatId: String!, memberId: String!, roleId: String!): Boolean!
   blockUser(targetUserId: String!): Boolean!
@@ -346,10 +332,10 @@ type Mutation {
   deleteChatRole(chatId: String!, roleId: String!): Boolean!
   deleteGroup(groupId: String!): Boolean!
   deleteGroupRole(groupId: String!, roleId: String!): Boolean!
-  disableTotp: Boolean!
+  disableTotp(token: String!): Boolean!
   discardSecretAttachment(attachmentId: String!, chatId: String!): Boolean!
-  downloadSecretAttachment(attachmentId: String!, chatId: String!): SecretAttachmentDownloadModel!
   downloadFile(chatId: String!, fileId: String!): FileDownloadData!
+  downloadSecretAttachment(attachmentId: String!, chatId: String!): SecretAttachmentDownloadModel!
   enableTotp(token: String!): Boolean!
   findOrCreateDirectChat(friendUserId: String!, isSecret: Boolean = false): ChatModel!
   forwardChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
@@ -386,8 +372,8 @@ type Mutation {
   unPinChat(chatId: String!): Boolean!
   unPinMessage(chatId: String!): Boolean!
   unblockUser(friendshipId: String!): Boolean!
-  uploadSecretAttachment(data: UploadSecretAttachmentInput!): SecretAttachmentModel!
   updatePinnedChatsOrder(chatIds: [String!]!): Boolean!
+  uploadSecretAttachment(data: UploadSecretAttachmentInput!): SecretAttachmentModel!
   upsertChatRole(chatId: String!, data: UpsertChatRoleInput!): Boolean!
   upsertGroupRole(data: UpsertGroupRoleInput!, groupId: String!): Boolean!
   verifyChatTotp(chatId: String!, code: String!): Boolean!
@@ -435,7 +421,9 @@ type Query {
   getOutgoingFriendRequests: [FriendshipModel!]!
   getPreKeys(chatId: String!): [PreKeyModel!]!
   getSecretMessage(chatId: String!): QueueSecretMessageModel!
+  getSecretMessages(chatId: String!): [QueueSecretMessageModel!]!
   getSharedSecretKey(chatId: String!): [QueueSharedSecretKeyModel!]!
+  hasSharedSecretKey(chatId: String!): Boolean!
 }
 
 type QueueSecretMessageModel {
@@ -477,6 +465,23 @@ type QueueSharedSecretKeyModel {
 
 input RemoveMessagesInput {
   messageIds: [String!]!
+}
+
+type SecretAttachmentDownloadModel {
+  attachmentId: String!
+  chatId: String!
+  ciphertextBase64: String!
+  ciphertextSize: String!
+}
+
+type SecretAttachmentModel {
+  chatId: String!
+  ciphertextSize: String!
+  committedAt: DateTime
+  createdAt: DateTime!
+  expiresAt: DateTime
+  id: ID!
+  updatedAt: DateTime!
 }
 
 type SecretKeyRotationModel {
@@ -529,11 +534,6 @@ input SharedSecretKeyInput {
   usedOpk: String
 }
 
-input UploadSecretAttachmentInput {
-  chatId: String!
-  ciphertextBase64: String!
-}
-
 type Subscription {
   addSecretMessage(userId: String!): QueueSecretMessageModel!
   addSharedSecretKey(userId: String!): QueueSharedSecretKeyModel
@@ -574,6 +574,11 @@ type TypingIndicatorModel {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input UploadSecretAttachmentInput {
+  chatId: String!
+  ciphertextBase64: String!
+}
 
 input UpsertChatRoleInput {
   color: String!

@@ -272,44 +272,117 @@ export class SecretService {
       throw new ConflictException("shared secret key not found");
     }
 
-    const preKeyOfThisUser = await this.prismaService.preKey.findUnique({
-      where: {
-        userId
-      }
-    });
+    return sharedSecretKey;
+  }
 
-    const updatedOpkPubs = preKeyOfThisUser?.opkPubs.filter((opk) =>
-      sharedSecretKey.some((key) => key.usedOpk === opk)
+  public async ackSharedSecretKeys(
+    userId: string,
+    chatId: string,
+    sharedKeyIds: string[]
+  ) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    const uniqueSharedKeyIds = this.getUniqueIds(sharedKeyIds);
+    if (uniqueSharedKeyIds.length === 0) {
+      return true;
+    }
+
+    const sharedSecretKeys =
+      await this.prismaService.queueSharedSecretKey.findMany({
+        where: {
+          id: {
+            in: uniqueSharedKeyIds
+          },
+          chatId,
+          toUserId: userId
+        }
+      });
+
+    if (sharedSecretKeys.length === 0) {
+      return true;
+    }
+
+    const usedOpks = new Set(
+      sharedSecretKeys
+        .map((sharedKey) => sharedKey.usedOpk)
+        .filter((usedOpk): usedOpk is string => Boolean(usedOpk))
     );
 
-    await this.prismaService.preKey.updateMany({
-      where: {
-        userId
-      },
-      data: {
-        opkPubs: {
-          set: updatedOpkPubs || []
+    await this.prismaService.$transaction(async (tx) => {
+      if (usedOpks.size > 0) {
+        const preKeyOfThisUser = await tx.preKey.findUnique({
+          where: {
+            userId
+          }
+        });
+
+        if (preKeyOfThisUser) {
+          const updatedOpkPubs = preKeyOfThisUser.opkPubs.filter(
+            (opk) => !usedOpks.has(opk)
+          );
+
+          await tx.preKey.update({
+            where: {
+              userId
+            },
+            data: {
+              opkPubs: {
+                set: updatedOpkPubs
+              }
+            }
+          });
         }
       }
-    });
 
-    await this.prismaService.queueSharedSecretKey.deleteMany({
-      where: {
-        id: {
-          in: sharedSecretKey.map((key) => key.id)
+      await tx.queueSharedSecretKey.deleteMany({
+        where: {
+          id: {
+            in: sharedSecretKeys.map((sharedKey) => sharedKey.id)
+          }
         }
-      }
+      });
     });
 
-    return sharedSecretKey;
+    return true;
+  }
+
+  public async hasSharedSecretKey(userId: string, chatId: string) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    const sharedSecretKeyCount =
+      await this.prismaService.queueSharedSecretKey.count({
+        where: {
+          toUserId: userId,
+          chatId
+        }
+      });
+
+    return sharedSecretKeyCount > 0;
   }
 
   public async getSecretMessage(userId: string, chatId: string) {
     await this.cleanupExpiredSecretAttachments();
     await this.ensureSecretChatAccess(userId, chatId);
 
-    const base = await this.updateSecretMessageForReader(userId, chatId);
+    const base = await this.prismaService.queueSecretMessage.findFirst({
+      where: {
+        chatId,
+        toUserIds: {
+          has: userId
+        }
+      },
+      orderBy: {
+        createdAt: "asc"
+      }
+    });
+
     if (!base) {
+      throw new ConflictException("secret message not found");
+    }
+
+    if (base.whoCheckedIds.includes(userId)) {
       throw new ConflictException("secret message not found");
     }
 
@@ -340,6 +413,131 @@ export class SecretService {
       usedOpk,
       ukm: base.ukm ?? ukmFromShared
     };
+  }
+
+  public async getSecretMessages(userId: string, chatId: string) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    const queuedMessages = await this.prismaService.queueSecretMessage.findMany({
+      where: {
+        chatId,
+        toUserIds: {
+          has: userId
+        }
+      },
+      orderBy: {
+        createdAt: "asc"
+      }
+    });
+
+    const baseMessages = queuedMessages.filter(
+      (message) => !message.whoCheckedIds.includes(userId)
+    );
+
+    if (baseMessages.length === 0) {
+      return [];
+    }
+
+    const senderIds = Array.from(
+      new Set(baseMessages.map((message) => message.fromUserId))
+    );
+
+    const sharedKeys = await this.prismaService.queueSharedSecretKey.findMany({
+      where: {
+        chatId,
+        toUserId: userId,
+        fromUserId: {
+          in: senderIds
+        }
+      }
+    });
+
+    const sharedKeyBySenderId = new Map(
+      sharedKeys.map((sharedKey) => [sharedKey.fromUserId, sharedKey])
+    );
+
+    return baseMessages.map((baseMessage) => {
+      const sharedKey = sharedKeyBySenderId.get(baseMessage.fromUserId);
+
+      return {
+        ...baseMessage,
+        ikPub: sharedKey?.ikPub ?? null,
+        ekPub: sharedKey?.ekPub ?? null,
+        usedOpk: sharedKey?.usedOpk ?? null,
+        ukm: baseMessage.ukm ?? sharedKey?.ukm ?? null
+      };
+    });
+  }
+
+  public async ackSecretMessages(
+    userId: string,
+    chatId: string,
+    messageIds: string[]
+  ) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    const uniqueMessageIds = this.getUniqueIds(messageIds);
+    if (uniqueMessageIds.length === 0) {
+      return true;
+    }
+
+    const messages = await this.prismaService.queueSecretMessage.findMany({
+      where: {
+        id: {
+          in: uniqueMessageIds
+        },
+        chatId,
+        toUserIds: {
+          has: userId
+        }
+      }
+    });
+
+    const unreadMessages = messages.filter(
+      (message) => !message.whoCheckedIds.includes(userId)
+    );
+
+    await this.prismaService.$transaction(async (tx) => {
+      for (const message of unreadMessages) {
+        const nextWhoCheckedIds = Array.from(
+          new Set([...message.whoCheckedIds, userId])
+        );
+
+        const updateResult = await tx.queueSecretMessage.updateMany({
+          where: {
+            id: message.id,
+            whoCheckedIds: {
+              equals: message.whoCheckedIds
+            }
+          },
+          data: {
+            whoCheckedIds: nextWhoCheckedIds
+          }
+        });
+
+        if (updateResult.count === 0) {
+          continue;
+        }
+
+        const updated = await tx.queueSecretMessage.findUnique({
+          where: { id: message.id }
+        });
+
+        if (!updated) {
+          continue;
+        }
+
+        if (updated.toUserIds.length === updated.whoCheckedIds.length) {
+          await tx.queueSecretMessage.deleteMany({
+            where: { id: updated.id }
+          });
+        }
+      }
+    });
+
+    return true;
   }
 
   public async sendPreKey(userId: string, input: PreKeyInput) {
@@ -550,27 +748,38 @@ export class SecretService {
     return secretMessage;
   }
 
-  public async updateSecretMessageForReader(userId: string, chatId: string) {
-    const secretMessage = await this.prismaService.queueSecretMessage.findFirst(
-      {
-        where: {
-          chatId,
-          toUserIds: {
-            has: userId
-          }
-        },
-        orderBy: {
-          createdAt: "asc"
-        }
+  public async updateSecretMessageForReader(
+    userId: string,
+    chatId: string,
+    messageId?: string
+  ) {
+    const where = {
+      chatId,
+      toUserIds: {
+        has: userId
       }
-    );
+    } as const;
+
+    const secretMessage = messageId
+      ? await this.prismaService.queueSecretMessage.findFirst({
+          where: {
+            ...where,
+            id: messageId
+          }
+        })
+      : await this.prismaService.queueSecretMessage.findFirst({
+          where,
+          orderBy: {
+            createdAt: "asc"
+          }
+        });
 
     if (!secretMessage) {
       throw new ConflictException("secret message not found");
     }
 
     if (secretMessage.whoCheckedIds.includes(userId)) {
-      return null;
+      throw new ConflictException("secret message not found");
     }
 
     await this.prismaService.queueSecretMessage.update({
@@ -618,6 +827,8 @@ export class SecretService {
         chatId,
         ChatPermissionEnum.SEND_MESSAGES
       );
+    } else {
+      await this.chatService.ensureDirectChatMessagingAccess(userId, chatId);
     }
 
     return chat;
@@ -666,19 +877,27 @@ export class SecretService {
     chat: {
       id: string;
       isGroup: boolean;
+      isSecret?: boolean;
     },
     attachment: {
       allowedUserIds: string[];
     }
   ) {
-    if (!attachment.allowedUserIds.includes(userId)) {
-      throw new ForbiddenException(
-        "Secret attachment is unavailable for this user"
+    const accessibleChat = await this.chatService.ensureDirectChatAccess(
+      userId,
+      chat.id
+    );
+
+    if (!accessibleChat.isSecret) {
+      throw new BadRequestException(
+        "Secret attachments are only available for secret chats"
       );
     }
 
-    if (!chat.isGroup) {
-      await this.chatService.ensureDirectChatAccess(userId, chat.id);
+    if (!chat.isGroup && !attachment.allowedUserIds.includes(userId)) {
+      throw new ForbiddenException(
+        "Secret attachment is unavailable for this user"
+      );
     }
   }
 

@@ -17,10 +17,21 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 
 async function bootstrap() {
-  const app = await NestFactory.create(CoreModule, { rawBody: true });
+  // bodyParser: false — отключаем дефолтный Express body-parser (лимит ~100KB),
+  // чтобы использовать свой с лимитом 50MB для base64-файлов секретного чата
+  const app = await NestFactory.create(CoreModule, {
+    rawBody: true,
+    bodyParser: false
+  });
 
   const config = app.get(ConfigService);
   const redis = app.get(RedisService);
+
+  // Свой body-parser с увеличенным лимитом — ДО всех остальных middleware
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const bodyParser = require("body-parser");
+  app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
   // Важно: session middleware должен стоять до GraphQL и роутов
   app.use(cookieParser(config.getOrThrow<string>("COOKIES_SECRET")));
@@ -55,7 +66,10 @@ async function bootstrap() {
   );
 
   // GraphQL upload после session, чтобы иметь доступ к req.session
-  app.use(config.getOrThrow<string>("GRAPHQL_PREFIX"), graphqlUploadExpress());
+  app.use(
+    config.getOrThrow<string>("GRAPHQL_PREFIX"),
+    graphqlUploadExpress({ maxFileSize: 50 * 1024 * 1024, maxFiles: 10 })
+  );
 
   app.enableCors({
     origin: config.getOrThrow<string>("ALLOWED_ORIGIN"),

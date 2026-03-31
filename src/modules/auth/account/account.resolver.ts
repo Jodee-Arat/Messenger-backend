@@ -37,8 +37,11 @@ export class AccountResolver {
 
   @Authorization()
   @Mutation(() => Boolean, { name: "disableTotp" })
-  public async disableTotp(@Authorized("id") userId: string) {
-    return await this.accountService.disableTotp(userId);
+  public async disableTotp(
+    @Authorized("id") userId: string,
+    @Args("token") token: string
+  ) {
+    return await this.accountService.disableTotp(userId, token);
   }
 
   @Authorization()

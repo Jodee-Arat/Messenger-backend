@@ -187,11 +187,18 @@ describe("AccountService", () => {
   });
 
   describe("disableTotp", () => {
-    it("should disable TOTP", async () => {
-      prisma.user.findUnique.mockResolvedValue({ id: "user1" });
+    it("should disable TOTP with valid token", async () => {
+      prisma.user.findUnique.mockResolvedValue({
+        id: "user1",
+        isTotpEnabled: true,
+        totpSecret: "TOTPSECRET123"
+      });
       prisma.user.update.mockResolvedValue({});
 
-      const result = await service.disableTotp("user1");
+      const { verify } = require("otplib");
+      verify.mockReturnValue({ valid: true });
+
+      const result = await service.disableTotp("user1", "123456");
 
       expect(result).toBe(true);
       expect(prisma.user.update).toHaveBeenCalledWith({
@@ -203,8 +210,35 @@ describe("AccountService", () => {
     it("should throw if user not found", async () => {
       prisma.user.findUnique.mockResolvedValue(null);
 
-      await expect(service.disableTotp("nonexistent")).rejects.toThrow(
+      await expect(service.disableTotp("nonexistent", "123456")).rejects.toThrow(
         ConflictException
+      );
+    });
+
+    it("should throw if TOTP is not enabled", async () => {
+      prisma.user.findUnique.mockResolvedValue({
+        id: "user1",
+        isTotpEnabled: false,
+        totpSecret: null
+      });
+
+      await expect(service.disableTotp("user1", "123456")).rejects.toThrow(
+        "TOTP is not enabled"
+      );
+    });
+
+    it("should throw if token is invalid", async () => {
+      prisma.user.findUnique.mockResolvedValue({
+        id: "user1",
+        isTotpEnabled: true,
+        totpSecret: "TOTPSECRET123"
+      });
+
+      const { verify } = require("otplib");
+      verify.mockReturnValue({ valid: false });
+
+      await expect(service.disableTotp("user1", "000000")).rejects.toThrow(
+        "Invalid TOTP code"
       );
     });
   });
@@ -240,24 +274,28 @@ describe("AccountService", () => {
       expect(prisma.friendship.findMany).toHaveBeenCalledWith({
         where: {
           status: "BLOCKED",
-          OR: [{ userId: "user1" }, { friendId: "user1" }]
+          friendId: "user1"
         },
-        select: { userId: true, friendId: true }
+        select: { userId: true }
       });
       expect(prisma.user.findMany).toHaveBeenCalledWith({
         where: {
           AND: [{ id: { not: "user1" } }]
-        }
+        },
+        orderBy: { username: "asc" },
+        skip: 0,
+        take: 10
       });
     });
 
-    it("should exclude users in a blocked relationship (either direction)", async () => {
-      // user1 blocked user2; user3 blocked user1
-      prisma.friendship.findMany.mockResolvedValue([
-        { userId: "user1", friendId: "user2" },
-        { userId: "user3", friendId: "user1" }
-      ]);
-      const users = [{ id: "user4", username: "other" }];
+    it("should only exclude users who blocked me, not users I blocked", async () => {
+      // user3 blocked user1 (me) — should be hidden
+      // user1 blocked user2 — should still be visible
+      prisma.friendship.findMany.mockResolvedValue([{ userId: "user3" }]);
+      const users = [
+        { id: "user2", username: "other" },
+        { id: "user4", username: "other4" }
+      ];
       prisma.user.findMany.mockResolvedValue(users);
 
       const result = await service.findAllUsers("user1");
@@ -265,8 +303,11 @@ describe("AccountService", () => {
       expect(result).toEqual(users);
       expect(prisma.user.findMany).toHaveBeenCalledWith({
         where: {
-          AND: [{ id: { not: "user1" } }, { id: { notIn: ["user2", "user3"] } }]
-        }
+          AND: [{ id: { not: "user1" } }, { id: { notIn: ["user3"] } }]
+        },
+        orderBy: { username: "asc" },
+        skip: 0,
+        take: 10
       });
     });
   });

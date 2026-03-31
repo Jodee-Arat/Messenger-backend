@@ -562,7 +562,7 @@ export class ChatService {
     friendUserId: string,
     isSecret: boolean = false
   ) {
-    await this.friendshipService.ensureUsersCanDirectContact(
+    await this.friendshipService.ensureUsersCanDirectMessage(
       userId,
       friendUserId
     );
@@ -715,7 +715,8 @@ export class ChatService {
         data: {
           chatId: chat.id,
           text: `${chatName} group created`,
-          userId: creatorId
+          userId: creatorId,
+          isStarted: true
         }
       });
     }
@@ -729,7 +730,10 @@ export class ChatService {
       include: {
         chat: {
           select: {
+            id: true,
             isGroup: true,
+            isSecret: true,
+            groupId: true,
             members: {
               select: {
                 userId: true
@@ -760,7 +764,14 @@ export class ChatService {
       })
     ).map((attachment) => attachment.storageKey);
 
-    const chat = await this.prismaService.$transaction(async (tx) => {
+    const deletedChatPayload = {
+      id: member.chat.id,
+      isSecret: member.chat.isSecret,
+      groupId: member.chat.groupId,
+      members: member.chat.members
+    };
+
+    await this.prismaService.$transaction(async (tx) => {
       for (const storageKey of secretAttachmentStorageKeys) {
         await this.storageService.remove(storageKey);
       }
@@ -777,15 +788,12 @@ export class ChatService {
         }
       });
 
-      return tx.chat.delete({
+      await tx.chat.delete({
         where: { id: chatId },
-        include: {
-          members: true
-        }
       });
     });
 
-    return chat;
+    return deletedChatPayload;
   }
 
   public async pinMessage(userId: string, chatId: string, messageId: string) {
@@ -1366,6 +1374,50 @@ export class ChatService {
   public async ensureDirectChatAccess(userId: string, chatId: string) {
     const [chat] = await this.ensureChatTargetsAccessible(userId, [chatId]);
     return chat;
+  }
+
+  public async ensureDirectChatMessagingAccess(userId: string, chatId: string) {
+    const chat = await this.ensureDirectChatAccess(userId, chatId);
+
+    if (chat.isGroup) {
+      return chat;
+    }
+
+    const otherMemberId = this.getOtherDirectMemberId(userId, chat);
+
+    if (!otherMemberId) {
+      throw new BadRequestException("Direct chat counterpart not found");
+    }
+
+    await this.friendshipService.ensureUsersCanDirectMessage(
+      userId,
+      otherMemberId
+    );
+
+    return chat;
+  }
+
+  public async ensureChatTargetsWritable(userId: string, chatIds: string[]) {
+    const chats = await this.ensureChatTargetsAccessible(userId, chatIds);
+
+    for (const chat of chats) {
+      if (chat.isGroup) {
+        continue;
+      }
+
+      const otherMemberId = this.getOtherDirectMemberId(userId, chat);
+
+      if (!otherMemberId) {
+        throw new BadRequestException("Direct chat counterpart not found");
+      }
+
+      await this.friendshipService.ensureUsersCanDirectMessage(
+        userId,
+        otherMemberId
+      );
+    }
+
+    return chats;
   }
 
   private async getBlockedCounterpartIdsSet(userId: string) {

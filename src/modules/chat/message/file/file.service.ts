@@ -29,7 +29,7 @@ export class FileService {
     private readonly chatService: ChatService
   ) {}
   public async sendFile(user: User, chatId: string, file: Upload) {
-    const chatAccess = await this.chatService.ensureDirectChatAccess(
+    const chatAccess = await this.chatService.ensureDirectChatMessagingAccess(
       user.id,
       chatId
     );
@@ -185,17 +185,19 @@ export class FileService {
     await this.chatService.ensureDirectChatAccess(userId, chatId);
 
     const fileMessage = await this.prismaService.fileMessage.findUnique({
-      where: {
-        id: fileId
-      }
+      where: { id: fileId }
     });
 
     if (!fileMessage) {
       throw new BadRequestException("File not found");
     }
 
+    const fileUrl = await this.storageService.getPresignedUrl(
+      fileMessage.fileFullName
+    );
+
     return {
-      fileUrl: fileMessage.fileUrl,
+      fileUrl,
       filename: fileMessage.fileName
     };
   }

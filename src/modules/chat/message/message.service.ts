@@ -112,8 +112,8 @@ export class MessageService {
     const resolvedTargetChatsId =
       targetChatsId && targetChatsId.length > 0 ? targetChatsId : [chatId];
 
-    await this.chatService.ensureDirectChatAccess(userId, chatId);
-    await this.chatService.ensureChatTargetsAccessible(
+    await this.chatService.ensureDirectChatMessagingAccess(userId, chatId);
+    await this.chatService.ensureChatTargetsWritable(
       userId,
       resolvedTargetChatsId
     );
@@ -373,8 +373,8 @@ export class MessageService {
     const resolvedTargetChatsId =
       targetChatsId && targetChatsId.length > 0 ? targetChatsId : [chatId];
 
-    await this.chatService.ensureDirectChatAccess(userId, chatId);
-    await this.chatService.ensureChatTargetsAccessible(
+    await this.chatService.ensureDirectChatMessagingAccess(userId, chatId);
+    await this.chatService.ensureChatTargetsWritable(
       userId,
       resolvedTargetChatsId
     );
@@ -644,7 +644,7 @@ export class MessageService {
     }
 
     await this.chatService.ensureDirectChatAccess(userId, chatId);
-    await this.chatService.ensureChatTargetsAccessible(
+    await this.chatService.ensureChatTargetsWritable(
       userId,
       resolvedTargetChatsId
     );
@@ -652,178 +652,107 @@ export class MessageService {
     let messages: any[] = [];
     let chats: any[] = [];
 
-    if (resolvedTargetChatsId.length > 1) {
-      for (let targetChatId of resolvedTargetChatsId) {
-        this.removeDraftMessage(userId, targetChatId);
-        let message = await this.prismaService.chatMessage.create({
-          data: {
-            text: text ?? "",
-            userId,
-            chatId: targetChatId,
-            isForwarded: true
-          },
-          include: {
-            files: true,
-            chat: {
-              include: {
-                members: {
-                  include: {
-                    user: true
-                  }
-                }
-              }
-            },
-            repliedToLinks: {
-              include: {
-                repliedTo: {
-                  select: {
-                    id: true,
-                    text: true,
-                    files: true,
-                    user: true
-                  }
-                },
-                reply: {
-                  select: {
-                    id: true,
-                    text: true,
-                    files: true,
-                    user: true
-                  }
-                }
-              }
-            },
-            user: true
-          }
-        });
-
-        if (forwardedMessageIds.length > 0) {
-          const relationsData = forwardedMessageIds.map((repliedToId) => ({
-            replyId: message.id,
-            repliedToId
-          }));
-
-          await this.prismaService.chatMessageReply.createMany({
-            data: relationsData,
-            skipDuplicates: true
-          });
-        }
-
-        message = await this.prismaService.chatMessage.findUnique({
-          where: { id: message.id },
-          include: {
-            files: true,
-            chat: {
-              include: {
-                members: {
-                  include: {
-                    user: true
-                  }
-                }
-              }
-            },
-            repliedToLinks: {
-              include: {
-                repliedTo: {
-                  select: {
-                    id: true,
-                    text: true,
-                    files: true,
-                    user: true
-                  }
-                },
-                reply: {
-                  select: {
-                    id: true,
-                    text: true,
-                    files: true,
-                    user: true
-                  }
-                }
-              }
-            },
-            user: true
-          }
-        });
-
-        const chat = await this.prismaService.chat.update({
-          where: { id: message.chatId },
-          data: {
-            lastMessageId: message.id,
-            lastMessageAt: new Date(),
-            draftMessages: {
-              deleteMany: {
-                userId
-              }
-            }
-          },
-          include: {
-            members: {
-              include: {
-                user: true
-              }
-            },
-            draftMessages: {
-              where: { userId },
-              include: {
-                files: true,
-                user: true
-              }
-            },
-            lastMessage: {
-              include: {
-                files: true,
-                user: true
-              }
-            }
-          }
-        });
-
-        messages.push(message);
-        chats.push(chat);
-      }
-    } else {
-      this.removeDraftMessage(userId, resolvedTargetChatsId[0]);
-      const draftMessage = await this.prismaService.draftMessage.create({
+    for (let targetChatId of resolvedTargetChatsId) {
+      this.removeDraftMessage(userId, targetChatId);
+      let message = await this.prismaService.chatMessage.create({
         data: {
           text: text ?? "",
           userId,
-          chatId: resolvedTargetChatsId[0],
+          chatId: targetChatId,
           isForwarded: true
         },
         include: {
           files: true,
-          user: true,
-          repliedToLinks: {
-            select: { repliedTo: { select: { id: true, isForwarded: true } } }
-          },
           chat: {
             include: {
               members: {
-                include: { user: true }
+                include: {
+                  user: true
+                }
               }
             }
-          }
+          },
+          repliedToLinks: {
+            include: {
+              repliedTo: {
+                select: {
+                  id: true,
+                  text: true,
+                  files: true,
+                  user: true
+                }
+              },
+              reply: {
+                select: {
+                  id: true,
+                  text: true,
+                  files: true,
+                  user: true
+                }
+              }
+            }
+          },
+          user: true
         }
       });
 
       if (forwardedMessageIds.length > 0) {
         const relationsData = forwardedMessageIds.map((repliedToId) => ({
-          draftMessageId: draftMessage.id,
+          replyId: message.id,
           repliedToId
         }));
 
-        await this.prismaService.draftMessageReply.createMany({
+        await this.prismaService.chatMessageReply.createMany({
           data: relationsData,
           skipDuplicates: true
         });
       }
+
+      message = await this.prismaService.chatMessage.findUnique({
+        where: { id: message.id },
+        include: {
+          files: true,
+          chat: {
+            include: {
+              members: {
+                include: {
+                  user: true
+                }
+              }
+            }
+          },
+          repliedToLinks: {
+            include: {
+              repliedTo: {
+                select: {
+                  id: true,
+                  text: true,
+                  files: true,
+                  user: true
+                }
+              },
+              reply: {
+                select: {
+                  id: true,
+                  text: true,
+                  files: true,
+                  user: true
+                }
+              }
+            }
+          },
+          user: true
+        }
+      });
+
       const chat = await this.prismaService.chat.update({
-        where: { id: draftMessage.chatId },
+        where: { id: message.chatId },
         data: {
+          lastMessageId: message.id,
+          lastMessageAt: new Date(),
           draftMessages: {
-            connect: {
-              id: draftMessage.id
+            deleteMany: {
+              userId
             }
           }
         },
@@ -839,11 +768,17 @@ export class MessageService {
               files: true,
               user: true
             }
+          },
+          lastMessage: {
+            include: {
+              files: true,
+              user: true
+            }
           }
         }
       });
 
-      messages.push(draftMessage);
+      messages.push(message);
       chats.push(chat);
     }
 

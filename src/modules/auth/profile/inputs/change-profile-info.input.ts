@@ -12,8 +12,8 @@ import {
 export class ChangeProfileInfoInput {
   @Field(() => String)
   @IsString()
-  @Matches(/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/)
-  @Length(6, 30)
+  @Matches(/^[a-zA-Zа-яА-ЯёЁ0-9_]+(?:-[a-zA-Zа-яА-ЯёЁ0-9_]+)*$/)
+  @Length(3, 30)
   public username: string;
 
   @Field(() => String)

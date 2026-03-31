@@ -1,6 +1,5 @@
 import {
-  ForbiddenException,
-  Logger
+  ForbiddenException
 } from "@nestjs/common";
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { PubSub } from "graphql-subscriptions";
@@ -21,7 +20,6 @@ import { SecretService } from "./secret.service";
 
 @Resolver("Secret")
 export class SecretResolver {
-  private readonly logger = new Logger(SecretResolver.name);
   private readonly pubSub: PubSub;
 
   public constructor(private readonly secretService: SecretService) {
@@ -47,6 +45,29 @@ export class SecretResolver {
   }
 
   @Authorization()
+  @Query(() => Boolean, { name: "hasSharedSecretKey" })
+  public async hasSharedSecretKey(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string
+  ) {
+    return await this.secretService.hasSharedSecretKey(userId, chatId);
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "ackSharedSecretKeys" })
+  public async ackSharedSecretKeys(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("sharedKeyIds", { type: () => [String] }) sharedKeyIds: string[]
+  ) {
+    return await this.secretService.ackSharedSecretKeys(
+      userId,
+      chatId,
+      sharedKeyIds
+    );
+  }
+
+  @Authorization()
   @Query(() => QueueSecretMessageModel, {
     name: "getSecretMessage"
   })
@@ -55,6 +76,31 @@ export class SecretResolver {
     @Args("chatId") chatId: string
   ) {
     return await this.secretService.getSecretMessage(userId, chatId);
+  }
+
+  @Authorization()
+  @Query(() => [QueueSecretMessageModel], {
+    name: "getSecretMessages"
+  })
+  public async getSecretMessages(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string
+  ) {
+    return await this.secretService.getSecretMessages(userId, chatId);
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "ackSecretMessages" })
+  public async ackSecretMessages(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("messageIds", { type: () => [String] }) messageIds: string[]
+  ) {
+    return await this.secretService.ackSecretMessages(
+      userId,
+      chatId,
+      messageIds
+    );
   }
 
   @Authorization()
@@ -166,26 +212,8 @@ export class SecretResolver {
   @Authorization()
   @Subscription(() => QueueSecretMessageModel, {
     name: "addSecretMessage",
-    filter: async (payload, variables) => {
-      if (payload.recipientUserId !== variables.userId) {
-        return false;
-      }
-
-      try {
-        await payload.self.secretService.updateSecretMessageForReader(
-          variables.userId,
-          payload.addSecretMessage.chatId
-        );
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "unknown error";
-        payload.self.logger.warn(
-          `Failed to mark secret message as read for ${variables.userId}: ${message}`
-        );
-      }
-
-      return true;
-    }
+    filter: async (payload, variables) =>
+      payload.recipientUserId === variables.userId
   })
   public addSecretMessage(
     @Authorized("id") authorizedUserId: string,
