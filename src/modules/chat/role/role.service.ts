@@ -11,7 +11,13 @@ import { UpsertChatRoleInput } from "./inputs/upsert-chat-role.input";
 
 const DEFAULT_ROLE_NAME = "Участник";
 const DEFAULT_ROLE_COLOR = "#808080";
-const DEFAULT_ROLE_PERMISSIONS: ChatPermissionEnum[] = [];
+const DEFAULT_ROLE_PERMISSIONS: ChatPermissionEnum[] = [
+  ChatPermissionEnum.SEND_MESSAGES,
+  ChatPermissionEnum.EDIT_MESSAGES,
+  ChatPermissionEnum.DELETE_MESSAGES,
+  ChatPermissionEnum.PIN_MESSAGES,
+  ChatPermissionEnum.INVITE_MEMBERS
+];
 const OWNER_ROLE_NAME = "Owner";
 const OWNER_ROLE_COLOR = "#FFD700";
 const OWNER_ROLE_PERMISSIONS: ChatPermissionEnum[] = Object.values(

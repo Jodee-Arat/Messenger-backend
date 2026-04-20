@@ -133,11 +133,11 @@ export class MessageResolver {
   ) {
     const { draftMessage, chat } =
       await this.messageService.sendChatDraftMessage(userId, chatId, input);
-    appPubSub.publish(`CHAT_UPDATED_${draftMessage.userId}`, {
+    appPubSub.publish(`CHAT_UPDATED_${userId}`, {
       chatUpdated: chat
     });
 
-    return draftMessage ? true : false;
+    return !!chat;
   }
 
   @Subscription(() => [ChatMessageIdModel], {

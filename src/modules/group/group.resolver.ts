@@ -23,6 +23,14 @@ export class GroupResolver {
     this.pubSub = new PubSub();
   }
 
+  private async publishGroupUpsert(userId: string, groupId: string) {
+    const group = await this.groupService.findGroupByGroupId(userId, groupId);
+
+    if (group) {
+      this.pubSub.publish("GROUP_ADDED", { groupAdded: group });
+    }
+  }
+
   @Authorization()
   @Query(() => Boolean, { name: "checkGroupAccess" })
   public async checkGroupAccess(
@@ -60,7 +68,9 @@ export class GroupResolver {
     @Args("avatar", { type: () => GraphQLUpload }, FileValidationPipe)
     avatar: Upload
   ) {
-    return this.groupService.changeAvatar(user, groupId, avatar);
+    const result = await this.groupService.changeAvatar(user, groupId, avatar);
+    await this.publishGroupUpsert(user.id, groupId);
+    return result;
   }
 
   @Authorization()
@@ -70,7 +80,13 @@ export class GroupResolver {
     @Authorized() user: User,
     @Args("groupId") groupId: string
   ) {
-    return this.groupService.removeAvatar(user, groupId);
+    const result = await this.groupService.removeAvatar(user, groupId);
+
+    if (result) {
+      await this.publishGroupUpsert(user.id, groupId);
+    }
+
+    return result;
   }
 
   @Authorization()
@@ -81,7 +97,13 @@ export class GroupResolver {
     @Args("groupId") groupId: string,
     @Args("data") input: ChangeGroupInfoInput
   ) {
-    return this.groupService.changeInfo(user, groupId, input);
+    const result = await this.groupService.changeInfo(user, groupId, input);
+
+    if (result) {
+      await this.publishGroupUpsert(user.id, groupId);
+    }
+
+    return result;
   }
 
   @Subscription(() => GroupModel, {
@@ -155,7 +177,17 @@ export class GroupResolver {
     @Args("groupId") groupId: string,
     @Args("targetUserId") targetUserId: string
   ) {
-    return this.groupService.inviteMember(userId, groupId, targetUserId);
+    const result = await this.groupService.inviteMember(
+      userId,
+      groupId,
+      targetUserId
+    );
+
+    if (result) {
+      await this.publishGroupUpsert(userId, groupId);
+    }
+
+    return result;
   }
 
   @Authorization()

@@ -93,6 +93,23 @@ type LeaveChatUpdatedChatPayload = Prisma.ChatGetPayload<{
   include: typeof leaveChatUpdatedChatInclude;
 }>;
 
+const normalizeDraftMessages = <
+  T extends {
+    draftMessages?: Array<{
+      text: string | null;
+    }> | null;
+  }
+>(
+  chat: T
+) => ({
+  ...chat,
+  draftMessages:
+    chat.draftMessages?.map((draftMessage) => ({
+      ...draftMessage,
+      text: draftMessage.text ?? ""
+    })) ?? chat.draftMessages
+});
+
 const chatUpdatedBroadcastInclude = {
   members: {
     include: {
@@ -259,7 +276,7 @@ export class ChatService {
     });
 
     return chats.map((chat) => ({
-      ...chat,
+      ...normalizeDraftMessages(chat),
       isPinned: chat.pinnedByUser.length > 0,
       pinnedOrder:
         chat.pinnedByUser.length > 0 ? chat.pinnedByUser[0].order : null,
@@ -338,7 +355,7 @@ export class ChatService {
     );
 
     return visibleChats.map((chat) => ({
-      ...chat,
+      ...normalizeDraftMessages(chat),
       isPinned: chat.pinnedByUser.length > 0,
       pinnedOrder:
         chat.pinnedByUser.length > 0 ? chat.pinnedByUser[0].order : null,
@@ -446,7 +463,7 @@ export class ChatService {
 
     // Flatten join table: member.roles -> array of ChatRole objects
     return {
-      ...chat,
+      ...normalizeDraftMessages(chat),
       pinnedMessage: userPinnedMessage,
       pinnedMessageId: userPinnedMessage?.id ?? null,
       members: chat.members.map((member) => ({
@@ -530,14 +547,6 @@ export class ChatService {
     chatId: string,
     input: ChangeChatInfoInput
   ) {
-    await this.validatePermission(
-      user.id,
-      chatId,
-      ChatPermissionEnum.CHANGE_CHAT_INFO
-    );
-
-    const { description, chatName } = input;
-
     const chat = await this.prismaService.chat.findUnique({
       where: { id: chatId }
     });
@@ -546,11 +555,56 @@ export class ChatService {
       throw new BadRequestException("Chat not found");
     }
 
+    const member = await this.prismaService.chatMember.findFirst({
+      where: {
+        chatId,
+        userId: user.id
+      },
+      include: {
+        roles: {
+          include: { chatRole: true }
+        }
+      }
+    });
+
+    if (!member) {
+      throw new BadRequestException("User is not a member of the chat");
+    }
+
+    const normalizedDescription = input.description ?? "";
+    const wantsToChangeChatName = chat.chatName !== input.chatName;
+    const wantsToChangeDescription =
+      (chat.description ?? "") !== normalizedDescription;
+
+    if (!wantsToChangeChatName && !wantsToChangeDescription) {
+      return true;
+    }
+
+    const hasPermission = (requiredPermission: ChatPermissionEnum) =>
+      member.isCreator ||
+      member.roles.some((rm) =>
+        rm.chatRole.permissions.includes(requiredPermission)
+      );
+
+    if (
+      wantsToChangeChatName &&
+      !hasPermission(ChatPermissionEnum.CHANGE_CHAT_NAME)
+    ) {
+      throw new ForbiddenException("You do not have the required permission");
+    }
+
+    if (
+      wantsToChangeDescription &&
+      !hasPermission(ChatPermissionEnum.CHANGE_CHAT_INFO)
+    ) {
+      throw new ForbiddenException("You do not have the required permission");
+    }
+
     await this.prismaService.chat.update({
       where: { id: chatId },
       data: {
-        description,
-        chatName
+        description: normalizedDescription,
+        chatName: input.chatName
       }
     });
 
@@ -1028,10 +1082,36 @@ export class ChatService {
       throw new BadRequestException("User is already a member of this chat");
     }
 
-    // If chat requires TOTP, check that the target user has it enabled
     const chat = await this.prismaService.chat.findUnique({
-      where: { id: chatId }
+      where: { id: chatId },
+      select: {
+        groupId: true,
+        requireTotp: true
+      }
     });
+    if (!chat) {
+      throw new BadRequestException("Chat not found");
+    }
+
+    if (chat.groupId) {
+      const groupMember = await this.prismaService.groupMember.findFirst({
+        where: {
+          groupId: chat.groupId,
+          userId: targetUserId
+        },
+        select: {
+          id: true
+        }
+      });
+
+      if (!groupMember) {
+        throw new BadRequestException(
+          "Only group members can be invited to this chat"
+        );
+      }
+    }
+
+    // If chat requires TOTP, check that the target user has it enabled
     if (chat?.requireTotp) {
       const targetUser = await this.prismaService.user.findUnique({
         where: { id: targetUserId },

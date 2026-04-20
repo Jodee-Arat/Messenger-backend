@@ -68,9 +68,19 @@ export class FileService {
 
     if (chatWithDraft?.draftMessages?.[0]) {
       chatDraftMessage = chatWithDraft.draftMessages[0];
+
+      if (chatDraftMessage.text == null) {
+        chatDraftMessage = await this.prismaService.draftMessage.update({
+          where: { id: chatDraftMessage.id },
+          data: {
+            text: ""
+          }
+        });
+      }
     } else {
       chatDraftMessage = await this.prismaService.draftMessage.create({
         data: {
+          text: "",
           userId: user.id,
           chatId
         }

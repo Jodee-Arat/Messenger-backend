@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   forwardRef
@@ -90,12 +91,15 @@ export class MessageService {
         },
         user: true
       },
+      // Fetch the newest window first, then normalize back to ascending order
+      // so clients render messages chronologically while still seeing the latest
+      // messages after refresh.
       orderBy: {
-        createdAt: "asc"
+        createdAt: "desc"
       }
     });
 
-    return messages;
+    return messages.reverse();
   }
   public async sendChatMessage(
     userId: string,
@@ -141,22 +145,6 @@ export class MessageService {
         }
       }
     });
-    if (chat?.isGroup) {
-      if (editId) {
-        await this.chatService.validatePermission(
-          userId,
-          chatId,
-          ChatPermissionEnum.EDIT_MESSAGES
-        );
-      } else {
-        await this.chatService.validatePermission(
-          userId,
-          chatId,
-          ChatPermissionEnum.SEND_MESSAGES
-        );
-      }
-    }
-
     const includeOptions = {
       files: true,
 
@@ -213,11 +201,35 @@ export class MessageService {
       }
     });
 
+    const effectiveEditId = editId ?? draftMessage?.editId ?? null;
+
+    if (chat?.isGroup) {
+      await this.chatService.validatePermission(
+        userId,
+        chatId,
+        effectiveEditId
+          ? ChatPermissionEnum.EDIT_MESSAGES
+          : ChatPermissionEnum.SEND_MESSAGES
+      );
+    }
+
+    if (effectiveEditId) {
+      await this.assertOwnEditableMessage(userId, chatId, effectiveEditId);
+    }
+
+    const additionalTargetIds = resolvedTargetChatsId.filter(
+      (targetChatId) => targetChatId !== chatId
+    );
+
+    if (additionalTargetIds.length > 0) {
+      await this.ensureGroupChatsCanSend(userId, additionalTargetIds);
+    }
+
     let message: any;
 
-    if (draftMessage?.editId || editId) {
+    if (effectiveEditId) {
       message = await this.prismaService.chatMessage.update({
-        where: { id: editId ?? draftMessage.editId },
+        where: { id: effectiveEditId },
         data: {
           text: text ?? "",
           userId,
@@ -409,39 +421,99 @@ export class MessageService {
       }
     });
 
-    if (draftMessage) {
-      draftMessage = await this.prismaService.draftMessage.update({
-        where: { id: draftMessage.id },
-        data: {
-          text: text ?? "",
-          chatId: resolvedTargetChatsId[0],
-          editId: editId ?? undefined,
-          filesEditId: fileIds ?? []
-        },
+    const effectiveEditId = editId ?? draftMessage?.editId ?? null;
+
+    if (effectiveEditId) {
+      await this.assertOwnEditableMessage(userId, chatId, effectiveEditId);
+    }
+
+    const chatInfo = await this.prismaService.chat.findUnique({
+      where: { id: chatId },
+      select: { isGroup: true }
+    });
+
+    if (chatInfo?.isGroup) {
+      await this.chatService.validatePermission(
+        userId,
+        chatId,
+        effectiveEditId
+          ? ChatPermissionEnum.EDIT_MESSAGES
+          : ChatPermissionEnum.SEND_MESSAGES
+      );
+    }
+
+    const additionalTargetIds = resolvedTargetChatsId.filter(
+      (targetChatId) => targetChatId !== chatId
+    );
+
+    if (additionalTargetIds.length > 0) {
+      await this.ensureGroupChatsCanSend(userId, additionalTargetIds);
+    }
+
+    const chatInclude = {
+      members: {
         include: {
-          files: true,
-          chat: {
-            include: {
-              members: {
-                include: { user: true }
-              }
-            }
-          },
-          repliedToLinks: {
-            include: {
-              repliedTo: {
-                select: {
-                  id: true,
-                  text: true,
-                  files: true,
-                  user: true
-                }
-              }
-            }
-          },
           user: true
         }
-      });
+      },
+      draftMessages: {
+        where: { userId },
+        include: {
+          files: true,
+          user: true
+        }
+      }
+    } as const;
+
+    if (draftMessage) {
+      try {
+        draftMessage = await this.prismaService.draftMessage.update({
+          where: { id: draftMessage.id },
+          data: {
+            text: text ?? "",
+            chatId: resolvedTargetChatsId[0],
+            editId: editId ?? undefined,
+            filesEditId: fileIds ?? []
+          },
+          include: {
+            files: true,
+            chat: {
+              include: {
+                members: {
+                  include: { user: true }
+                }
+              }
+            },
+            repliedToLinks: {
+              include: {
+                repliedTo: {
+                  select: {
+                    id: true,
+                    text: true,
+                    files: true,
+                    user: true
+                  }
+                }
+              }
+            },
+            user: true
+          }
+        });
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2025"
+        ) {
+          const chat = await this.prismaService.chat.findUniqueOrThrow({
+            where: { id: resolvedTargetChatsId[0] },
+            include: chatInclude
+          });
+
+          return { draftMessage: null, chat };
+        }
+
+        throw error;
+      }
 
       await this.prismaService.draftMessageReply.deleteMany({
         where: {
@@ -465,7 +537,7 @@ export class MessageService {
     } else {
       draftMessage = await this.prismaService.draftMessage.create({
         data: {
-          text,
+          text: text ?? "",
           userId,
           chatId: resolvedTargetChatsId[0],
           editId: editId ?? undefined,
@@ -515,26 +587,9 @@ export class MessageService {
     const chat = await this.prismaService.chat.update({
       where: { id: draftMessage.chatId },
       data: {
-        draftMessages: {
-          connect: {
-            id: draftMessage.id
-          }
-        }
+        updatedAt: new Date()
       },
-      include: {
-        members: {
-          include: {
-            user: true
-          }
-        },
-        draftMessages: {
-          where: { userId },
-          include: {
-            files: true,
-            user: true
-          }
-        }
-      }
+      include: chatInclude
     });
 
     return { draftMessage, chat };
@@ -648,6 +703,7 @@ export class MessageService {
       userId,
       resolvedTargetChatsId
     );
+    await this.ensureGroupChatsCanSend(userId, resolvedTargetChatsId);
 
     let messages: any[] = [];
     let chats: any[] = [];
@@ -792,6 +848,58 @@ export class MessageService {
         chatId
       }
     });
+  }
+
+  private async ensureGroupChatsCanSend(userId: string, chatIds: string[]) {
+    const uniqueChatIds = [...new Set(chatIds)];
+
+    if (uniqueChatIds.length === 0) {
+      return;
+    }
+
+    const groupChats = await this.prismaService.chat.findMany({
+      where: {
+        id: { in: uniqueChatIds },
+        isGroup: true
+      },
+      select: {
+        id: true
+      }
+    });
+
+    for (const chat of groupChats) {
+      await this.chatService.validatePermission(
+        userId,
+        chat.id,
+        ChatPermissionEnum.SEND_MESSAGES
+      );
+    }
+  }
+
+  private async assertOwnEditableMessage(
+    userId: string,
+    chatId: string,
+    messageId: string
+  ) {
+    const message = await this.prismaService.chatMessage.findFirst({
+      where: {
+        id: messageId,
+        chatId,
+        isDeleted: false
+      },
+      select: {
+        id: true,
+        userId: true
+      }
+    });
+
+    if (!message) {
+      throw new BadRequestException("Message not found in chat");
+    }
+
+    if (message.userId !== userId) {
+      throw new ForbiddenException("You can only edit your own messages");
+    }
   }
 
   private findBySearchTermMessageFilter(

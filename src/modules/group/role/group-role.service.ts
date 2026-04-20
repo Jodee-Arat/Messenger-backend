@@ -11,7 +11,11 @@ import { UpsertGroupRoleInput } from "./inputs/upsert-group-role.input";
 
 const DEFAULT_ROLE_NAME = "Участник";
 const DEFAULT_ROLE_COLOR = "#808080";
-const DEFAULT_ROLE_PERMISSIONS: GroupPermissionEnum[] = [];
+const DEFAULT_ROLE_PERMISSIONS: GroupPermissionEnum[] = [
+  GroupPermissionEnum.CREATE_CHATS,
+  GroupPermissionEnum.DELETE_CHATS,
+  GroupPermissionEnum.INVITE_MEMBERS
+];
 const OWNER_ROLE_NAME = "Owner";
 const OWNER_ROLE_COLOR = "#FFD700";
 const OWNER_ROLE_PERMISSIONS: GroupPermissionEnum[] = Object.values(

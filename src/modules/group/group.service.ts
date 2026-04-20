@@ -12,6 +12,7 @@ import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FiltersInput } from "../inputs/filters.input";
 import { StorageService } from "../libs/storage/storage.service";
+import { FriendshipService } from "../friendship/friendship.service";
 
 import { ChangeGroupInfoInput } from "./inputs/change-group-info.input";
 import { CreateGroupInput } from "./inputs/create-group.input";
@@ -35,8 +36,25 @@ export class GroupService {
   public constructor(
     private readonly prismaService: PrismaService,
     private readonly storageService: StorageService,
-    private readonly groupRoleService: GroupRoleService
+    private readonly groupRoleService: GroupRoleService,
+    private readonly friendshipService: FriendshipService
   ) {}
+
+  private hasGroupPermission(
+    member: {
+      isCreator: boolean;
+      roles: Array<{ groupRole: { permissions: GroupPermissionEnum[] } }>;
+    },
+    requiredPermission: GroupPermissionEnum
+  ) {
+    if (member.isCreator) {
+      return true;
+    }
+
+    return member.roles.some((rm) =>
+      rm.groupRole.permissions.includes(requiredPermission)
+    );
+  }
 
   public async checkGroupAccess(userId: string, groupId: string) {
     const group = await this.prismaService.group.findFirst({
@@ -76,12 +94,8 @@ export class GroupService {
       throw new BadRequestException("User is not a member of the group");
     }
 
-    // Creator bypasses all permission checks
-    if (member.isCreator) return member;
+    const hasPermission = this.hasGroupPermission(member, requiredPermission);
 
-    const hasPermission = member.roles.some((rm) =>
-      rm.groupRole.permissions.includes(requiredPermission)
-    );
     if (!hasPermission) {
       throw new ForbiddenException("You do not have the required permission");
     }
@@ -108,6 +122,9 @@ export class GroupService {
           }
         },
         ...whereClause
+      },
+      orderBy: {
+        createdAt: "desc"
       }
     });
 
@@ -217,14 +234,6 @@ export class GroupService {
     groupId: string,
     input: ChangeGroupInfoInput
   ) {
-    await this.validatePermission(
-      user.id,
-      groupId,
-      GroupPermissionEnum.CHANGE_GROUP_INFO
-    );
-
-    const { description, groupName } = input;
-
     const group = await this.prismaService.group.findUnique({
       where: { id: groupId }
     });
@@ -233,11 +242,50 @@ export class GroupService {
       throw new BadRequestException("Group not found");
     }
 
+    const member = await this.prismaService.groupMember.findFirst({
+      where: {
+        groupId,
+        userId: user.id
+      },
+      include: {
+        roles: {
+          include: { groupRole: true }
+        }
+      }
+    });
+
+    if (!member) {
+      throw new BadRequestException("User is not a member of the group");
+    }
+
+    const normalizedDescription = input.description ?? "";
+    const wantsToChangeGroupName = group.groupName !== input.groupName;
+    const wantsToChangeDescription =
+      (group.description ?? "") !== normalizedDescription;
+
+    if (!wantsToChangeGroupName && !wantsToChangeDescription) {
+      return true;
+    }
+
+    if (
+      wantsToChangeGroupName &&
+      !this.hasGroupPermission(member, GroupPermissionEnum.CHANGE_GROUP_NAME)
+    ) {
+      throw new ForbiddenException("You do not have the required permission");
+    }
+
+    if (
+      wantsToChangeDescription &&
+      !this.hasGroupPermission(member, GroupPermissionEnum.CHANGE_GROUP_INFO)
+    ) {
+      throw new ForbiddenException("You do not have the required permission");
+    }
+
     await this.prismaService.group.update({
       where: { id: groupId },
       data: {
-        description,
-        groupName
+        description: normalizedDescription,
+        groupName: input.groupName
       }
     });
 
@@ -345,6 +393,16 @@ export class GroupService {
     });
     if (existing) {
       throw new BadRequestException("User is already a member of this group");
+    }
+
+    const friendship =
+      await this.friendshipService.findAcceptedFriendshipBetweenUsers(
+        userId,
+        targetUserId
+      );
+
+    if (!friendship) {
+      throw new BadRequestException("Only friends can be invited to the group");
     }
 
     const member = await this.prismaService.groupMember.create({

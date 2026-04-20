@@ -20,6 +20,19 @@ import { SecretKeyRotationModel } from "./models/secret-key-rotation.model";
 export class ChatResolver {
   constructor(private readonly chatService: ChatService) {}
 
+  private async publishChatAdded(chatId: string) {
+    const chat = await this.chatService.getChatUpdatedBroadcastPayload(chatId);
+    if (!chat) return;
+
+    await appPubSub.publish("CHAT_ADDED", {
+      chatAdded: {
+        ...chat,
+        draftMessages: null,
+        pinnedMessageId: null
+      }
+    });
+  }
+
   private async publishChatUpdated(chatId: string) {
     const chat = await this.chatService.getChatUpdatedBroadcastPayload(chatId);
     if (!chat) return;
@@ -86,7 +99,9 @@ export class ChatResolver {
     @Args("avatar", { type: () => GraphQLUpload }, FileValidationPipe)
     avatar: Upload
   ) {
-    return this.chatService.changeAvatar(user, chatId, avatar);
+    const result = await this.chatService.changeAvatar(user, chatId, avatar);
+    await this.publishChatUpdated(chatId);
+    return result;
   }
 
   @Authorization()
@@ -96,7 +111,13 @@ export class ChatResolver {
     @Authorized() user: User,
     @Args("chatId") chatId: string
   ) {
-    return this.chatService.removeAvatar(user, chatId);
+    const result = await this.chatService.removeAvatar(user, chatId);
+
+    if (result) {
+      await this.publishChatUpdated(chatId);
+    }
+
+    return result;
   }
 
   @Authorization()
@@ -107,7 +128,13 @@ export class ChatResolver {
     @Args("chatId") chatId: string,
     @Args("data") input: ChangeChatInfoInput
   ) {
-    return this.chatService.changeInfo(user, chatId, input);
+    const result = await this.chatService.changeInfo(user, chatId, input);
+
+    if (result) {
+      await this.publishChatUpdated(chatId);
+    }
+
+    return result;
   }
 
   @Subscription(() => ChatModel, {
@@ -246,6 +273,11 @@ export class ChatResolver {
       chatId,
       targetUserId
     );
+
+    if (chat) {
+      await this.publishChatAdded(chat.id);
+    }
+
     return chat ? true : false;
   }
 
