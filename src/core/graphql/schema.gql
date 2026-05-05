@@ -80,7 +80,6 @@ type ChatMessageModel {
   isStarted: Boolean!
   lastMessageForChat: ChatModel
   pinnedInChat: ChatModel
-  readCount: String
   repliedToLinks: [ChatMessageReplyModel]
   replies: [ChatMessageReplyModel]
   text: String
@@ -109,11 +108,13 @@ type ChatModel {
   isDeleted: Boolean!
   isGroup: Boolean!
   isPinned: Boolean
+  isSaved: Boolean!
   isSecret: Boolean!
   lastMessage: ChatMessageModel
   lastMessageAt: DateTime
   lastMessageId: String
   members: [ChatMemberModel!]!
+  ownerId: String
   pinnedMessage: ChatMessageModel
   pinnedMessageId: String
   pinnedOrder: Int
@@ -311,8 +312,8 @@ type MemberRoleModel {
 
 type Mutation {
   acceptFriendRequest(friendshipId: String!): Boolean!
-  ackSecretMessages(chatId: String!, messageIds: [String!]!): Boolean!
-  ackSharedSecretKeys(chatId: String!, sharedKeyIds: [String!]!): Boolean!
+  ackSessionSecretMessages(chatId: String!, messageIds: [String!]!, secretSessionId: String!): Boolean!
+  ackSessionSharedSecretKeys(chatId: String!, secretSessionId: String!, sharedKeyIds: [String!]!): Boolean!
   assignGroupRoleToMember(groupId: String!, memberId: String!, roleId: String!): Boolean!
   assignRoleToUser(chatId: String!, memberId: String!, roleId: String!): Boolean!
   blockUser(targetUserId: String!): Boolean!
@@ -324,8 +325,10 @@ type Mutation {
   changeProfileAvatar(avatar: Upload!): String!
   changeProfileInfo(data: ChangeProfileInfoInput!): Boolean!
   clearSessionCookie: Boolean!
+  confirmSavedSecretPairing(challenge: String, mobileSecretSessionId: String!, pairingId: String!, safetyCode: String): SavedSecretPairingModel!
   createChat(data: CreateChatInput!, groupId: String!): ChatModel!
   createGroup(data: CreateGroupInput!): GroupModel!
+  createSavedSecretPairing(webSecretSessionId: String!): SavedSecretPairingModel!
   createUserWEmail(data: CreateUserWEmailInput!): Boolean!
   declineFriendRequest(friendshipId: String!): Boolean!
   deleteChat(chatId: String!): Boolean!
@@ -347,7 +350,9 @@ type Mutation {
   logoutUser: Boolean!
   pinChat(chatId: String!): Boolean!
   pinMessage(chatId: String!, messageId: String!): Boolean!
+  refreshSecretSession(publicPreKey: PreKeyInput!, secretSessionId: String!): SecretSessionModel!
   refreshToken(data: String!): String!
+  registerSecretSession(data: RegisterSecretSessionInput!): SecretSessionModel!
   removeChatAvatar(chatId: String!): Boolean!
   removeDraft(chatId: String!): Boolean!
   removeFile(chatId: String!, fileId: String!): Boolean!
@@ -359,14 +364,15 @@ type Mutation {
   removeMessages(chatId: String!, data: RemoveMessagesInput!): Boolean!
   removeProfileAvatar: Boolean!
   removeRoleFromUser(chatId: String!, memberId: String!, roleId: String!): Boolean!
+  removeSession(id: String!): Boolean!
+  revokeSecretSession(secretSessionId: String!): Boolean!
   sendChatDraftMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendChatMessage(chatId: String!, data: SendChatMessageInput!): Boolean!
   sendFile(chatId: String!, file: Upload!, messageId: String): AttachFileModel!
   sendFriendRequest(friendId: String!): Boolean!
   sendFriendRequestByUsername(username: String!): Boolean!
-  sendPreKey(data: PreKeyInput!): Boolean!
-  sendSecretMessage(data: SendSecretMessageInput!): QueueSecretMessageModel!
-  sendSharedSecretKey(data: SharedSecretKeyInput!): QueueSharedSecretKeyModel!
+  sendSessionSecretMessage(data: SessionSecretMessageInput!): QueueSecretMessageModel!
+  sendSessionSharedSecretKey(data: SessionSharedSecretKeyInput!): QueueSharedSecretKeyModel!
   startTyping(chatId: String!): Boolean!
   toggleChatRequireTotp(chatId: String!, enable: Boolean!): Boolean!
   unPinChat(chatId: String!): Boolean!
@@ -381,21 +387,10 @@ type Mutation {
 
 input PreKeyInput {
   ikPub: String!
+  indexOpkPub: Float
   opkPubs: [String!]!
   spkPub: String!
   spkSig: String!
-}
-
-type PreKeyModel {
-  createdAt: DateTime!
-  id: ID!
-  ikPub: String!
-  indexOpkPub: Float!
-  opkPubs: [String!]!
-  spkPub: String!
-  spkSig: String!
-  updatedAt: DateTime!
-  userId: String!
 }
 
 type Query {
@@ -409,6 +404,9 @@ type Query {
   findChatByChatId(chatId: String!): ChatModel!
   findCurrentSession: SessionModel!
   findGroupByGroupId(groupId: String!): GroupModel!
+  findMyPendingSavedSecretPairing: SavedSecretPairingModel
+  findMySecretSessions: [SecretSessionModel!]!
+  findOrCreateSavedSecretChat: ChatModel!
   findProfile: UserModel!
   findSessionsByUser: [SessionModel!]!
   getBlockedUsers: [FriendshipModel!]!
@@ -419,18 +417,18 @@ type Query {
   getMemberChatRole(chatId: String!): MemberChatRoleModel!
   getMemberRole(groupId: String!): MemberRoleModel!
   getOutgoingFriendRequests: [FriendshipModel!]!
-  getPreKeys(chatId: String!): [PreKeyModel!]!
-  getSecretMessage(chatId: String!): QueueSecretMessageModel!
-  getSecretMessages(chatId: String!): [QueueSecretMessageModel!]!
-  getSharedSecretKey(chatId: String!): [QueueSharedSecretKeyModel!]!
-  hasSharedSecretKey(chatId: String!): Boolean!
+  getSecretSessionPreKeys(chatId: String!): [SecretSessionPreKeyModel!]!
+  getSessionSecretMessages(chatId: String!, secretSessionId: String!): [QueueSecretMessageModel!]!
+  getSessionSharedSecretKeys(chatId: String!, secretSessionId: String!): [QueueSharedSecretKeyModel!]!
 }
 
 type QueueSecretMessageModel {
   chatId: String!
+  checkedSessionIds: [String!]!
   createdAt: DateTime!
   ekPub: String
   encryptedMessage: String!
+  fromSessionId: String
   fromUserId: String!
   groupId: String!
   id: ID!
@@ -439,6 +437,7 @@ type QueueSecretMessageModel {
   iv: String!
   secretAttachmentIds: [String!]!
   sig: String!
+  toSessionIds: [String!]!
   toUserIds: [String!]!
   ukm: String
   updatedAt: DateTime!
@@ -451,20 +450,43 @@ type QueueSharedSecretKeyModel {
   createdAt: DateTime!
   ekPub: String!
   encryptedKey: String!
+  fromSessionId: String
   fromUserId: String!
   groupId: String!
   id: ID!
   ikPub: String!
   iv: String!
   sig: String!
+  toSessionId: String
   toUserId: String!
   ukm: String!
   updatedAt: DateTime!
   usedOpk: String
 }
 
+input RegisterSecretSessionInput {
+  deviceName: String
+  platform: SecretSessionPlatform!
+  publicPreKey: PreKeyInput!
+}
+
 input RemoveMessagesInput {
   messageIds: [String!]!
+}
+
+type SavedSecretPairingModel {
+  challenge: String!
+  chatId: String!
+  confirmedAt: DateTime
+  createdAt: DateTime!
+  expiresAt: DateTime!
+  mobileSecretSessionId: String
+  pairingId: String!
+  qrCodeUrl: String
+  qrPayload: String
+  safetyCode: String!
+  userId: String!
+  webSecretSessionId: String!
 }
 
 type SecretAttachmentDownloadModel {
@@ -488,24 +510,48 @@ type SecretKeyRotationModel {
   chatId: String!
 }
 
+type SecretSessionModel {
+  createdAt: DateTime!
+  deviceName: String
+  expiresAt: DateTime!
+  id: String!
+  platform: SecretSessionPlatform!
+  publicPreKey: SecretSessionPublicPreKeyModel!
+  revokedAt: DateTime
+  userId: String!
+}
+
+enum SecretSessionPlatform {
+  MOBILE
+  WEB
+}
+
+type SecretSessionPreKeyModel {
+  deviceName: String
+  ikPub: String!
+  indexOpkPub: Float!
+  opkPubs: [String!]!
+  platform: SecretSessionPlatform!
+  secretSessionId: String!
+  spkPub: String!
+  spkSig: String!
+  userId: String!
+}
+
+type SecretSessionPublicPreKeyModel {
+  ikPub: String!
+  indexOpkPub: Float!
+  opkPubs: [String!]!
+  spkPub: String!
+  spkSig: String!
+}
+
 input SendChatMessageInput {
   editId: String
   fileIds: [String!]
   forwardedMessageIds: [String!]
   targetChatsId: [String!]
   text: String
-}
-
-input SendSecretMessageInput {
-  chatId: String!
-  encryptedMessage: String!
-  groupId: String!
-  isKey: Boolean
-  iv: String!
-  secretAttachmentIds: [String!]
-  sig: String!
-  toUserIds: [String!]!
-  ukm: String
 }
 
 type SessionMetadataModel {
@@ -521,22 +567,38 @@ type SessionModel {
   userId: String!
 }
 
-input SharedSecretKeyInput {
+input SessionSecretMessageInput {
+  chatId: String!
+  encryptedMessage: String!
+  fromSessionId: String!
+  groupId: String
+  isKey: Boolean
+  iv: String!
+  secretAttachmentIds: [String!]
+  sig: String!
+  toSessionIds: [String!]!
+  toUserIds: [String!]!
+  ukm: String
+}
+
+input SessionSharedSecretKeyInput {
   chatId: String!
   ekPub: String!
   encryptedKey: String!
-  groupId: String!
+  fromSessionId: String!
+  groupId: String
   ikPub: String!
   iv: String!
   sig: String!
+  toSessionId: String!
   toUserId: String!
   ukm: String!
   usedOpk: String
 }
 
 type Subscription {
-  addSecretMessage(userId: String!): QueueSecretMessageModel!
-  addSharedSecretKey(userId: String!): QueueSharedSecretKeyModel
+  addSessionSecretMessage(secretSessionId: String!, userId: String!): QueueSecretMessageModel!
+  addSessionSharedSecretKey(secretSessionId: String!, userId: String!): QueueSharedSecretKeyModel
   chatAdded(groupId: String!, userId: String!): ChatModel!
   chatAssignedRole(chatId: String!): ChatRoleModel!
   chatDeleted(groupId: String!, userId: String!): ChatModel!

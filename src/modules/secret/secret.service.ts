@@ -5,6 +5,7 @@ import {
   Injectable
 } from "@nestjs/common";
 import { randomUUID } from "crypto";
+import * as QRCode from "qrcode";
 
 import { ChatPermissionEnum } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
@@ -13,15 +14,57 @@ import { ChatService } from "@/src/modules/chat/chat.service";
 import { StorageService } from "@/src/modules/libs/storage/storage.service";
 
 import { PreKeyInput } from "./input/preKey.input";
-import { SendSecretMessageInput } from "./input/send-secret-message.input";
-import { SharedSecretKeyInput } from "./input/shared-secret-key.input";
+import { RegisterSecretSessionInput } from "./input/register-secret-session.input";
+import { SessionSecretMessageInput } from "./input/session-secret-message.input";
+import { SessionSharedSecretKeyInput } from "./input/session-shared-secret-key.input";
 import { UploadSecretAttachmentInput } from "./input/upload-secret-attachment.input";
+import { SecretSessionPlatform } from "./models/secret-session-platform.enum";
 
 const SECRET_ATTACHMENT_STAGE_TTL_MS = 24 * 60 * 60 * 1000;
+const SECRET_SESSION_KEY_PREFIX = "secret-session:";
+const SAVED_SECRET_PAIRING_KEY_PREFIX = "saved-secret-pairing:";
+const SAVED_SECRET_PAIRING_WEB_KEY_PREFIX = "saved-secret-pairing-web:";
+const SAVED_SECRET_PAIRING_QR_SCHEME = "mesarat://saved-secret-pairing";
+const SAVED_SECRET_GROUP_ID = "saved";
+const WEB_SECRET_SESSION_TTL_SECONDS = 8 * 60 * 60;
+const MOBILE_SECRET_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+const SAVED_SECRET_PAIRING_TTL_SECONDS = 5 * 60;
 
 type SecretChatAccess = Awaited<
   ReturnType<ChatService["ensureDirectChatAccess"]>
 >;
+
+type SecretSessionPublicPreKey = {
+  ikPub: string;
+  spkPub: string;
+  spkSig: string;
+  opkPubs: string[];
+  indexOpkPub: number;
+};
+
+type SecretSessionRecord = {
+  id: string;
+  userId: string;
+  platform: SecretSessionPlatform;
+  deviceName?: string | null;
+  publicPreKey: SecretSessionPublicPreKey;
+  createdAt: string;
+  expiresAt: string;
+  revokedAt?: string | null;
+};
+
+type SavedSecretPairingRecord = {
+  pairingId: string;
+  userId: string;
+  chatId: string;
+  webSecretSessionId: string;
+  mobileSecretSessionId?: string | null;
+  challenge: string;
+  safetyCode: string;
+  createdAt: string;
+  expiresAt: string;
+  confirmedAt?: string | null;
+};
 
 @Injectable()
 export class SecretService {
@@ -31,6 +74,232 @@ export class SecretService {
     private readonly storageService: StorageService,
     private readonly chatService: ChatService
   ) {}
+
+  public async registerSecretSession(
+    userId: string,
+    input: RegisterSecretSessionInput
+  ) {
+    const now = new Date();
+    const ttlSeconds = this.getSecretSessionTtlSeconds(input.platform);
+    const expiresAt = new Date(now.getTime() + ttlSeconds * 1000);
+    const session: SecretSessionRecord = {
+      id: randomUUID(),
+      userId,
+      platform: input.platform,
+      deviceName: input.deviceName ?? null,
+      publicPreKey: this.normalizePublicPreKey(input.publicPreKey),
+      createdAt: now.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      revokedAt: null
+    };
+
+    await this.saveSecretSession(session, ttlSeconds);
+
+    return this.toSecretSessionModel(session);
+  }
+
+  public async refreshSecretSession(
+    userId: string,
+    secretSessionId: string,
+    publicPreKey: PreKeyInput
+  ) {
+    const session = await this.getOwnedSecretSession(userId, secretSessionId);
+    const ttlSeconds = this.getSecretSessionTtlSeconds(session.platform);
+    const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
+    const refreshedSession: SecretSessionRecord = {
+      ...session,
+      publicPreKey: this.normalizePublicPreKey(publicPreKey),
+      expiresAt: expiresAt.toISOString(),
+      revokedAt: null
+    };
+
+    await this.saveSecretSession(refreshedSession, ttlSeconds);
+
+    return this.toSecretSessionModel(refreshedSession);
+  }
+
+  public async revokeSecretSession(userId: string, secretSessionId: string) {
+    const session = await this.getOwnedSecretSession(userId, secretSessionId);
+
+    if (session.platform === SecretSessionPlatform.WEB) {
+      await this.deleteSavedSecretPairingForWebSession(userId, secretSessionId);
+    }
+
+    await this.redisService.del(this.getSecretSessionKey(secretSessionId));
+
+    return true;
+  }
+
+  public async findMySecretSessions(userId: string) {
+    const sessions = await this.findActiveSecretSessions();
+
+    return sessions
+      .filter((session) => session.userId === userId)
+      .map((session) => this.toSecretSessionModel(session));
+  }
+
+  public async getSecretSessionPreKeys(userId: string, chatId: string) {
+    const chat = await this.ensureSecretChatAccess(userId, chatId);
+    const memberIds = chat.members.map((member) => member.userId);
+    const sessions = await this.findActiveSecretSessions(memberIds);
+
+    return sessions.map((session) => ({
+      secretSessionId: session.id,
+      userId: session.userId,
+      platform: session.platform,
+      deviceName: session.deviceName ?? null,
+      ...session.publicPreKey
+    }));
+  }
+
+  public async findOrCreateSavedSecretChat(userId: string) {
+    const existing = await this.prismaService.chat.findFirst({
+      where: {
+        ownerId: userId,
+        isSaved: true,
+        isDeleted: false
+      },
+      include: {
+        members: {
+          include: {
+            user: true
+          }
+        }
+      }
+    });
+
+    if (existing) {
+      return existing;
+    }
+
+    return this.prismaService.chat.create({
+      data: {
+        chatName: "Избранное",
+        isSecret: true,
+        isSaved: true,
+        ownerId: userId,
+        lastMessageAt: new Date(),
+        members: {
+          create: {
+            user: {
+              connect: {
+                id: userId
+              }
+            },
+            isCreator: true
+          }
+        }
+      },
+      include: {
+        members: {
+          include: {
+            user: true
+          }
+        }
+      }
+    });
+  }
+
+  public async createSavedSecretPairing(
+    userId: string,
+    webSecretSessionId: string
+  ) {
+    const webSession = await this.getOwnedSecretSession(
+      userId,
+      webSecretSessionId
+    );
+
+    if (webSession.platform !== SecretSessionPlatform.WEB) {
+      throw new BadRequestException("Saved secret pairing requires a web session");
+    }
+
+    const chat = await this.findOrCreateSavedSecretChat(userId);
+    const existingPairing = await this.findActiveSavedSecretPairingForWebSession(
+      userId,
+      webSecretSessionId
+    );
+
+    if (existingPairing) {
+      return await this.toSavedSecretPairingModel(existingPairing);
+    }
+
+    const pairingId = randomUUID();
+    const now = new Date();
+    const expiresAt = new Date(
+      Date.now() + SAVED_SECRET_PAIRING_TTL_SECONDS * 1000
+    );
+    const pairing: SavedSecretPairingRecord = {
+      pairingId,
+      userId,
+      chatId: chat.id,
+      webSecretSessionId,
+      mobileSecretSessionId: null,
+      challenge: randomUUID(),
+      safetyCode: this.buildSafetyCode(),
+      createdAt: now.toISOString(),
+      expiresAt: expiresAt.toISOString(),
+      confirmedAt: null
+    };
+
+    await this.saveSavedSecretPairing(pairing);
+
+    return await this.toSavedSecretPairingModel(pairing);
+  }
+
+  public async findMyPendingSavedSecretPairing(userId: string) {
+    const pairings = await this.findActiveSavedSecretPairings(userId);
+    const pendingPairings = pairings
+      .filter((pairing) => !pairing.confirmedAt)
+      .sort(
+        (left, right) =>
+          new Date(right.createdAt).getTime() -
+          new Date(left.createdAt).getTime()
+      );
+
+    const pairing = pendingPairings[0];
+
+    return pairing ? await this.toSavedSecretPairingModel(pairing) : null;
+  }
+
+  public async confirmSavedSecretPairing(
+    userId: string,
+    pairingId: string,
+    mobileSecretSessionId: string,
+    expected?: {
+      challenge?: string | null;
+      safetyCode?: string | null;
+    }
+  ) {
+    const mobileSession = await this.getOwnedSecretSession(
+      userId,
+      mobileSecretSessionId
+    );
+
+    if (mobileSession.platform !== SecretSessionPlatform.MOBILE) {
+      throw new BadRequestException(
+        "Saved secret pairing confirmation requires a mobile session"
+      );
+    }
+
+    const pairing = await this.getSavedSecretPairing(userId, pairingId);
+    if (expected?.challenge && pairing.challenge !== expected.challenge) {
+      throw new BadRequestException("saved secret pairing challenge mismatch");
+    }
+
+    if (expected?.safetyCode && pairing.safetyCode !== expected.safetyCode) {
+      throw new BadRequestException("saved secret pairing safety code mismatch");
+    }
+
+    const confirmedPairing: SavedSecretPairingRecord = {
+      ...pairing,
+      mobileSecretSessionId,
+      confirmedAt: new Date().toISOString()
+    };
+
+    await this.saveSavedSecretPairing(confirmedPairing);
+
+    return await this.toSavedSecretPairingModel(confirmedPairing);
+  }
 
   public async uploadSecretAttachment(
     userId: string,
@@ -169,118 +438,79 @@ export class SecretService {
     return true;
   }
 
-  public async getPreKeys(chatId: string, fromUserId: string) {
+  public async sendSessionSharedSecretKey(
+    fromUserId: string,
+    input: SessionSharedSecretKeyInput
+  ) {
     await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(fromUserId, chatId);
 
-    const chat = await this.prismaService.chat.findUnique({
-      where: {
-        id: chatId
-      },
-      include: {
-        members: {
-          include: {
-            user: true
-          }
-        }
-      }
-    });
+    const fromSession = await this.getOwnedSecretSession(
+      fromUserId,
+      input.fromSessionId
+    );
+    const toSession = await this.getOwnedOrTargetSecretSession(
+      input.toUserId,
+      input.toSessionId
+    );
 
-    if (!chat) {
-      throw new ConflictException("chat not found");
-    }
-
-    const preKeys = await this.prismaService.preKey.findMany({
-      where: {
-        userId: {
-          in: chat.members.map((member) => member.user.id)
-        }
-      }
-    });
-
-    const memberUserIds = chat.members.map((member) => member.user.id);
-    const redisKeys = await this.redisService.keys(`*`);
-    const redisPreKeys: Array<{
-      userId: string;
-      ikPub: string;
-      spkPub: string;
-      spkSig: string;
-      opkPubs: string[];
-      indexOpkPub: number;
-    }> = [];
-
-    for (const memberId of memberUserIds) {
-      for (const key of redisKeys) {
-        const sessionData = await this.redisService.get(key);
-        if (!sessionData) continue;
-
-        let session: any;
-        try {
-          session = JSON.parse(sessionData);
-        } catch {
-          continue;
-        }
-
-        const publicPreKey = session?.metadata?.publicPreKey;
-        if (session?.userId === memberId && publicPreKey) {
-          const { ikPub, spkPub, spkSig, opkPubs, indexOpkPub } = publicPreKey;
-          redisPreKeys.push({
-            userId: memberId,
-            ikPub,
-            spkPub,
-            spkSig,
-            opkPubs,
-            indexOpkPub: indexOpkPub + 1
-          });
-          break;
-        }
-      }
-    }
-
-    await this.prismaService.preKey.updateMany({
-      where: {
-        userId: {
-          in: preKeys.map((key) => key.userId)
-        },
-        AND: { userId: { not: fromUserId } }
-      },
-      data: {
-        indexOpkPub: { increment: 1 }
-      }
-    });
-
-    if (!preKeys) {
-      throw new ConflictException("preKey not found");
-    }
-
-    return preKeys;
-  }
-
-  public async getSharedSecretKey(userId: string, chatId: string) {
-    await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(userId, chatId);
+    const chat = await this.ensureSecretChatSendAccess(fromUserId, input.chatId);
+    this.assertSessionTargetUsersExist(chat, [input.toUserId], fromUserId);
 
     const sharedSecretKey =
-      await this.prismaService.queueSharedSecretKey.findMany({
-        where: {
-          toUserId: userId,
-          chatId
+      await this.prismaService.queueSharedSecretKey.create({
+        data: {
+          fromUserId,
+          toUserId: input.toUserId,
+          fromSessionId: fromSession.id,
+          toSessionId: toSession.id,
+          chatId: input.chatId,
+          groupId: input.groupId ?? chat.groupId ?? SAVED_SECRET_GROUP_ID,
+          ikPub: input.ikPub,
+          ukm: input.ukm,
+          iv: input.iv,
+          encryptedKey: input.encryptedKey,
+          sig: input.sig,
+          ekPub: input.ekPub,
+          usedOpk: input.usedOpk ?? null
         }
       });
 
-    if (sharedSecretKey.length === 0) {
-      throw new ConflictException("shared secret key not found");
+    if (!sharedSecretKey) {
+      throw new ConflictException("session shared secret key not created");
     }
 
     return sharedSecretKey;
   }
 
-  public async ackSharedSecretKeys(
+  public async getSessionSharedSecretKeys(
     userId: string,
     chatId: string,
+    secretSessionId: string
+  ) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.getOwnedSecretSession(userId, secretSessionId);
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    return this.prismaService.queueSharedSecretKey.findMany({
+      where: {
+        chatId,
+        toUserId: userId,
+        toSessionId: secretSessionId
+      },
+      orderBy: {
+        createdAt: "asc"
+      }
+    });
+  }
+
+  public async ackSessionSharedSecretKeys(
+    userId: string,
+    chatId: string,
+    secretSessionId: string,
     sharedKeyIds: string[]
   ) {
     await this.cleanupExpiredSecretAttachments();
+    await this.getOwnedSecretSession(userId, secretSessionId);
     await this.ensureSecretChatAccess(userId, chatId);
 
     const uniqueSharedKeyIds = this.getUniqueIds(sharedKeyIds);
@@ -288,366 +518,51 @@ export class SecretService {
       return true;
     }
 
-    const sharedSecretKeys =
-      await this.prismaService.queueSharedSecretKey.findMany({
-        where: {
-          id: {
-            in: uniqueSharedKeyIds
-          },
-          chatId,
-          toUserId: userId
-        }
-      });
-
-    if (sharedSecretKeys.length === 0) {
-      return true;
-    }
-
-    const usedOpks = new Set(
-      sharedSecretKeys
-        .map((sharedKey) => sharedKey.usedOpk)
-        .filter((usedOpk): usedOpk is string => Boolean(usedOpk))
-    );
-
-    await this.prismaService.$transaction(async (tx) => {
-      if (usedOpks.size > 0) {
-        const preKeyOfThisUser = await tx.preKey.findUnique({
-          where: {
-            userId
-          }
-        });
-
-        if (preKeyOfThisUser) {
-          const updatedOpkPubs = preKeyOfThisUser.opkPubs.filter(
-            (opk) => !usedOpks.has(opk)
-          );
-
-          await tx.preKey.update({
-            where: {
-              userId
-            },
-            data: {
-              opkPubs: {
-                set: updatedOpkPubs
-              }
-            }
-          });
-        }
-      }
-
-      await tx.queueSharedSecretKey.deleteMany({
-        where: {
-          id: {
-            in: sharedSecretKeys.map((sharedKey) => sharedKey.id)
-          }
-        }
-      });
-    });
-
-    return true;
-  }
-
-  public async hasSharedSecretKey(userId: string, chatId: string) {
-    await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(userId, chatId);
-
-    const sharedSecretKeyCount =
-      await this.prismaService.queueSharedSecretKey.count({
-        where: {
-          toUserId: userId,
-          chatId
-        }
-      });
-
-    return sharedSecretKeyCount > 0;
-  }
-
-  public async getSecretMessage(userId: string, chatId: string) {
-    await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(userId, chatId);
-
-    const base = await this.prismaService.queueSecretMessage.findFirst({
-      where: {
-        chatId,
-        toUserIds: {
-          has: userId
-        }
-      },
-      orderBy: {
-        createdAt: "asc"
-      }
-    });
-
-    if (!base) {
-      throw new ConflictException("secret message not found");
-    }
-
-    if (base.whoCheckedIds.includes(userId)) {
-      throw new ConflictException("secret message not found");
-    }
-
-    let ikPub: string | null = null;
-    let ekPub: string | null = null;
-    let usedOpk: string | null = null;
-    let ukmFromShared: string | null = null;
-
-    try {
-      const sharedKey = await this.prismaService.queueSharedSecretKey.findFirst({
-        where: {
-          chatId,
-          toUserId: userId,
-          fromUserId: base.fromUserId
-        }
-      });
-
-      ikPub = sharedKey?.ikPub ?? null;
-      ekPub = sharedKey?.ekPub ?? null;
-      usedOpk = sharedKey?.usedOpk ?? null;
-      ukmFromShared = sharedKey?.ukm ?? null;
-    } catch {}
-
-    return {
-      ...base,
-      ikPub,
-      ekPub,
-      usedOpk,
-      ukm: base.ukm ?? ukmFromShared
-    };
-  }
-
-  public async getSecretMessages(userId: string, chatId: string) {
-    await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(userId, chatId);
-
-    const queuedMessages = await this.prismaService.queueSecretMessage.findMany({
-      where: {
-        chatId,
-        toUserIds: {
-          has: userId
-        }
-      },
-      orderBy: {
-        createdAt: "asc"
-      }
-    });
-
-    const baseMessages = queuedMessages.filter(
-      (message) => !message.whoCheckedIds.includes(userId)
-    );
-
-    if (baseMessages.length === 0) {
-      return [];
-    }
-
-    const senderIds = Array.from(
-      new Set(baseMessages.map((message) => message.fromUserId))
-    );
-
-    const sharedKeys = await this.prismaService.queueSharedSecretKey.findMany({
-      where: {
-        chatId,
-        toUserId: userId,
-        fromUserId: {
-          in: senderIds
-        }
-      }
-    });
-
-    const sharedKeyBySenderId = new Map(
-      sharedKeys.map((sharedKey) => [sharedKey.fromUserId, sharedKey])
-    );
-
-    return baseMessages.map((baseMessage) => {
-      const sharedKey = sharedKeyBySenderId.get(baseMessage.fromUserId);
-
-      return {
-        ...baseMessage,
-        ikPub: sharedKey?.ikPub ?? null,
-        ekPub: sharedKey?.ekPub ?? null,
-        usedOpk: sharedKey?.usedOpk ?? null,
-        ukm: baseMessage.ukm ?? sharedKey?.ukm ?? null
-      };
-    });
-  }
-
-  public async ackSecretMessages(
-    userId: string,
-    chatId: string,
-    messageIds: string[]
-  ) {
-    await this.cleanupExpiredSecretAttachments();
-    await this.ensureSecretChatAccess(userId, chatId);
-
-    const uniqueMessageIds = this.getUniqueIds(messageIds);
-    if (uniqueMessageIds.length === 0) {
-      return true;
-    }
-
-    const messages = await this.prismaService.queueSecretMessage.findMany({
+    await this.prismaService.queueSharedSecretKey.deleteMany({
       where: {
         id: {
-          in: uniqueMessageIds
+          in: uniqueSharedKeyIds
         },
         chatId,
-        toUserIds: {
-          has: userId
-        }
-      }
-    });
-
-    const unreadMessages = messages.filter(
-      (message) => !message.whoCheckedIds.includes(userId)
-    );
-
-    await this.prismaService.$transaction(async (tx) => {
-      for (const message of unreadMessages) {
-        const nextWhoCheckedIds = Array.from(
-          new Set([...message.whoCheckedIds, userId])
-        );
-
-        const updateResult = await tx.queueSecretMessage.updateMany({
-          where: {
-            id: message.id,
-            whoCheckedIds: {
-              equals: message.whoCheckedIds
-            }
-          },
-          data: {
-            whoCheckedIds: nextWhoCheckedIds
-          }
-        });
-
-        if (updateResult.count === 0) {
-          continue;
-        }
-
-        const updated = await tx.queueSecretMessage.findUnique({
-          where: { id: message.id }
-        });
-
-        if (!updated) {
-          continue;
-        }
-
-        if (updated.toUserIds.length === updated.whoCheckedIds.length) {
-          await tx.queueSecretMessage.deleteMany({
-            where: { id: updated.id }
-          });
-        }
+        toUserId: userId,
+        toSessionId: secretSessionId
       }
     });
 
     return true;
   }
 
-  public async sendPreKey(userId: string, input: PreKeyInput) {
-    const { ikPub, opkPubs, spkPub, spkSig } = input;
-
-    const preKey = await this.prismaService.preKey.upsert({
-      where: { userId },
-      update: { ikPub, opkPubs, spkPub, spkSig },
-      create: {
-        ikPub,
-        opkPubs,
-        spkPub,
-        spkSig,
-        userId,
-        indexOpkPub: 0
-      }
-    });
-
-    if (!preKey) {
-      throw new ConflictException("preKey not created");
-    }
-
-    const keys = await this.redisService.keys(`*`);
-    for (const key of keys) {
-      const sessionData = await this.redisService.get(key);
-      if (!sessionData) continue;
-
-      const session = JSON.parse(sessionData);
-      if (session.userId === userId && session.metadata) {
-        session.metadata.publicPreKey = {
-          ikPub,
-          spkPub,
-          splSig: spkSig,
-          opkPubs,
-          indexOpkPub: 0
-        };
-        await this.redisService.set(key, JSON.stringify(session));
-      }
-    }
-
-    return true;
-  }
-
-  public async sendSharedSecretKey(
+  public async sendSessionSecretMessage(
     fromUserId: string,
-    input: SharedSecretKeyInput
-  ) {
-    await this.cleanupExpiredSecretAttachments();
-
-    const chat = await this.ensureSecretChatSendAccess(fromUserId, input.chatId);
-    this.assertChatUsersExist(chat, [input.toUserId], fromUserId);
-
-    const {
-      chatId,
-      toUserId,
-      ukm,
-      iv,
-      encryptedKey,
-      sig,
-      ikPub,
-      ekPub,
-      groupId,
-      usedOpk
-    } = input;
-
-    const sharedSecretKey =
-      await this.prismaService.queueSharedSecretKey.create({
-        data: {
-          fromUserId,
-          chatId,
-          toUserId,
-          ikPub,
-          ukm,
-          iv,
-          encryptedKey,
-          sig,
-          ekPub,
-          groupId,
-          usedOpk
-        }
-      });
-
-    if (!sharedSecretKey) {
-      throw new ConflictException("shared secret key not created");
-    }
-
-    return sharedSecretKey;
-  }
-
-  public async sendSecretMessage(
-    fromUserId: string,
-    input: SendSecretMessageInput
+    input: SessionSecretMessageInput
   ) {
     await this.cleanupExpiredSecretAttachments();
 
     const {
       chatId,
       encryptedMessage,
-      groupId,
       iv,
       sig,
       toUserIds,
+      toSessionIds,
       ukm,
       isKey,
       secretAttachmentIds
     } = input;
 
+    const fromSession = await this.getOwnedSecretSession(
+      fromUserId,
+      input.fromSessionId
+    );
     const chat = await this.ensureSecretChatSendAccess(fromUserId, chatId);
     const uniqueRecipientIds = this.getUniqueIds(toUserIds);
-    this.assertChatUsersExist(chat, uniqueRecipientIds, fromUserId);
+    const uniqueRecipientSessionIds = this.getUniqueIds(toSessionIds);
+
+    this.assertSessionTargetUsersExist(chat, uniqueRecipientIds, fromUserId);
+    await this.assertTargetSessionsBelongToUsers(
+      uniqueRecipientIds,
+      uniqueRecipientSessionIds
+    );
 
     const uniqueAttachmentIds = this.getUniqueIds(secretAttachmentIds);
     const attachmentAllowedUserIds = this.getUniqueIds([
@@ -700,14 +615,17 @@ export class SecretService {
       const createdSecretMessage = await tx.queueSecretMessage.create({
         data: {
           fromUserId,
+          fromSessionId: fromSession.id,
           chatId,
           toUserIds: uniqueRecipientIds,
-          ukm,
+          toSessionIds: uniqueRecipientSessionIds,
+          checkedSessionIds: [],
+          ukm: ukm ?? null,
           iv,
           encryptedMessage,
           sig,
-          groupId,
-          isKey,
+          groupId: input.groupId ?? chat.groupId ?? SAVED_SECRET_GROUP_ID,
+          isKey: isKey ?? false,
           secretAttachmentIds: uniqueAttachmentIds
         }
       });
@@ -742,68 +660,193 @@ export class SecretService {
     });
 
     if (!secretMessage) {
-      throw new ConflictException("secret message not created");
+      throw new ConflictException("session secret message not created");
     }
 
     return secretMessage;
   }
 
-  public async updateSecretMessageForReader(
+  public async getSessionSecretMessages(
     userId: string,
     chatId: string,
-    messageId?: string
+    secretSessionId: string
   ) {
-    const where = {
-      chatId,
-      toUserIds: {
-        has: userId
+    await this.cleanupExpiredSecretAttachments();
+    await this.getOwnedSecretSession(userId, secretSessionId);
+    await this.ensureSecretChatAccess(userId, chatId);
+    await this.cleanupFullyCheckedSessionSecretMessages(chatId);
+
+    const queuedMessages = await this.prismaService.queueSecretMessage.findMany({
+      where: {
+        chatId,
+        toUserIds: {
+          has: userId
+        },
+        toSessionIds: {
+          has: secretSessionId
+        }
+      },
+      orderBy: {
+        createdAt: "asc"
       }
-    } as const;
+    });
 
-    const secretMessage = messageId
-      ? await this.prismaService.queueSecretMessage.findFirst({
-          where: {
-            ...where,
-            id: messageId
-          }
-        })
-      : await this.prismaService.queueSecretMessage.findFirst({
-          where,
-          orderBy: {
-            createdAt: "asc"
-          }
-        });
+    const baseMessages = queuedMessages.filter(
+      (message) => !message.checkedSessionIds.includes(secretSessionId)
+    );
 
-    if (!secretMessage) {
-      throw new ConflictException("secret message not found");
+    if (baseMessages.length === 0) {
+      return [];
     }
 
-    if (secretMessage.whoCheckedIds.includes(userId)) {
-      throw new ConflictException("secret message not found");
-    }
+    const senderSessionIds = Array.from(
+      new Set(
+        baseMessages
+          .map((message) => message.fromSessionId)
+          .filter((sessionId): sessionId is string => Boolean(sessionId))
+      )
+    );
 
-    await this.prismaService.queueSecretMessage.update({
-      where: { id: secretMessage.id },
-      data: {
-        whoCheckedIds: {
-          set: [...secretMessage.whoCheckedIds, userId]
+    const sharedKeys = await this.prismaService.queueSharedSecretKey.findMany({
+      where: {
+        chatId,
+        toUserId: userId,
+        toSessionId: secretSessionId,
+        fromSessionId: {
+          in: senderSessionIds
         }
       }
     });
 
-    const updated = await this.prismaService.queueSecretMessage.findUnique({
-      where: { id: secretMessage.id }
-    });
+    const sharedKeyBySenderSessionId = new Map(
+      sharedKeys.map((sharedKey) => [sharedKey.fromSessionId, sharedKey])
+    );
 
-    if (updated) {
-      if (updated.toUserIds.length === updated.whoCheckedIds.length) {
-        await this.prismaService.queueSecretMessage.delete({
-          where: { id: updated.id }
-        });
-      }
+    return baseMessages.map((baseMessage) => {
+      const sharedKey = baseMessage.fromSessionId
+        ? sharedKeyBySenderSessionId.get(baseMessage.fromSessionId)
+        : null;
+
+      return {
+        ...baseMessage,
+        ikPub: sharedKey?.ikPub ?? null,
+        ekPub: sharedKey?.ekPub ?? null,
+        usedOpk: sharedKey?.usedOpk ?? null,
+        ukm: baseMessage.ukm ?? sharedKey?.ukm ?? null
+      };
+    });
+  }
+
+  public async ackSessionSecretMessages(
+    userId: string,
+    chatId: string,
+    secretSessionId: string,
+    messageIds: string[]
+  ) {
+    await this.cleanupExpiredSecretAttachments();
+    await this.getOwnedSecretSession(userId, secretSessionId);
+    await this.ensureSecretChatAccess(userId, chatId);
+
+    const uniqueMessageIds = this.getUniqueIds(messageIds);
+    if (uniqueMessageIds.length === 0) {
+      return true;
     }
 
-    return updated ?? secretMessage;
+    const messages = await this.prismaService.queueSecretMessage.findMany({
+      where: {
+        id: {
+          in: uniqueMessageIds
+        },
+        chatId,
+        toUserIds: {
+          has: userId
+        },
+        toSessionIds: {
+          has: secretSessionId
+        }
+      }
+    });
+
+    const unreadMessages = messages.filter(
+      (message) => !message.checkedSessionIds.includes(secretSessionId)
+    );
+
+    await this.prismaService.$transaction(async (tx) => {
+      for (const message of unreadMessages) {
+        const nextCheckedSessionIds = Array.from(
+          new Set([...message.checkedSessionIds, secretSessionId])
+        );
+
+        const updateResult = await tx.queueSecretMessage.updateMany({
+          where: {
+            id: message.id,
+            checkedSessionIds: {
+              equals: message.checkedSessionIds
+            }
+          },
+          data: {
+            checkedSessionIds: nextCheckedSessionIds
+          }
+        });
+
+        if (updateResult.count === 0) {
+          continue;
+        }
+
+        const updated = await tx.queueSecretMessage.findUnique({
+          where: { id: message.id }
+        });
+
+        if (!updated) {
+          continue;
+        }
+
+        if (
+          updated.toSessionIds.length > 0 &&
+          updated.toSessionIds.every((id) => updated.checkedSessionIds.includes(id))
+        ) {
+          await tx.queueSecretMessage.deleteMany({
+            where: { id: updated.id }
+          });
+        }
+      }
+    });
+    await this.cleanupFullyCheckedSessionSecretMessages(chatId);
+
+    return true;
+  }
+
+  private async cleanupFullyCheckedSessionSecretMessages(chatId?: string) {
+    const messages = await this.prismaService.queueSecretMessage.findMany({
+      where: chatId ? { chatId } : undefined,
+      select: {
+        id: true,
+        toSessionIds: true,
+        checkedSessionIds: true
+      }
+    });
+
+    const fullyCheckedMessageIds = messages
+      .filter(
+        (message) =>
+          message.toSessionIds.length > 0 &&
+          message.toSessionIds.every((sessionId) =>
+            message.checkedSessionIds.includes(sessionId)
+          )
+      )
+      .map((message) => message.id);
+
+    if (fullyCheckedMessageIds.length === 0) {
+      return;
+    }
+
+    await this.prismaService.queueSecretMessage.deleteMany({
+      where: {
+        id: {
+          in: fullyCheckedMessageIds
+        }
+      }
+    });
   }
 
   private async ensureSecretChatAccess(userId: string, chatId: string) {
@@ -821,6 +864,10 @@ export class SecretService {
   private async ensureSecretChatSendAccess(userId: string, chatId: string) {
     const chat = await this.ensureSecretChatAccess(userId, chatId);
 
+    if (chat.isSaved) {
+      return chat;
+    }
+
     if (chat.isGroup) {
       await this.chatService.validatePermission(
         userId,
@@ -834,7 +881,7 @@ export class SecretService {
     return chat;
   }
 
-  private assertChatUsersExist(
+  private assertSessionTargetUsersExist(
     chat: SecretChatAccess,
     targetUserIds: string[],
     currentUserId: string
@@ -844,16 +891,310 @@ export class SecretService {
     }
 
     const memberIds = new Set(chat.members.map((member) => member.userId));
-    const invalidUserId = targetUserIds.find(
-      (targetUserId) =>
-        targetUserId === currentUserId || !memberIds.has(targetUserId)
-    );
+    const invalidUserId = targetUserIds.find((targetUserId) => {
+      if (!memberIds.has(targetUserId)) {
+        return true;
+      }
+
+      return !chat.isSaved && targetUserId === currentUserId;
+    });
 
     if (invalidUserId) {
       throw new BadRequestException(
         "Secret recipient list contains a user outside this chat"
       );
     }
+  }
+
+  private async assertTargetSessionsBelongToUsers(
+    targetUserIds: string[],
+    targetSessionIds: string[]
+  ) {
+    if (targetSessionIds.length === 0) {
+      throw new BadRequestException("Secret recipient sessions are required");
+    }
+
+    const targetUserIdSet = new Set(targetUserIds);
+    const sessions = await Promise.all(
+      targetSessionIds.map((sessionId) =>
+        this.getSecretSessionById(sessionId).catch(() => null)
+      )
+    );
+
+    const invalidSession = sessions.find(
+      (session) => !session || !targetUserIdSet.has(session.userId)
+    );
+
+    if (invalidSession !== undefined) {
+      throw new BadRequestException(
+        "Secret recipient sessions do not match recipient users"
+      );
+    }
+  }
+
+  private getSecretSessionKey(secretSessionId: string) {
+    return `${SECRET_SESSION_KEY_PREFIX}${secretSessionId}`;
+  }
+
+  private getSavedSecretPairingKey(pairingId: string) {
+    return `${SAVED_SECRET_PAIRING_KEY_PREFIX}${pairingId}`;
+  }
+
+  private getSavedSecretPairingWebKey(userId: string, webSecretSessionId: string) {
+    return `${SAVED_SECRET_PAIRING_WEB_KEY_PREFIX}${userId}:${webSecretSessionId}`;
+  }
+
+  private getSecretSessionTtlSeconds(platform: SecretSessionPlatform) {
+    return platform === SecretSessionPlatform.WEB
+      ? WEB_SECRET_SESSION_TTL_SECONDS
+      : MOBILE_SECRET_SESSION_TTL_SECONDS;
+  }
+
+  private normalizePublicPreKey(input: PreKeyInput): SecretSessionPublicPreKey {
+    return {
+      ikPub: input.ikPub,
+      spkPub: input.spkPub,
+      spkSig: input.spkSig,
+      opkPubs: input.opkPubs,
+      indexOpkPub: input.indexOpkPub ?? 0
+    };
+  }
+
+  private async saveSecretSession(
+    session: SecretSessionRecord,
+    ttlSeconds: number
+  ) {
+    await this.redisService.set(
+      this.getSecretSessionKey(session.id),
+      JSON.stringify(session),
+      "EX",
+      ttlSeconds
+    );
+  }
+
+  private getSavedSecretPairingTtlSeconds(pairing: SavedSecretPairingRecord) {
+    return Math.max(
+      1,
+      Math.ceil((new Date(pairing.expiresAt).getTime() - Date.now()) / 1000)
+    );
+  }
+
+  private async saveSavedSecretPairing(pairing: SavedSecretPairingRecord) {
+    const ttlSeconds = this.getSavedSecretPairingTtlSeconds(pairing);
+
+    await this.redisService.set(
+      this.getSavedSecretPairingKey(pairing.pairingId),
+      JSON.stringify(pairing),
+      "EX",
+      ttlSeconds
+    );
+
+    await this.redisService.set(
+      this.getSavedSecretPairingWebKey(
+        pairing.userId,
+        pairing.webSecretSessionId
+      ),
+      pairing.pairingId,
+      "EX",
+      ttlSeconds
+    );
+  }
+
+  private async deleteSavedSecretPairingForWebSession(
+    userId: string,
+    webSecretSessionId: string
+  ) {
+    const webKey = this.getSavedSecretPairingWebKey(userId, webSecretSessionId);
+    const pairingId = await this.redisService.get(webKey);
+
+    if (pairingId) {
+      await this.redisService.del(this.getSavedSecretPairingKey(pairingId));
+    }
+
+    await this.redisService.del(webKey);
+  }
+
+  private async getSecretSessionById(secretSessionId: string) {
+    const raw = await this.redisService.get(
+      this.getSecretSessionKey(secretSessionId)
+    );
+
+    if (!raw) {
+      throw new ConflictException("secret session not found");
+    }
+
+    const session = JSON.parse(raw) as SecretSessionRecord;
+    const expiresAt = new Date(session.expiresAt);
+
+    if (session.revokedAt || expiresAt <= new Date()) {
+      throw new ConflictException("secret session is not active");
+    }
+
+    return session;
+  }
+
+  private async getOwnedSecretSession(
+    userId: string,
+    secretSessionId: string
+  ) {
+    const session = await this.getSecretSessionById(secretSessionId);
+
+    if (session.userId !== userId) {
+      throw new ForbiddenException("secret session does not belong to user");
+    }
+
+    return session;
+  }
+
+  private async getOwnedOrTargetSecretSession(
+    userId: string,
+    secretSessionId: string
+  ) {
+    return this.getOwnedSecretSession(userId, secretSessionId);
+  }
+
+  private async findActiveSecretSessions(userIds?: string[]) {
+    const keys = await this.redisService.keys(`${SECRET_SESSION_KEY_PREFIX}*`);
+    const userIdSet = userIds ? new Set(userIds) : null;
+    const sessions: SecretSessionRecord[] = [];
+
+    for (const key of keys) {
+      const raw = await this.redisService.get(key);
+      if (!raw) continue;
+
+      try {
+        const session = JSON.parse(raw) as SecretSessionRecord;
+        if (session.revokedAt) continue;
+        if (new Date(session.expiresAt) <= new Date()) continue;
+        if (userIdSet && !userIdSet.has(session.userId)) continue;
+        sessions.push(session);
+      } catch {
+        continue;
+      }
+    }
+
+    return sessions;
+  }
+
+  private async findActiveSavedSecretPairings(userId: string) {
+    const keys = await this.redisService.keys(`${SAVED_SECRET_PAIRING_KEY_PREFIX}*`);
+    const pairings: SavedSecretPairingRecord[] = [];
+
+    for (const key of keys) {
+      if (key.startsWith(SAVED_SECRET_PAIRING_WEB_KEY_PREFIX)) continue;
+
+      const raw = await this.redisService.get(key);
+      if (!raw) continue;
+
+      try {
+        const pairing = this.normalizeSavedSecretPairing(
+          JSON.parse(raw) as SavedSecretPairingRecord
+        );
+        if (pairing.userId !== userId) continue;
+        if (new Date(pairing.expiresAt) <= new Date()) continue;
+        pairings.push(pairing);
+      } catch {
+        continue;
+      }
+    }
+
+    return pairings;
+  }
+
+  private async findActiveSavedSecretPairingForWebSession(
+    userId: string,
+    webSecretSessionId: string
+  ) {
+    const pairingId = await this.redisService.get(
+      this.getSavedSecretPairingWebKey(userId, webSecretSessionId)
+    );
+
+    if (!pairingId) return null;
+
+    try {
+      return await this.getSavedSecretPairing(userId, pairingId);
+    } catch {
+      return null;
+    }
+  }
+
+  private async getSavedSecretPairing(userId: string, pairingId: string) {
+    const raw = await this.redisService.get(
+      this.getSavedSecretPairingKey(pairingId)
+    );
+
+    if (!raw) {
+      throw new ConflictException("saved secret pairing not found");
+    }
+
+    const pairing = this.normalizeSavedSecretPairing(
+      JSON.parse(raw) as SavedSecretPairingRecord
+    );
+
+    if (pairing.userId !== userId) {
+      throw new ForbiddenException("saved secret pairing does not belong to user");
+    }
+
+    if (new Date(pairing.expiresAt) <= new Date()) {
+      throw new ConflictException("saved secret pairing expired");
+    }
+
+    return pairing;
+  }
+
+  private toSecretSessionModel(session: SecretSessionRecord) {
+    return {
+      ...session,
+      createdAt: new Date(session.createdAt),
+      expiresAt: new Date(session.expiresAt),
+      revokedAt: session.revokedAt ? new Date(session.revokedAt) : null
+    };
+  }
+
+  private normalizeSavedSecretPairing(pairing: SavedSecretPairingRecord) {
+    if (pairing.createdAt) return pairing;
+
+    return {
+      ...pairing,
+      createdAt: new Date(
+        new Date(pairing.expiresAt).getTime() -
+          SAVED_SECRET_PAIRING_TTL_SECONDS * 1000
+      ).toISOString()
+    };
+  }
+
+  private async toSavedSecretPairingModel(pairing: SavedSecretPairingRecord) {
+    const normalizedPairing = this.normalizeSavedSecretPairing(pairing);
+    const qrPayload = this.buildSavedSecretPairingQrPayload(normalizedPairing);
+    const qrCodeUrl = await QRCode.toDataURL(qrPayload, {
+      margin: 1,
+      width: 320
+    });
+
+    return {
+      ...normalizedPairing,
+      qrPayload,
+      qrCodeUrl,
+      createdAt: new Date(normalizedPairing.createdAt),
+      expiresAt: new Date(normalizedPairing.expiresAt),
+      confirmedAt: normalizedPairing.confirmedAt
+        ? new Date(normalizedPairing.confirmedAt)
+        : null
+    };
+  }
+
+  private buildSafetyCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  private buildSavedSecretPairingQrPayload(pairing: SavedSecretPairingRecord) {
+    const params = new URLSearchParams({
+      pairingId: pairing.pairingId,
+      challenge: pairing.challenge,
+      safetyCode: pairing.safetyCode
+    });
+
+    return `${SAVED_SECRET_PAIRING_QR_SCHEME}?${params.toString()}`;
   }
 
   private async assertCanAccessStagedAttachment(

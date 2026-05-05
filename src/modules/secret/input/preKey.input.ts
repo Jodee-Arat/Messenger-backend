@@ -1,5 +1,5 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 @InputType()
 export class PreKeyInput {
@@ -18,4 +18,9 @@ export class PreKeyInput {
   @Field(() => [String])
   @IsArray()
   public opkPubs: string[];
+
+  @Field(() => Number, { nullable: true })
+  @IsNumber()
+  @IsOptional()
+  public indexOpkPub?: number | null;
 }

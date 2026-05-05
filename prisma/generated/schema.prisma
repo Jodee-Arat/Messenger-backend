@@ -40,7 +40,7 @@ model User {
   files             FileMessage[]
   secretAttachments SecretAttachment[] @relation("SecretAttachmentUploader")
 
-  preKeys PreKey?
+  ownedSavedChats Chat[] @relation("SavedChatOwner")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -96,8 +96,6 @@ model ChatMessage {
 
   chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @map("chat_id")
-
-  readCount String? @map("read_count")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -217,7 +215,11 @@ model Chat {
   isDeleted   Boolean @default(false)
   description String?
   isSecret    Boolean @default(false) @map("is_secret")
+  isSaved     Boolean @default(false) @map("is_saved")
   requireTotp Boolean @default(false) @map("require_totp")
+
+  ownerId String? @map("owner_id")
+  owner   User?   @relation("SavedChatOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
   groupId String? @map("group_id")
   group   Group?  @relation("GroupChats", fields: [groupId], references: [id])
@@ -243,6 +245,8 @@ model Chat {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([ownerId, isSaved])
+  @@index([ownerId])
   @@map("chats")
 }
 
@@ -384,26 +388,6 @@ model GroupRoleMember {
   @@map("group_role_members")
 }
 
-//Encryption
-model PreKey {
-  id String @id @default(uuid())
-
-  ikPub       String   @map("ik_pub")
-  spkPub      String   @map("spk_pub")
-  spkSig      String   @map("spk_sig")
-  opkPubs     String[] @map("opk_pub")
-  indexOpkPub Int      @map("index_opk_pub")
-
-  userId String @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId])
-  @@map("pre_keys")
-}
-
 model QueueSecretMessage {
   id String @id @default(uuid())
 
@@ -416,6 +400,10 @@ model QueueSecretMessage {
   toUserIds  String[] @map("to_user_ids")
 
   whoCheckedIds String[] @map("who_checked_ids")
+
+  fromSessionId     String?  @map("from_session_id")
+  toSessionIds      String[] @default([]) @map("to_session_ids")
+  checkedSessionIds String[] @default([]) @map("checked_session_ids")
 
   ukm String? @map("ukm")
 
@@ -463,6 +451,9 @@ model QueueSharedSecretKey {
 
   fromUserId String @map("from_user_id")
   toUserId   String @map("to_user_id")
+
+  fromSessionId String? @map("from_session_id")
+  toSessionId   String? @map("to_session_id")
 
   ikPub String @map("ik_pub")
 

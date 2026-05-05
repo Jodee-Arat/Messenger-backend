@@ -32,6 +32,12 @@ export class ChatModel implements Chat {
   isSecret: boolean;
 
   @Field(() => Boolean)
+  isSaved: boolean;
+
+  @Field(() => String, { nullable: true })
+  ownerId: string | null;
+
+  @Field(() => Boolean)
   requireTotp: boolean;
 
   @Field(() => [ChatMemberModel])

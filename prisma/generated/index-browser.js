@@ -155,7 +155,6 @@ exports.Prisma.ChatMessageScalarFieldEnum = {
   isReply: 'isReply',
   userId: 'userId',
   chatId: 'chatId',
-  readCount: 'readCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -217,7 +216,9 @@ exports.Prisma.ChatScalarFieldEnum = {
   isDeleted: 'isDeleted',
   description: 'description',
   isSecret: 'isSecret',
+  isSaved: 'isSaved',
   requireTotp: 'requireTotp',
+  ownerId: 'ownerId',
   groupId: 'groupId',
   lastMessageId: 'lastMessageId',
   pinnedMessageId: 'pinnedMessageId',
@@ -291,18 +292,6 @@ exports.Prisma.GroupRoleMemberScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.PreKeyScalarFieldEnum = {
-  id: 'id',
-  ikPub: 'ikPub',
-  spkPub: 'spkPub',
-  spkSig: 'spkSig',
-  opkPubs: 'opkPubs',
-  indexOpkPub: 'indexOpkPub',
-  userId: 'userId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
 exports.Prisma.QueueSecretMessageScalarFieldEnum = {
   id: 'id',
   groupId: 'groupId',
@@ -311,6 +300,9 @@ exports.Prisma.QueueSecretMessageScalarFieldEnum = {
   fromUserId: 'fromUserId',
   toUserIds: 'toUserIds',
   whoCheckedIds: 'whoCheckedIds',
+  fromSessionId: 'fromSessionId',
+  toSessionIds: 'toSessionIds',
+  checkedSessionIds: 'checkedSessionIds',
   ukm: 'ukm',
   iv: 'iv',
   encryptedMessage: 'encryptedMessage',
@@ -340,6 +332,8 @@ exports.Prisma.QueueSharedSecretKeyScalarFieldEnum = {
   chatId: 'chatId',
   fromUserId: 'fromUserId',
   toUserId: 'toUserId',
+  fromSessionId: 'fromSessionId',
+  toSessionId: 'toSessionId',
   ikPub: 'ikPub',
   ekPub: 'ekPub',
   usedOpk: 'usedOpk',
@@ -420,7 +414,6 @@ exports.Prisma.ModelName = {
   GroupRole: 'GroupRole',
   ChatRoleMember: 'ChatRoleMember',
   GroupRoleMember: 'GroupRoleMember',
-  PreKey: 'PreKey',
   QueueSecretMessage: 'QueueSecretMessage',
   SecretAttachment: 'SecretAttachment',
   QueueSharedSecretKey: 'QueueSharedSecretKey'

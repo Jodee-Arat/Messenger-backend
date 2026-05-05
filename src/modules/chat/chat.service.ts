@@ -28,6 +28,7 @@ import { RoleService } from "./role/role.service";
 type ChatAccessTarget = {
   isGroup: boolean;
   isSecret?: boolean;
+  isSaved?: boolean;
   members: Array<{ userId: string }>;
 };
 
@@ -230,6 +231,7 @@ export class ChatService {
       skip: skip ?? 0,
       where: {
         isDeleted: false,
+        isSaved: false,
         groupId,
         group: {
           members: {
@@ -297,6 +299,7 @@ export class ChatService {
       skip: skip ?? 0,
       where: {
         isDeleted: false,
+        isSaved: false,
         OR: [
           {
             groupId: null
@@ -410,6 +413,7 @@ export class ChatService {
         },
         pinnedMessage: {
           include: {
+            chat: true,
             files: true,
             user: true,
             repliedToLinks: {
@@ -429,6 +433,7 @@ export class ChatService {
             user: true,
             pinnedMessage: {
               include: {
+                chat: true,
                 files: true,
                 user: true,
                 repliedToLinks: {
@@ -968,6 +973,7 @@ export class ChatService {
         id: true,
         isGroup: true,
         isSecret: true,
+        isSaved: true,
         groupId: true,
         members: {
           select: {
@@ -1429,6 +1435,7 @@ export class ChatService {
         id: true,
         isGroup: true,
         isSecret: true,
+        isSaved: true,
         groupId: true,
         members: {
           select: {

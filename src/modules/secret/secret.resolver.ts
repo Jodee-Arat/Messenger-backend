@@ -8,14 +8,18 @@ import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
 import { PreKeyInput } from "./input/preKey.input";
-import { SendSecretMessageInput } from "./input/send-secret-message.input";
-import { SharedSecretKeyInput } from "./input/shared-secret-key.input";
+import { RegisterSecretSessionInput } from "./input/register-secret-session.input";
+import { SessionSecretMessageInput } from "./input/session-secret-message.input";
+import { SessionSharedSecretKeyInput } from "./input/session-shared-secret-key.input";
 import { UploadSecretAttachmentInput } from "./input/upload-secret-attachment.input";
-import { PreKeyModel } from "./models/preKey.model";
+import { ChatModel } from "../chat/models/chat.model";
 import { QueueSecretMessageModel } from "./models/queue-secret-message.model";
 import { QueueSharedSecretKeyModel } from "./models/queue-shared-secret-key.model";
+import { SavedSecretPairingModel } from "./models/saved-secret-pairing.model";
 import { SecretAttachmentDownloadModel } from "./models/secret-attachment-download.model";
 import { SecretAttachmentModel } from "./models/secret-attachment.model";
+import { SecretSessionModel } from "./models/secret-session.model";
+import { SecretSessionPreKeyModel } from "./models/secret-session-pre-key.model";
 import { SecretService } from "./secret.service";
 
 @Resolver("Secret")
@@ -27,78 +31,165 @@ export class SecretResolver {
   }
 
   @Authorization()
-  @Query(() => [PreKeyModel], { name: "getPreKeys" })
-  public async getPreKeys(
-    @Authorized("id") fromUserId: string,
-    @Args("chatId") chatId: string
+  @Mutation(() => SecretSessionModel, { name: "registerSecretSession" })
+  public async registerSecretSession(
+    @Authorized("id") userId: string,
+    @Args("data") input: RegisterSecretSessionInput
   ) {
-    return await this.secretService.getPreKeys(chatId, fromUserId);
+    return this.secretService.registerSecretSession(userId, input);
   }
 
   @Authorization()
-  @Query(() => [QueueSharedSecretKeyModel], { name: "getSharedSecretKey" })
-  public async getSharedSecretKey(
+  @Mutation(() => SecretSessionModel, { name: "refreshSecretSession" })
+  public async refreshSecretSession(
+    @Authorized("id") userId: string,
+    @Args("secretSessionId") secretSessionId: string,
+    @Args("publicPreKey") publicPreKey: PreKeyInput
+  ) {
+    return this.secretService.refreshSecretSession(
+      userId,
+      secretSessionId,
+      publicPreKey
+    );
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "revokeSecretSession" })
+  public async revokeSecretSession(
+    @Authorized("id") userId: string,
+    @Args("secretSessionId") secretSessionId: string
+  ) {
+    return this.secretService.revokeSecretSession(userId, secretSessionId);
+  }
+
+  @Authorization()
+  @Query(() => [SecretSessionModel], { name: "findMySecretSessions" })
+  public async findMySecretSessions(@Authorized("id") userId: string) {
+    return this.secretService.findMySecretSessions(userId);
+  }
+
+  @Authorization()
+  @Query(() => [SecretSessionPreKeyModel], {
+    name: "getSecretSessionPreKeys"
+  })
+  public async getSecretSessionPreKeys(
     @Authorized("id") userId: string,
     @Args("chatId") chatId: string
   ) {
-    return await this.secretService.getSharedSecretKey(userId, chatId);
+    return this.secretService.getSecretSessionPreKeys(userId, chatId);
   }
 
   @Authorization()
-  @Query(() => Boolean, { name: "hasSharedSecretKey" })
-  public async hasSharedSecretKey(
+  @Query(() => ChatModel, { name: "findOrCreateSavedSecretChat" })
+  public async findOrCreateSavedSecretChat(@Authorized("id") userId: string) {
+    return this.secretService.findOrCreateSavedSecretChat(userId);
+  }
+
+  @Authorization()
+  @Mutation(() => SavedSecretPairingModel, {
+    name: "createSavedSecretPairing"
+  })
+  public async createSavedSecretPairing(
     @Authorized("id") userId: string,
-    @Args("chatId") chatId: string
+    @Args("webSecretSessionId") webSecretSessionId: string
   ) {
-    return await this.secretService.hasSharedSecretKey(userId, chatId);
+    return this.secretService.createSavedSecretPairing(
+      userId,
+      webSecretSessionId
+    );
   }
 
   @Authorization()
-  @Mutation(() => Boolean, { name: "ackSharedSecretKeys" })
-  public async ackSharedSecretKeys(
+  @Query(() => SavedSecretPairingModel, {
+    name: "findMyPendingSavedSecretPairing",
+    nullable: true
+  })
+  public async findMyPendingSavedSecretPairing(@Authorized("id") userId: string) {
+    return this.secretService.findMyPendingSavedSecretPairing(userId);
+  }
+
+  @Authorization()
+  @Mutation(() => SavedSecretPairingModel, {
+    name: "confirmSavedSecretPairing"
+  })
+  public async confirmSavedSecretPairing(
+    @Authorized("id") userId: string,
+    @Args("pairingId") pairingId: string,
+    @Args("mobileSecretSessionId") mobileSecretSessionId: string,
+    @Args("challenge", { nullable: true }) challenge?: string,
+    @Args("safetyCode", { nullable: true }) safetyCode?: string
+  ) {
+    return this.secretService.confirmSavedSecretPairing(
+      userId,
+      pairingId,
+      mobileSecretSessionId,
+      {
+        challenge,
+        safetyCode
+      }
+    );
+  }
+
+  @Authorization()
+  @Query(() => [QueueSharedSecretKeyModel], {
+    name: "getSessionSharedSecretKeys"
+  })
+  public async getSessionSharedSecretKeys(
     @Authorized("id") userId: string,
     @Args("chatId") chatId: string,
-    @Args("sharedKeyIds", { type: () => [String] }) sharedKeyIds: string[]
+    @Args("secretSessionId") secretSessionId: string
   ) {
-    return await this.secretService.ackSharedSecretKeys(
+    return this.secretService.getSessionSharedSecretKeys(
       userId,
       chatId,
+      secretSessionId
+    );
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "ackSessionSharedSecretKeys" })
+  public async ackSessionSharedSecretKeys(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("secretSessionId") secretSessionId: string,
+    @Args("sharedKeyIds", { type: () => [String] }) sharedKeyIds: string[]
+  ) {
+    return this.secretService.ackSessionSharedSecretKeys(
+      userId,
+      chatId,
+      secretSessionId,
       sharedKeyIds
     );
   }
 
   @Authorization()
-  @Query(() => QueueSecretMessageModel, {
-    name: "getSecretMessage"
-  })
-  public async getSecretMessage(
-    @Authorized("id") userId: string,
-    @Args("chatId") chatId: string
-  ) {
-    return await this.secretService.getSecretMessage(userId, chatId);
-  }
-
-  @Authorization()
   @Query(() => [QueueSecretMessageModel], {
-    name: "getSecretMessages"
+    name: "getSessionSecretMessages"
   })
-  public async getSecretMessages(
-    @Authorized("id") userId: string,
-    @Args("chatId") chatId: string
-  ) {
-    return await this.secretService.getSecretMessages(userId, chatId);
-  }
-
-  @Authorization()
-  @Mutation(() => Boolean, { name: "ackSecretMessages" })
-  public async ackSecretMessages(
+  public async getSessionSecretMessages(
     @Authorized("id") userId: string,
     @Args("chatId") chatId: string,
-    @Args("messageIds", { type: () => [String] }) messageIds: string[]
+    @Args("secretSessionId") secretSessionId: string
   ) {
-    return await this.secretService.ackSecretMessages(
+    return this.secretService.getSessionSecretMessages(
       userId,
       chatId,
+      secretSessionId
+    );
+  }
+
+  @Authorization()
+  @Mutation(() => Boolean, { name: "ackSessionSecretMessages" })
+  public async ackSessionSecretMessages(
+    @Authorized("id") userId: string,
+    @Args("chatId") chatId: string,
+    @Args("secretSessionId") secretSessionId: string,
+    @Args("messageIds", { type: () => [String] }) messageIds: string[]
+  ) {
+    return this.secretService.ackSessionSecretMessages(
+      userId,
+      chatId,
+      secretSessionId,
       messageIds
     );
   }
@@ -143,48 +234,47 @@ export class SecretResolver {
   }
 
   @Authorization()
-  @Mutation(() => Boolean, { name: "sendPreKey" })
-  public async sendPreKey(
-    @Authorized("id") userId: string,
-    @Args("data") input: PreKeyInput
-  ) {
-    return await this.secretService.sendPreKey(userId, input);
-  }
-
-  @Authorization()
-  @Mutation(() => QueueSharedSecretKeyModel, { name: "sendSharedSecretKey" })
-  public async sendSharedSecretKey(
+  @Mutation(() => QueueSharedSecretKeyModel, {
+    name: "sendSessionSharedSecretKey"
+  })
+  public async sendSessionSharedSecretKey(
     @Authorized("id") fromUserId: string,
-    @Args("data") input: SharedSecretKeyInput
+    @Args("data") input: SessionSharedSecretKeyInput
   ) {
-    const sharedSecretKey = await this.secretService.sendSharedSecretKey(
+    const sharedSecretKey = await this.secretService.sendSessionSharedSecretKey(
       fromUserId,
       input
     );
 
-    await this.pubSub.publish(`ADD_SHARED_SECRET_KEY_${input.toUserId}`, {
-      sharedKey: sharedSecretKey
-    });
+    await this.pubSub.publish(
+      `ADD_SESSION_SHARED_SECRET_KEY_${input.toSessionId}`,
+      {
+        addSessionSharedSecretKey: sharedSecretKey
+      }
+    );
 
     return sharedSecretKey;
   }
 
   @Authorization()
-  @Mutation(() => QueueSecretMessageModel, { name: "sendSecretMessage" })
-  public async sendSecretMessage(
+  @Mutation(() => QueueSecretMessageModel, {
+    name: "sendSessionSecretMessage"
+  })
+  public async sendSessionSecretMessage(
     @Authorized("id") fromUserId: string,
-    @Args("data") input: SendSecretMessageInput
+    @Args("data") input: SessionSecretMessageInput
   ) {
-    const secretMessage = await this.secretService.sendSecretMessage(
+    const secretMessage = await this.secretService.sendSessionSecretMessage(
       fromUserId,
       input
     );
 
-    for (const recipientUserId of Array.from(new Set(secretMessage.toUserIds))) {
-      await this.pubSub.publish(`ADD_SECRET_MESSAGE_${recipientUserId}`, {
-        addSecretMessage: secretMessage,
-        recipientUserId,
-        self: this
+    for (const recipientSessionId of Array.from(
+      new Set(secretMessage.toSessionIds)
+    )) {
+      await this.pubSub.publish(`ADD_SESSION_SECRET_MESSAGE_${recipientSessionId}`, {
+        addSessionSecretMessage: secretMessage,
+        recipientSessionId
       });
     }
 
@@ -193,35 +283,45 @@ export class SecretResolver {
 
   @Authorization()
   @Subscription(() => QueueSharedSecretKeyModel, {
-    name: "addSharedSecretKey",
+    name: "addSessionSharedSecretKey",
     nullable: true,
     filter: (payload, variables) => {
-      return payload.sharedKey.toUserId === variables.userId;
+      return (
+        payload.addSessionSharedSecretKey.toUserId === variables.userId &&
+        payload.addSessionSharedSecretKey.toSessionId ===
+          variables.secretSessionId
+      );
     }
   })
-  public addSharedSecretKey(
+  public addSessionSharedSecretKey(
     @Authorized("id") authorizedUserId: string,
-    @Args("userId") userId: string
+    @Args("userId") userId: string,
+    @Args("secretSessionId") secretSessionId: string
   ) {
     this.assertAuthorizedSubscriptionUser(authorizedUserId, userId);
     return this.pubSub.asyncIterableIterator(
-      `ADD_SHARED_SECRET_KEY_${authorizedUserId}`
+      `ADD_SESSION_SHARED_SECRET_KEY_${secretSessionId}`
     );
   }
 
   @Authorization()
   @Subscription(() => QueueSecretMessageModel, {
-    name: "addSecretMessage",
-    filter: async (payload, variables) =>
-      payload.recipientUserId === variables.userId
+    name: "addSessionSecretMessage",
+    filter: (payload, variables) => {
+      return (
+        payload.addSessionSecretMessage.toUserIds.includes(variables.userId) &&
+        payload.recipientSessionId === variables.secretSessionId
+      );
+    }
   })
-  public addSecretMessage(
+  public addSessionSecretMessage(
     @Authorized("id") authorizedUserId: string,
-    @Args("userId") userId: string
+    @Args("userId") userId: string,
+    @Args("secretSessionId") secretSessionId: string
   ) {
     this.assertAuthorizedSubscriptionUser(authorizedUserId, userId);
     return this.pubSub.asyncIterableIterator(
-      `ADD_SECRET_MESSAGE_${authorizedUserId}`
+      `ADD_SESSION_SECRET_MESSAGE_${secretSessionId}`
     );
   }
 

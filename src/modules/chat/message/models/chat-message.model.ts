@@ -43,9 +43,6 @@ export class ChatMessageModel implements ChatMessage {
   @Field(() => [ChatMessageReplyModel], { nullable: "itemsAndList" })
   repliedToLinks: ChatMessageReplyModel[];
 
-  @Field({ nullable: true })
-  readCount: string | null;
-
   @Field(() => UserModel)
   user: UserModel;
 

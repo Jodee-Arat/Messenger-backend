@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "./generated"
@@ -10,28 +9,25 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  username      String @unique
-  bio          String?
-  email     String   @unique
+  username  String  @unique
+  bio       String?
+  email     String  @unique
   password  String
   avatarUrl String? @map("avatar_url")
 
-  totpSecret String? @map("totp_secret")
+  totpSecret    String? @map("totp_secret")
   isTotpEnabled Boolean @default(false) @map("is_totp_enabled")
 
-  
-  friendsInitiated  Friendship[] @relation("UserFriends")
+  friendsInitiated Friendship[] @relation("UserFriends")
 
-  
-  friendsReceived   Friendship[] @relation("FriendOf")
+  friendsReceived Friendship[] @relation("FriendOf")
 
-
-  isDeactivated Boolean @default(false) @map("is_deactivated")
+  isDeactivated Boolean   @default(false) @map("is_deactivated")
   deactivatedAt DateTime? @map("deactivated_at")
 
-  messages     ChatMessage[] 
+  messages     ChatMessage[]
 
   draftMessages DraftMessage[]
 
@@ -41,10 +37,10 @@ model User {
 
   pinnedChats PinnedChat[]
 
-  files      FileMessage[]
+  files             FileMessage[]
   secretAttachments SecretAttachment[] @relation("SecretAttachmentUploader")
 
-  preKeys     PreKey?
+  ownedSavedChats Chat[]  @relation("SavedChatOwner")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -53,280 +49,275 @@ model User {
 }
 
 model Friendship {
-  id        String   @id @default(cuid())
+  id        String               @id @default(cuid())
   // инициатор
-  userId    String   @map("user_id")
+  userId    String               @map("user_id")
   // получатель
-  friendId  String   @map("friend_id")
+  friendId  String               @map("friend_id")
   status    FriendshipStatusEnum @default(PENDING)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime             @default(now()) @map("created_at")
+  updatedAt DateTime             @updatedAt @map("updated_at")
 
-  
-  user   User @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
-  
+  user User @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
+
   friend User @relation("FriendOf", fields: [friendId], references: [id], onDelete: Cascade)
 
   @@unique([userId, friendId])
   @@map("friendships")
 }
 
-
 model ChatMessage {
-  id          String      @id @default(uuid())
+  id String @id @default(uuid())
 
-  text        String?     
-      
-  isStarted   Boolean     @default(false) @map("is_started")
-  isEdited    Boolean     @default(false) @map("is_edited")
-  isDeleted   Boolean     @default(false) @map("is_deleted")
-  isForwarded Boolean     @default(false) @map("is_forwarded")
-  isReply    Boolean     @default(false) @map("is_reply")
+  text String?
 
-  files      FileMessage[] @relation("MessageFiles")
+  isStarted   Boolean @default(false) @map("is_started")
+  isEdited    Boolean @default(false) @map("is_edited")
+  isDeleted   Boolean @default(false) @map("is_deleted")
+  isForwarded Boolean @default(false) @map("is_forwarded")
+  isReply     Boolean @default(false) @map("is_reply")
+
+  files FileMessage[] @relation("MessageFiles")
 
   // Сообщения, которые являются ответами на это сообщение (обратная связь)
-  replies     ChatMessageReply[] @relation("ReplyLinks")
+  replies        ChatMessageReply[] @relation("ReplyLinks")
   // Связи, где это сообщение — ответ
   repliedToLinks ChatMessageReply[] @relation("RepliesRelation")
 
   lastMessageForChat Chat? @relation("LastMessage")
 
-   pinnedInChat  Chat?  @relation("PinnedMessage")
+  pinnedInChat    Chat?        @relation("PinnedMessage")
   pinnedByMembers ChatMember[] @relation("MemberPinnedMessage")
 
   repliedFromDrafts DraftMessageReply[]
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String       @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 
-  chat      Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    String       @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @map("chat_id")
 
-  readCount String? @map("read_count")
-
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("chat_messages")
 }
 
 model ChatMessageReply {
-  id          String      @id @default(uuid())
-  
+  id String @id @default(uuid())
+
   replyId     String @map("reply_id")
   repliedToId String @map("replied_to_id")
 
   // Сообщение-ответ (reply)
-  reply       ChatMessage @relation("RepliesRelation", fields: [replyId], references: [id], onDelete: Cascade)
+  reply     ChatMessage @relation("RepliesRelation", fields: [replyId], references: [id], onDelete: Cascade)
   // Сообщение, на которое отвечают (repliedTo)
-  repliedTo   ChatMessage @relation("ReplyLinks", fields: [repliedToId], references: [id], onDelete: Cascade)
-
+  repliedTo ChatMessage @relation("ReplyLinks", fields: [repliedToId], references: [id], onDelete: Cascade)
 
   @@unique([replyId, repliedToId])
   @@map("chat_messages_reply")
 }
 
 model DraftMessage {
-  id          String      @id @default(uuid())
-  text        String?     
-  isForwarded Boolean     @default(false) @map("is_forwarded")
-  
+  id          String  @id @default(uuid())
+  text        String?
+  isForwarded Boolean @default(false) @map("is_forwarded")
 
-  editId     String?     @map("edit_id")
+  editId String? @map("edit_id")
 
-  files       FileMessage[]
-  
-  filesEditId String[]    @default([]) @map("files_edit_id")
+  files FileMessage[]
+
+  filesEditId String[] @default([]) @map("files_edit_id")
 
   repliedToLinks DraftMessageReply[]
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String       @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 
-  chat        Chat         @relation(fields: [chatId], references: [id])
-  chatId      String       @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String @map("chat_id")
 
-  
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("draft_messages")
 }
 
 model DraftMessageReply {
-  id              String         @id @default(uuid())
+  id String @id @default(uuid())
 
-  draftMessage    DraftMessage   @relation(fields: [draftMessageId], references: [id], onDelete: Cascade)
-  draftMessageId  String         @map("draft_message_id")
+  draftMessage   DraftMessage @relation(fields: [draftMessageId], references: [id], onDelete: Cascade)
+  draftMessageId String       @map("draft_message_id")
 
-  repliedTo       ChatMessage    @relation(fields: [repliedToId], references: [id], onDelete: Cascade)
-  repliedToId     String         @map("replied_to_id")
+  repliedTo   ChatMessage @relation(fields: [repliedToId], references: [id], onDelete: Cascade)
+  repliedToId String      @map("replied_to_id")
 
+  @@unique([draftMessageId, repliedToId])
   @@map("draft_message_replies")
-  @@unique([draftMessageId, repliedToId]) 
 }
 
 model FileMessage {
-  id          String      @id @default(uuid())
+  id String @id @default(uuid())
 
-  fileUrl     String
-  fileName   String
-  fileFullName   String
-  fileSize    String
-  fileFormat  String
+  fileUrl      String
+  fileName     String
+  fileFullName String
+  fileSize     String
+  fileFormat   String
 
-  chatMessage     ChatMessage?   @relation("MessageFiles", fields: [chatMessageId], references: [id], onDelete: Cascade)
-  chatMessageId   String? @map("chat_message_id")  
+  chatMessage   ChatMessage? @relation("MessageFiles", fields: [chatMessageId], references: [id], onDelete: Cascade)
+  chatMessageId String?      @map("chat_message_id")
 
   draftMessage   DraftMessage? @relation(fields: [draftMessageId], references: [id], onDelete: Cascade)
-  draftMessageId String?       @map("draft_message_id")  
+  draftMessageId String?       @map("draft_message_id")
 
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String       @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 
-  chat      Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    String       @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @map("chat_id")
 
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("file_messages")
 }
 
 model Group {
-  id         String         @id @default(uuid())
-  groupName   String        @map("group_name")
-  avatarUrl   String?        @map("avatar_url")
-  isDeleted   Boolean        @default(false)
+  id          String  @id @default(uuid())
+  groupName   String  @map("group_name")
+  avatarUrl   String? @map("avatar_url")
+  isDeleted   Boolean @default(false)
   description String?
 
-  members     GroupMember[]   @relation("GroupMembers")
+  members GroupMember[] @relation("GroupMembers")
 
-  chats       Chat[]         @relation("GroupChats")
+  chats Chat[] @relation("GroupChats")
 
   // groupAdmin  User?         @relation(fields: [groupAdminId], references: [id], onDelete: Cascade)
   // groupAdminId String?      @map("group_admin_id")
   // creator     User         @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   // creatorId   String        @map("creator_id")
 
-  roles      GroupRole[] 
+  roles GroupRole[]
 
-
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("groups")
 }
 
 model Chat {
-  id          String         @id @default(uuid())
-  chatName        String?     @map("chat_name")
-  isGroup     Boolean        @default(false)
-  avatarUrl   String?     @map("avatar_url")
-  isDeleted   Boolean        @default(false)
+  id          String  @id @default(uuid())
+  chatName    String? @map("chat_name")
+  isGroup     Boolean @default(false)
+  avatarUrl   String? @map("avatar_url")
+  isDeleted   Boolean @default(false)
   description String?
-  isSecret    Boolean        @default(false) @map("is_secret")
-  requireTotp Boolean        @default(false) @map("require_totp")
+  isSecret    Boolean @default(false) @map("is_secret")
+  isSaved     Boolean @default(false) @map("is_saved")
+  requireTotp Boolean @default(false) @map("require_totp")
 
+  ownerId String? @map("owner_id")
+  owner   User?   @relation("SavedChatOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
-  groupId   String? @map("group_id")
-  group     Group?   @relation("GroupChats", fields: [groupId], references: [id])
+  groupId String? @map("group_id")
+  group   Group?  @relation("GroupChats", fields: [groupId], references: [id])
 
-  lastMessageId  String?     @unique @map("last_message_id")
-  lastMessage    ChatMessage? @relation("LastMessage", fields: [lastMessageId], references: [id])
+  lastMessageId String?      @unique @map("last_message_id")
+  lastMessage   ChatMessage? @relation("LastMessage", fields: [lastMessageId], references: [id])
 
-  pinnedMessage ChatMessage? @relation("PinnedMessage", fields: [pinnedMessageId], references: [id])
-  pinnedMessageId String? @unique @map("pinned_message_id")
+  pinnedMessage   ChatMessage? @relation("PinnedMessage", fields: [pinnedMessageId], references: [id])
+  pinnedMessageId String?      @unique @map("pinned_message_id")
 
   pinnedByUser PinnedChat[]
 
+  draftMessages DraftMessage[]
 
-  draftMessages DraftMessage[] 
-
-
-  messages    ChatMessage[] 
-  members     ChatMember[]
-  files      FileMessage[]
+  messages          ChatMessage[]
+  members           ChatMember[]
+  files             FileMessage[]
   secretAttachments SecretAttachment[]
-  roles      ChatRole[]
+  roles             ChatRole[]
 
   lastMessageAt DateTime? @map("last_message_at")
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@unique([ownerId, isSaved])
+  @@index([ownerId])
   @@map("chats")
 }
 
 model PinnedChat {
-  id        String   @id @default(uuid())
+  id String @id @default(uuid())
 
   userId String
-  user User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   chatId String
-  chat Chat @relation(fields: [chatId], references: [id])
+  chat   Chat   @relation(fields: [chatId], references: [id])
 
   pinnedAt DateTime @default(now())
-  order   Int      @default(0)
+  order    Int      @default(0)
 
   @@unique([userId, chatId])
   @@map("pinned_chats")
 }
 
 model ChatMember {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @map("user_id")
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 
   isCreator Boolean? @default(false) @map("is_creator")
 
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    String   @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @map("chat_id")
 
-  roles      ChatRoleMember[]
+  roles ChatRoleMember[]
 
   pinnedMessage   ChatMessage? @relation("MemberPinnedMessage", fields: [pinnedMessageId], references: [id])
   pinnedMessageId String?      @map("pinned_message_id")
 
-  joinedAt  DateTime @default(now())
+  joinedAt DateTime @default(now())
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("chat_members")
 }
 
 model GroupMember {
-  id        String   @id @default(uuid())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @map("user_id")
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @map("user_id")
 
   isCreator Boolean? @default(false) @map("is_creator")
 
-  groupId   String? @map("group_id")
-  group     Group?   @relation("GroupMembers", fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String? @map("group_id")
+  group   Group?  @relation("GroupMembers", fields: [groupId], references: [id], onDelete: Cascade)
 
-  roles      GroupRoleMember[]
+  roles GroupRoleMember[]
 
-  joinedAt  DateTime @default(now())
+  joinedAt DateTime @default(now())
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("group_members")
 }
 
 // Roles
-model ChatRole{
-  id        String   @id @default(uuid())
+model ChatRole {
+  id String @id @default(uuid())
 
-  name      String
-  color     String
+  name  String
+  color String
 
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  chatId    String   @map("chat_id")
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId String @map("chat_id")
 
   // createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
   // createdById String @map("created_by_id")
@@ -335,22 +326,21 @@ model ChatRole{
 
   permissions ChatPermissionEnum[]
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([chatId, name])
   @@map("chat_roles")
 }
 
-model GroupRole{
-  id        String   @id @default(uuid())
+model GroupRole {
+  id String @id @default(uuid())
 
-  name      String
-  color     String
+  name  String
+  color String
 
-  group     Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId   String   @map("group_id")
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String @map("group_id")
 
   // createdBy User @relation(fields: [createdById], references: [id], onDelete: Cascade)
   // createdById String @map("created_by_id")
@@ -359,8 +349,8 @@ model GroupRole{
 
   permissions GroupPermissionEnum[]
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([groupId, name])
   @@map("group_roles")
@@ -370,13 +360,13 @@ model ChatRoleMember {
   chatMember   ChatMember @relation(fields: [chatMemberId], references: [id], onDelete: Cascade)
   chatMemberId String     @map("chat_member_id")
 
-  chatRole     ChatRole   @relation(fields: [chatRoleId], references: [id], onDelete: Cascade)
-  chatRoleId   String     @map("chat_role_id")
+  chatRole   ChatRole @relation(fields: [chatRoleId], references: [id], onDelete: Cascade)
+  chatRoleId String   @map("chat_role_id")
 
-  assignedAt   DateTime   @default(now()) @map("assigned_at")
+  assignedAt DateTime @default(now()) @map("assigned_at")
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([chatMemberId, chatRoleId])
   @@map("chat_role_members")
@@ -386,61 +376,44 @@ model GroupRoleMember {
   groupMember   GroupMember @relation(fields: [groupMemberId], references: [id], onDelete: Cascade)
   groupMemberId String      @map("group_member_id")
 
-  groupRole     GroupRole   @relation(fields: [groupRoleId], references: [id], onDelete: Cascade)
-  groupRoleId   String      @map("group_role_id")
+  groupRole   GroupRole @relation(fields: [groupRoleId], references: [id], onDelete: Cascade)
+  groupRoleId String    @map("group_role_id")
 
-  assignedAt    DateTime    @default(now()) @map("assigned_at")
+  assignedAt DateTime @default(now()) @map("assigned_at")
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([groupMemberId, groupRoleId])
   @@map("group_role_members")
 }
 
-//Encryption
-model PreKey {
-  id        String   @id @default(uuid())
-  
-  ikPub     String  @map("ik_pub")
-  spkPub    String  @map("spk_pub")
-  spkSig    String  @map("spk_sig")
-  opkPubs    String[] @map("opk_pub")
-  indexOpkPub Int @map("index_opk_pub")
+model QueueSecretMessage {
+  id String @id @default(uuid())
 
-  userId String @map("user_id")
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
-  @@unique([userId])
-
-  @@map("pre_keys")
-}
-
-model QueueSecretMessage{
-  id        String   @id @default(uuid())
-  
-  groupId  String @map("group_id")
+  groupId String @map("group_id")
   chatId  String @map("chat_id")
-  
+
   isKey Boolean @default(false) @map("is_key")
 
-  fromUserId  String @map("from_user_id")
+  fromUserId String   @map("from_user_id")
   toUserIds  String[] @map("to_user_ids")
 
-  whoCheckedIds  String[] @map("who_checked_ids")
+  whoCheckedIds String[] @map("who_checked_ids")
 
-  ukm      String?  @map("ukm")
+  fromSessionId     String?  @map("from_session_id")
+  toSessionIds      String[] @default([]) @map("to_session_ids")
+  checkedSessionIds String[] @default([]) @map("checked_session_ids")
 
-  iv        String
-  encryptedMessage String @map("encrypted_message")
-  sig       String
+  ukm String? @map("ukm")
+
+  iv                  String
+  encryptedMessage    String   @map("encrypted_message")
+  sig                 String
   secretAttachmentIds String[] @default([]) @map("secret_attachment_ids")
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("queue_secret_messages")
 }
@@ -449,18 +422,18 @@ model SecretAttachment {
   id String @id @default(uuid())
 
   chatId String @map("chat_id")
-  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   uploaderUserId String @map("uploader_user_id")
-  uploader User @relation("SecretAttachmentUploader", fields: [uploaderUserId], references: [id], onDelete: Cascade)
+  uploader       User   @relation("SecretAttachmentUploader", fields: [uploaderUserId], references: [id], onDelete: Cascade)
 
-  storageKey String @unique @map("storage_key")
+  storageKey     String @unique @map("storage_key")
   ciphertextSize String @map("ciphertext_size")
 
-  allowedUserIds String[] @default([]) @map("allowed_user_ids")
-  committedMessageId String? @map("committed_message_id")
-  committedAt DateTime? @map("committed_at")
-  expiresAt DateTime? @map("expires_at")
+  allowedUserIds     String[]  @default([]) @map("allowed_user_ids")
+  committedMessageId String?   @map("committed_message_id")
+  committedAt        DateTime? @map("committed_at")
+  expiresAt          DateTime? @map("expires_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -471,35 +444,37 @@ model SecretAttachment {
 }
 
 model QueueSharedSecretKey {
-  id        String   @id @default(uuid())
-  
-  groupId  String @map("group_id")
+  id String @id @default(uuid())
+
+  groupId String @map("group_id")
   chatId  String @map("chat_id")
 
+  fromUserId String @map("from_user_id")
+  toUserId   String @map("to_user_id")
 
-  fromUserId  String @map("from_user_id")
-  toUserId  String @map("to_user_id")
+  fromSessionId String? @map("from_session_id")
+  toSessionId   String? @map("to_session_id")
 
-  ikPub  String  @map("ik_pub")
+  ikPub String @map("ik_pub")
 
-  ekPub     String  @map("ek_pub")
-  usedOpk String?  @map("used_opk_id")
+  ekPub   String  @map("ek_pub")
+  usedOpk String? @map("used_opk_id")
 
-  ukm      String  @map("ukm")
+  ukm String @map("ukm")
 
-  iv        String
+  iv           String
   encryptedKey String @map("encrypted_key")
-  sig       String
+  sig          String
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("queue_shared_secret_keys")
 }
 
 // model SecretChat{
 //   id        String   @id @default(uuid())
-  
+
 //   groupId  String @map("group_id")
 //   chatId  String @map("chat_id")
 
@@ -509,7 +484,6 @@ model QueueSharedSecretKey {
 //   description String?
 //   isSecret Boolean @default(true) @map("is_secret")
 //   lastMessageAt DateTime @map("last_message_at")
-
 
 //   members ChatMember[]
 
@@ -560,8 +534,8 @@ enum ChatPermissionEnum {
 }
 
 enum GroupPermissionEnum {
-// и надо посмотреть как всё работает на фронте и добавить в бэк, те же проверки
-// Добавить подписки на изменения в группе (например, на изменение информации о группе, на добавление новых сообщений и т.д.)
+  // и надо посмотреть как всё работает на фронте и добавить в бэк, те же проверки
+  // Добавить подписки на изменения в группе (например, на изменение информации о группе, на добавление новых сообщений и т.д.)
   INVITE_MEMBERS
   REMOVE_MEMBERS
   CHANGE_GROUP_INFO
@@ -575,6 +549,3 @@ enum GroupPermissionEnum {
   DELETE_GROUP
   DELETE_CHATS
 }
-
-
-

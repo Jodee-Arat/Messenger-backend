@@ -1,10 +1,10 @@
 import { ApolloDriverConfig } from "@nestjs/apollo";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { IncomingMessage } from "http";
-import { join } from "path";
 import { parse as parseCookie } from "cookie";
 import { signedCookie } from "cookie-parser";
+import { IncomingMessage } from "http";
+import { join } from "path";
 
 import { User } from "@/prisma/generated";
 import { isDev } from "@/src/shared/utils/is-dev.util";
@@ -14,6 +14,7 @@ import { RedisService } from "../redis/redis.service";
 
 type SubscriptionConnectionParams = {
   authToken?: string | null;
+  sessionId?: string | null;
 };
 
 type SubscriptionContextRequest = {
@@ -134,6 +135,10 @@ async function buildSubscriptionRequest(
 
   if (authHeader) {
     headers.authorization = authHeader;
+  }
+
+  if (typeof connectionParams?.sessionId === "string") {
+    headers["x-session-id"] = connectionParams.sessionId;
   }
 
   const req: SubscriptionContextRequest = {

@@ -7,13 +7,12 @@ import {
 } from "@nestjs/common";
 
 import {
-  Chat,
-  ChatMessage,
   ChatPermissionEnum,
   DraftMessage,
   Prisma
 } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
+import { appPubSub } from "@/src/shared/utils/pubsub.util";
 
 import { FiltersInput } from "../../inputs/filters.input";
 import { StorageService } from "../../libs/storage/storage.service";
@@ -21,6 +20,44 @@ import { ChatService } from "../chat.service";
 
 import { RemoveMessagesInput } from "./inputs/remove-messages.input";
 import { SendChatMessageInput } from "./inputs/send-chat-message.input";
+
+const chatMessageInclude = {
+  files: true,
+  chat: {
+    include: {
+      members: {
+        include: {
+          user: true
+        }
+      }
+    }
+  },
+  repliedToLinks: {
+    include: {
+      repliedTo: {
+        select: {
+          id: true,
+          text: true,
+          files: true,
+          user: true
+        }
+      },
+      reply: {
+        select: {
+          id: true,
+          text: true,
+          files: true,
+          user: true
+        }
+      }
+    }
+  },
+  user: true
+} satisfies Prisma.ChatMessageInclude;
+
+type ChatMessageWithRelations = Prisma.ChatMessageGetPayload<{
+  include: typeof chatMessageInclude;
+}>;
 
 @Injectable()
 export class MessageService {
@@ -58,39 +95,7 @@ export class MessageService {
         },
         ...whereClause
       },
-      include: {
-        files: true,
-        chat: {
-          include: {
-            members: {
-              include: {
-                user: true
-              }
-            }
-          }
-        },
-        repliedToLinks: {
-          include: {
-            repliedTo: {
-              select: {
-                id: true,
-                text: true,
-                files: true,
-                user: true
-              }
-            },
-            reply: {
-              select: {
-                id: true,
-                text: true,
-                files: true,
-                user: true
-              }
-            }
-          }
-        },
-        user: true
-      },
+      include: chatMessageInclude,
       // Fetch the newest window first, then normalize back to ascending order
       // so clients render messages chronologically while still seeing the latest
       // messages after refresh.
@@ -99,7 +104,9 @@ export class MessageService {
       }
     });
 
-    return messages.reverse();
+    const orderedMessages = messages.reverse();
+
+    return orderedMessages;
   }
   public async sendChatMessage(
     userId: string,
@@ -145,40 +152,6 @@ export class MessageService {
         }
       }
     });
-    const includeOptions = {
-      files: true,
-
-      chat: {
-        include: {
-          members: {
-            include: { user: true }
-          }
-        }
-      },
-      repliedToLinks: {
-        include: {
-          repliedTo: {
-            select: {
-              id: true,
-              text: true,
-              files: true,
-              user: true
-            }
-          },
-          reply: {
-            select: {
-              id: true,
-              text: true,
-              files: true,
-              user: true
-            }
-          }
-        }
-      },
-
-      user: true
-    };
-
     let draftMessage = await this.prismaService.draftMessage.findFirst({
       where: {
         chatId,
@@ -239,11 +212,11 @@ export class MessageService {
             set: [...(fileIds ?? []).map((id) => ({ id }))]
           }
         },
-        include: includeOptions
+        include: chatMessageInclude
       });
 
       if (forwardedMessageIds.length === 0) {
-        message = await this.prismaService.chatMessage.update({
+        await this.prismaService.chatMessage.update({
           where: { id: message.id },
           data: {
             repliedToLinks: {
@@ -252,6 +225,11 @@ export class MessageService {
               }
             }
           }
+        });
+
+        message = await this.prismaService.chatMessage.findUniqueOrThrow({
+          where: { id: message.id },
+          include: chatMessageInclude
         });
       }
     } else {
@@ -266,7 +244,7 @@ export class MessageService {
             ]
           }
         },
-        include: includeOptions
+        include: chatMessageInclude
       });
 
       if (forwardedMessageIds.length > 0) {
@@ -282,7 +260,7 @@ export class MessageService {
 
         message = await this.prismaService.chatMessage.findUnique({
           where: { id: message.id },
-          include: includeOptions
+          include: chatMessageInclude
         });
       }
     }
@@ -330,7 +308,7 @@ export class MessageService {
 
       message = await this.prismaService.chatMessage.findUnique({
         where: { id: message.id },
-        include: includeOptions
+        include: chatMessageInclude
       });
 
       return { message, chat };
@@ -717,39 +695,7 @@ export class MessageService {
           chatId: targetChatId,
           isForwarded: true
         },
-        include: {
-          files: true,
-          chat: {
-            include: {
-              members: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          repliedToLinks: {
-            include: {
-              repliedTo: {
-                select: {
-                  id: true,
-                  text: true,
-                  files: true,
-                  user: true
-                }
-              },
-              reply: {
-                select: {
-                  id: true,
-                  text: true,
-                  files: true,
-                  user: true
-                }
-              }
-            }
-          },
-          user: true
-        }
+        include: chatMessageInclude
       });
 
       if (forwardedMessageIds.length > 0) {
@@ -766,39 +712,7 @@ export class MessageService {
 
       message = await this.prismaService.chatMessage.findUnique({
         where: { id: message.id },
-        include: {
-          files: true,
-          chat: {
-            include: {
-              members: {
-                include: {
-                  user: true
-                }
-              }
-            }
-          },
-          repliedToLinks: {
-            include: {
-              repliedTo: {
-                select: {
-                  id: true,
-                  text: true,
-                  files: true,
-                  user: true
-                }
-              },
-              reply: {
-                select: {
-                  id: true,
-                  text: true,
-                  files: true,
-                  user: true
-                }
-              }
-            }
-          },
-          user: true
-        }
+        include: chatMessageInclude
       });
 
       const chat = await this.prismaService.chat.update({
@@ -941,4 +855,5 @@ export class MessageService {
       select: { id: true, username: true }
     });
   }
+
 }

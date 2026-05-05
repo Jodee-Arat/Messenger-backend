@@ -51,9 +51,12 @@ export class SessionResolver {
     return this.sessionService.refreshToken(refreshToken);
   }
 
-  // @Authorization()
-  // @Mutation(() => Boolean, { name: "removeSession" })
-  // async remove(@Context() { req }: GqlContext, @Args("id") id: string) {
-  //   return await this.sessionService.remove(req, id);
-  // }
+  @Authorization()
+  @Mutation(() => Boolean, { name: "removeSession" })
+  async removeSession(
+    @Context() { req }: GqlContext,
+    @Args("id") id: string
+  ) {
+    return await this.sessionService.removeSession(req, id);
+  }
 }

@@ -7,7 +7,6 @@ import { FriendshipStatusEnum, Prisma, User } from "@/prisma/generated";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FiltersInput } from "../../inputs/filters.input";
-import { PreKeyInput } from "../../secret/input/preKey.input";
 
 import { CreateUserWEmailInput } from "./inputs/create-user-with-email.input";
 

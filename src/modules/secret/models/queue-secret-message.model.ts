@@ -24,6 +24,15 @@ export class QueueSecretMessageModel {
   whoCheckedIds: string[];
 
   @Field(() => String, { nullable: true })
+  fromSessionId?: string | null;
+
+  @Field(() => [String])
+  toSessionIds: string[];
+
+  @Field(() => [String])
+  checkedSessionIds: string[];
+
+  @Field(() => String, { nullable: true })
   ukm?: string | null;
 
   @Field(() => String)

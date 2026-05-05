@@ -4,7 +4,6 @@ import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 
 import { FiltersInput } from "../../inputs/filters.input";
-import { PreKeyInput } from "../../secret/input/preKey.input";
 
 import { AccountService } from "./account.service";
 import { CreateUserWEmailInput } from "./inputs/create-user-with-email.input";

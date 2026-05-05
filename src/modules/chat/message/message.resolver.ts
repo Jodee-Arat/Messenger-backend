@@ -1,5 +1,4 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
-import e from "express";
 
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";

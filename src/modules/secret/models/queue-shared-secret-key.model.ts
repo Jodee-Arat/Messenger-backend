@@ -19,6 +19,12 @@ export class QueueSharedSecretKeyModel implements QueueSharedSecretKey {
   @Field(() => String)
   toUserId: string;
 
+  @Field(() => String, { nullable: true })
+  fromSessionId: string | null;
+
+  @Field(() => String, { nullable: true })
+  toSessionId: string | null;
+
   @Field(() => String)
   ikPub: string;
 

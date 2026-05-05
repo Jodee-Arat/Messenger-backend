@@ -16,6 +16,12 @@ import { destroySession, saveSession } from "@/src/shared/utils/session.util";
 
 import { LoginInput } from "./inputs/login.input";
 
+type AuthenticatedRequest = Request & {
+  user?: {
+    id?: string;
+  };
+};
+
 @Injectable()
 export class SessionService {
   public constructor(
@@ -26,13 +32,12 @@ export class SessionService {
   ) {}
 
   public async findSessionsByUser(req: Request) {
-    const userId = req.session.userId;
+    const userId = this.getAuthenticatedUserId(req as AuthenticatedRequest);
+    const currentSessionId = this.getCurrentSessionId(req as AuthenticatedRequest);
+    const sessionPrefix =
+      this.configService.getOrThrow<string>("SESSION_FOLDER");
 
-    if (!userId) {
-      throw new UnauthorizedException("Unauthorized");
-    }
-
-    const keys = await this.redisService.keys("*");
+    const keys = await this.redisService.keys(`${sessionPrefix}*`);
 
     const userSessions = [];
 
@@ -40,20 +45,41 @@ export class SessionService {
       const sessionData = await this.redisService.get(key);
       if (sessionData) {
         const session = JSON.parse(sessionData);
-        if (session.userId === userId) {
-          userSessions.push({ ...session, id: key.split(":")[1] });
+
+        if (
+          session.userId === userId &&
+          session.createdAt &&
+          session.metadata
+        ) {
+          userSessions.push({
+            ...session,
+            id: key.slice(sessionPrefix.length)
+          });
         }
       }
     }
-    userSessions.sort((a, b) => b.createdAt - a.createdAt);
-    return userSessions.filter((session) => session.id !== req.session.id);
+
+    userSessions.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    return currentSessionId
+      ? userSessions.filter((session) => session.id !== currentSessionId)
+      : userSessions;
   }
 
   public async findCurrentSession(req: Request) {
-    const sessionId = req.session.id;
+    const authenticatedReq = req as AuthenticatedRequest;
+    const userId = this.getAuthenticatedUserId(authenticatedReq);
+    const sessionId = this.getCurrentSessionId(authenticatedReq);
+
+    if (!sessionId) {
+      throw new NotFoundException("Session not found");
+    }
 
     const sessionData = await this.redisService.get(
-      `${this.configService.getOrThrow("SESSION_FOLDER")}${sessionId}`
+      `${this.configService.getOrThrow<string>("SESSION_FOLDER")}${sessionId}`
     );
 
     if (!sessionData) {
@@ -61,6 +87,10 @@ export class SessionService {
     }
 
     const session = JSON.parse(sessionData);
+
+    if (session.userId !== userId) {
+      throw new NotFoundException("Session not found");
+    }
 
     return {
       ...session,
@@ -118,7 +148,20 @@ export class SessionService {
   }
 
   public async logoutUser(req: Request) {
-    return destroySession(req, this.configService);
+    const authenticatedReq = req as AuthenticatedRequest;
+    const userId = this.getAuthenticatedUserId(authenticatedReq);
+    const sessionId = this.getCurrentSessionId(authenticatedReq);
+
+    if (sessionId) {
+      await this.deleteSessionByIdForUser(sessionId, userId);
+    }
+
+    if (req.session?.userId) {
+      return destroySession(req, this.configService);
+    }
+
+    req.res?.clearCookie(this.configService.getOrThrow<string>("SESSION_NAME"));
+    return true;
   }
 
   public async clearSession(req: Request) {
@@ -158,5 +201,92 @@ export class SessionService {
     } catch (err) {
       throw new UnauthorizedException("Invalid or expired refresh token");
     }
+  }
+
+  private getAuthenticatedUserId(req: AuthenticatedRequest) {
+    const userId = req.user?.id ?? req.session?.userId;
+
+    if (!userId) {
+      throw new UnauthorizedException("Unauthorized");
+    }
+
+    return userId;
+  }
+
+  private getCurrentSessionId(req: AuthenticatedRequest) {
+    if (req.session?.userId && req.session.id) {
+      return req.session.id;
+    }
+
+    const header = req.headers["x-session-id"];
+
+    if (typeof header === "string" && header.trim()) {
+      return header.trim();
+    }
+
+    if (Array.isArray(header)) {
+      const first = header.find(
+        (value) => typeof value === "string" && value.trim().length > 0
+      );
+
+      if (first) {
+        return first.trim();
+      }
+    }
+
+    return null;
+  }
+
+  public async removeSession(req: Request, sessionId: string) {
+    const authenticatedReq = req as AuthenticatedRequest;
+    const userId = this.getAuthenticatedUserId(authenticatedReq);
+
+    const deleted = await this.deleteSessionByIdForUser(sessionId, userId);
+
+    if (!deleted) {
+      throw new NotFoundException("Session not found");
+    }
+
+    return true;
+  }
+
+  private getSessionKeyCandidates(sessionId: string) {
+    const sessionPrefix =
+      this.configService.getOrThrow<string>("SESSION_FOLDER");
+    const normalizedSessionId = sessionId.startsWith(sessionPrefix)
+      ? sessionId.slice(sessionPrefix.length)
+      : sessionId;
+
+    return Array.from(
+      new Set([
+        `${sessionPrefix}${normalizedSessionId}`,
+        `${sessionPrefix}${sessionId}`
+      ])
+    );
+  }
+
+  private async deleteSessionByIdForUser(sessionId: string, userId: string) {
+    const sessionKeys = this.getSessionKeyCandidates(sessionId);
+
+    for (const sessionKey of sessionKeys) {
+      const sessionData = await this.redisService.get(sessionKey);
+
+      if (!sessionData) {
+        continue;
+      }
+
+      try {
+        const session = JSON.parse(sessionData) as { userId?: string };
+
+        if (session.userId === userId) {
+          await this.redisService.del(sessionKey);
+          return true;
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    return false;
   }
 }
