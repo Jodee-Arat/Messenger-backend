@@ -436,6 +436,9 @@ type QueueSecretMessageModel {
   isKey: Boolean!
   iv: String!
   secretAttachmentIds: [String!]!
+  senderKeyEpoch: Int
+  senderKeyId: String
+  senderKeyIteration: Int
   sig: String!
   toSessionIds: [String!]!
   toUserIds: [String!]!
@@ -456,6 +459,9 @@ type QueueSharedSecretKeyModel {
   id: ID!
   ikPub: String!
   iv: String!
+  keyKind: String!
+  senderKeyEpoch: Int
+  senderKeyId: String
   sig: String!
   toSessionId: String
   toUserId: String!
@@ -575,6 +581,9 @@ input SessionSecretMessageInput {
   isKey: Boolean
   iv: String!
   secretAttachmentIds: [String!]
+  senderKeyEpoch: Int
+  senderKeyId: String
+  senderKeyIteration: Int
   sig: String!
   toSessionIds: [String!]!
   toUserIds: [String!]!
@@ -589,6 +598,9 @@ input SessionSharedSecretKeyInput {
   groupId: String
   ikPub: String!
   iv: String!
+  keyKind: String
+  senderKeyEpoch: Int
+  senderKeyId: String
   sig: String!
   toSessionId: String!
   toUserId: String!

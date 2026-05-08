@@ -21750,8 +21750,20 @@ export namespace Prisma {
 
   export type AggregateQueueSecretMessage = {
     _count: QueueSecretMessageCountAggregateOutputType | null
+    _avg: QueueSecretMessageAvgAggregateOutputType | null
+    _sum: QueueSecretMessageSumAggregateOutputType | null
     _min: QueueSecretMessageMinAggregateOutputType | null
     _max: QueueSecretMessageMaxAggregateOutputType | null
+  }
+
+  export type QueueSecretMessageAvgAggregateOutputType = {
+    senderKeyIteration: number | null
+    senderKeyEpoch: number | null
+  }
+
+  export type QueueSecretMessageSumAggregateOutputType = {
+    senderKeyIteration: number | null
+    senderKeyEpoch: number | null
   }
 
   export type QueueSecretMessageMinAggregateOutputType = {
@@ -21762,6 +21774,9 @@ export namespace Prisma {
     fromUserId: string | null
     fromSessionId: string | null
     ukm: string | null
+    senderKeyId: string | null
+    senderKeyIteration: number | null
+    senderKeyEpoch: number | null
     iv: string | null
     encryptedMessage: string | null
     sig: string | null
@@ -21777,6 +21792,9 @@ export namespace Prisma {
     fromUserId: string | null
     fromSessionId: string | null
     ukm: string | null
+    senderKeyId: string | null
+    senderKeyIteration: number | null
+    senderKeyEpoch: number | null
     iv: string | null
     encryptedMessage: string | null
     sig: string | null
@@ -21796,6 +21814,9 @@ export namespace Prisma {
     toSessionIds: number
     checkedSessionIds: number
     ukm: number
+    senderKeyId: number
+    senderKeyIteration: number
+    senderKeyEpoch: number
     iv: number
     encryptedMessage: number
     sig: number
@@ -21806,6 +21827,16 @@ export namespace Prisma {
   }
 
 
+  export type QueueSecretMessageAvgAggregateInputType = {
+    senderKeyIteration?: true
+    senderKeyEpoch?: true
+  }
+
+  export type QueueSecretMessageSumAggregateInputType = {
+    senderKeyIteration?: true
+    senderKeyEpoch?: true
+  }
+
   export type QueueSecretMessageMinAggregateInputType = {
     id?: true
     groupId?: true
@@ -21814,6 +21845,9 @@ export namespace Prisma {
     fromUserId?: true
     fromSessionId?: true
     ukm?: true
+    senderKeyId?: true
+    senderKeyIteration?: true
+    senderKeyEpoch?: true
     iv?: true
     encryptedMessage?: true
     sig?: true
@@ -21829,6 +21863,9 @@ export namespace Prisma {
     fromUserId?: true
     fromSessionId?: true
     ukm?: true
+    senderKeyId?: true
+    senderKeyIteration?: true
+    senderKeyEpoch?: true
     iv?: true
     encryptedMessage?: true
     sig?: true
@@ -21848,6 +21885,9 @@ export namespace Prisma {
     toSessionIds?: true
     checkedSessionIds?: true
     ukm?: true
+    senderKeyId?: true
+    senderKeyIteration?: true
+    senderKeyEpoch?: true
     iv?: true
     encryptedMessage?: true
     sig?: true
@@ -21895,6 +21935,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: QueueSecretMessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QueueSecretMessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: QueueSecretMessageMinAggregateInputType
@@ -21925,6 +21977,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: QueueSecretMessageCountAggregateInputType | true
+    _avg?: QueueSecretMessageAvgAggregateInputType
+    _sum?: QueueSecretMessageSumAggregateInputType
     _min?: QueueSecretMessageMinAggregateInputType
     _max?: QueueSecretMessageMaxAggregateInputType
   }
@@ -21941,6 +21995,9 @@ export namespace Prisma {
     toSessionIds: string[]
     checkedSessionIds: string[]
     ukm: string | null
+    senderKeyId: string | null
+    senderKeyIteration: number | null
+    senderKeyEpoch: number | null
     iv: string
     encryptedMessage: string
     sig: string
@@ -21948,6 +22005,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     _count: QueueSecretMessageCountAggregateOutputType | null
+    _avg: QueueSecretMessageAvgAggregateOutputType | null
+    _sum: QueueSecretMessageSumAggregateOutputType | null
     _min: QueueSecretMessageMinAggregateOutputType | null
     _max: QueueSecretMessageMaxAggregateOutputType | null
   }
@@ -21978,6 +22037,9 @@ export namespace Prisma {
     toSessionIds?: boolean
     checkedSessionIds?: boolean
     ukm?: boolean
+    senderKeyId?: boolean
+    senderKeyIteration?: boolean
+    senderKeyEpoch?: boolean
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
@@ -21998,6 +22060,9 @@ export namespace Prisma {
     toSessionIds?: boolean
     checkedSessionIds?: boolean
     ukm?: boolean
+    senderKeyId?: boolean
+    senderKeyIteration?: boolean
+    senderKeyEpoch?: boolean
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
@@ -22018,6 +22083,9 @@ export namespace Prisma {
     toSessionIds?: boolean
     checkedSessionIds?: boolean
     ukm?: boolean
+    senderKeyId?: boolean
+    senderKeyIteration?: boolean
+    senderKeyEpoch?: boolean
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
@@ -22038,6 +22106,9 @@ export namespace Prisma {
     toSessionIds?: boolean
     checkedSessionIds?: boolean
     ukm?: boolean
+    senderKeyId?: boolean
+    senderKeyIteration?: boolean
+    senderKeyEpoch?: boolean
     iv?: boolean
     encryptedMessage?: boolean
     sig?: boolean
@@ -22046,7 +22117,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type QueueSecretMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "isKey" | "fromUserId" | "toUserIds" | "whoCheckedIds" | "fromSessionId" | "toSessionIds" | "checkedSessionIds" | "ukm" | "iv" | "encryptedMessage" | "sig" | "secretAttachmentIds" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSecretMessage"]>
+  export type QueueSecretMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "isKey" | "fromUserId" | "toUserIds" | "whoCheckedIds" | "fromSessionId" | "toSessionIds" | "checkedSessionIds" | "ukm" | "senderKeyId" | "senderKeyIteration" | "senderKeyEpoch" | "iv" | "encryptedMessage" | "sig" | "secretAttachmentIds" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSecretMessage"]>
 
   export type $QueueSecretMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "QueueSecretMessage"
@@ -22063,6 +22134,9 @@ export namespace Prisma {
       toSessionIds: string[]
       checkedSessionIds: string[]
       ukm: string | null
+      senderKeyId: string | null
+      senderKeyIteration: number | null
+      senderKeyEpoch: number | null
       iv: string
       encryptedMessage: string
       sig: string
@@ -22503,6 +22577,9 @@ export namespace Prisma {
     readonly toSessionIds: FieldRef<"QueueSecretMessage", 'String[]'>
     readonly checkedSessionIds: FieldRef<"QueueSecretMessage", 'String[]'>
     readonly ukm: FieldRef<"QueueSecretMessage", 'String'>
+    readonly senderKeyId: FieldRef<"QueueSecretMessage", 'String'>
+    readonly senderKeyIteration: FieldRef<"QueueSecretMessage", 'Int'>
+    readonly senderKeyEpoch: FieldRef<"QueueSecretMessage", 'Int'>
     readonly iv: FieldRef<"QueueSecretMessage", 'String'>
     readonly encryptedMessage: FieldRef<"QueueSecretMessage", 'String'>
     readonly sig: FieldRef<"QueueSecretMessage", 'String'>
@@ -24021,8 +24098,18 @@ export namespace Prisma {
 
   export type AggregateQueueSharedSecretKey = {
     _count: QueueSharedSecretKeyCountAggregateOutputType | null
+    _avg: QueueSharedSecretKeyAvgAggregateOutputType | null
+    _sum: QueueSharedSecretKeySumAggregateOutputType | null
     _min: QueueSharedSecretKeyMinAggregateOutputType | null
     _max: QueueSharedSecretKeyMaxAggregateOutputType | null
+  }
+
+  export type QueueSharedSecretKeyAvgAggregateOutputType = {
+    senderKeyEpoch: number | null
+  }
+
+  export type QueueSharedSecretKeySumAggregateOutputType = {
+    senderKeyEpoch: number | null
   }
 
   export type QueueSharedSecretKeyMinAggregateOutputType = {
@@ -24033,6 +24120,9 @@ export namespace Prisma {
     toUserId: string | null
     fromSessionId: string | null
     toSessionId: string | null
+    keyKind: string | null
+    senderKeyId: string | null
+    senderKeyEpoch: number | null
     ikPub: string | null
     ekPub: string | null
     usedOpk: string | null
@@ -24052,6 +24142,9 @@ export namespace Prisma {
     toUserId: string | null
     fromSessionId: string | null
     toSessionId: string | null
+    keyKind: string | null
+    senderKeyId: string | null
+    senderKeyEpoch: number | null
     ikPub: string | null
     ekPub: string | null
     usedOpk: string | null
@@ -24071,6 +24164,9 @@ export namespace Prisma {
     toUserId: number
     fromSessionId: number
     toSessionId: number
+    keyKind: number
+    senderKeyId: number
+    senderKeyEpoch: number
     ikPub: number
     ekPub: number
     usedOpk: number
@@ -24084,6 +24180,14 @@ export namespace Prisma {
   }
 
 
+  export type QueueSharedSecretKeyAvgAggregateInputType = {
+    senderKeyEpoch?: true
+  }
+
+  export type QueueSharedSecretKeySumAggregateInputType = {
+    senderKeyEpoch?: true
+  }
+
   export type QueueSharedSecretKeyMinAggregateInputType = {
     id?: true
     groupId?: true
@@ -24092,6 +24196,9 @@ export namespace Prisma {
     toUserId?: true
     fromSessionId?: true
     toSessionId?: true
+    keyKind?: true
+    senderKeyId?: true
+    senderKeyEpoch?: true
     ikPub?: true
     ekPub?: true
     usedOpk?: true
@@ -24111,6 +24218,9 @@ export namespace Prisma {
     toUserId?: true
     fromSessionId?: true
     toSessionId?: true
+    keyKind?: true
+    senderKeyId?: true
+    senderKeyEpoch?: true
     ikPub?: true
     ekPub?: true
     usedOpk?: true
@@ -24130,6 +24240,9 @@ export namespace Prisma {
     toUserId?: true
     fromSessionId?: true
     toSessionId?: true
+    keyKind?: true
+    senderKeyId?: true
+    senderKeyEpoch?: true
     ikPub?: true
     ekPub?: true
     usedOpk?: true
@@ -24180,6 +24293,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: QueueSharedSecretKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QueueSharedSecretKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: QueueSharedSecretKeyMinAggregateInputType
@@ -24210,6 +24335,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: QueueSharedSecretKeyCountAggregateInputType | true
+    _avg?: QueueSharedSecretKeyAvgAggregateInputType
+    _sum?: QueueSharedSecretKeySumAggregateInputType
     _min?: QueueSharedSecretKeyMinAggregateInputType
     _max?: QueueSharedSecretKeyMaxAggregateInputType
   }
@@ -24222,6 +24349,9 @@ export namespace Prisma {
     toUserId: string
     fromSessionId: string | null
     toSessionId: string | null
+    keyKind: string
+    senderKeyId: string | null
+    senderKeyEpoch: number | null
     ikPub: string
     ekPub: string
     usedOpk: string | null
@@ -24232,6 +24362,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     _count: QueueSharedSecretKeyCountAggregateOutputType | null
+    _avg: QueueSharedSecretKeyAvgAggregateOutputType | null
+    _sum: QueueSharedSecretKeySumAggregateOutputType | null
     _min: QueueSharedSecretKeyMinAggregateOutputType | null
     _max: QueueSharedSecretKeyMaxAggregateOutputType | null
   }
@@ -24258,6 +24390,9 @@ export namespace Prisma {
     toUserId?: boolean
     fromSessionId?: boolean
     toSessionId?: boolean
+    keyKind?: boolean
+    senderKeyId?: boolean
+    senderKeyEpoch?: boolean
     ikPub?: boolean
     ekPub?: boolean
     usedOpk?: boolean
@@ -24277,6 +24412,9 @@ export namespace Prisma {
     toUserId?: boolean
     fromSessionId?: boolean
     toSessionId?: boolean
+    keyKind?: boolean
+    senderKeyId?: boolean
+    senderKeyEpoch?: boolean
     ikPub?: boolean
     ekPub?: boolean
     usedOpk?: boolean
@@ -24296,6 +24434,9 @@ export namespace Prisma {
     toUserId?: boolean
     fromSessionId?: boolean
     toSessionId?: boolean
+    keyKind?: boolean
+    senderKeyId?: boolean
+    senderKeyEpoch?: boolean
     ikPub?: boolean
     ekPub?: boolean
     usedOpk?: boolean
@@ -24315,6 +24456,9 @@ export namespace Prisma {
     toUserId?: boolean
     fromSessionId?: boolean
     toSessionId?: boolean
+    keyKind?: boolean
+    senderKeyId?: boolean
+    senderKeyEpoch?: boolean
     ikPub?: boolean
     ekPub?: boolean
     usedOpk?: boolean
@@ -24326,7 +24470,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type QueueSharedSecretKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "fromUserId" | "toUserId" | "fromSessionId" | "toSessionId" | "ikPub" | "ekPub" | "usedOpk" | "ukm" | "iv" | "encryptedKey" | "sig" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSharedSecretKey"]>
+  export type QueueSharedSecretKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "groupId" | "chatId" | "fromUserId" | "toUserId" | "fromSessionId" | "toSessionId" | "keyKind" | "senderKeyId" | "senderKeyEpoch" | "ikPub" | "ekPub" | "usedOpk" | "ukm" | "iv" | "encryptedKey" | "sig" | "createdAt" | "updatedAt", ExtArgs["result"]["queueSharedSecretKey"]>
 
   export type $QueueSharedSecretKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "QueueSharedSecretKey"
@@ -24339,6 +24483,9 @@ export namespace Prisma {
       toUserId: string
       fromSessionId: string | null
       toSessionId: string | null
+      keyKind: string
+      senderKeyId: string | null
+      senderKeyEpoch: number | null
       ikPub: string
       ekPub: string
       usedOpk: string | null
@@ -24778,6 +24925,9 @@ export namespace Prisma {
     readonly toUserId: FieldRef<"QueueSharedSecretKey", 'String'>
     readonly fromSessionId: FieldRef<"QueueSharedSecretKey", 'String'>
     readonly toSessionId: FieldRef<"QueueSharedSecretKey", 'String'>
+    readonly keyKind: FieldRef<"QueueSharedSecretKey", 'String'>
+    readonly senderKeyId: FieldRef<"QueueSharedSecretKey", 'String'>
+    readonly senderKeyEpoch: FieldRef<"QueueSharedSecretKey", 'Int'>
     readonly ikPub: FieldRef<"QueueSharedSecretKey", 'String'>
     readonly ekPub: FieldRef<"QueueSharedSecretKey", 'String'>
     readonly usedOpk: FieldRef<"QueueSharedSecretKey", 'String'>
@@ -25398,6 +25548,9 @@ export namespace Prisma {
     toSessionIds: 'toSessionIds',
     checkedSessionIds: 'checkedSessionIds',
     ukm: 'ukm',
+    senderKeyId: 'senderKeyId',
+    senderKeyIteration: 'senderKeyIteration',
+    senderKeyEpoch: 'senderKeyEpoch',
     iv: 'iv',
     encryptedMessage: 'encryptedMessage',
     sig: 'sig',
@@ -25434,6 +25587,9 @@ export namespace Prisma {
     toUserId: 'toUserId',
     fromSessionId: 'fromSessionId',
     toSessionId: 'toSessionId',
+    keyKind: 'keyKind',
+    senderKeyId: 'senderKeyId',
+    senderKeyEpoch: 'senderKeyEpoch',
     ikPub: 'ikPub',
     ekPub: 'ekPub',
     usedOpk: 'usedOpk',
@@ -26850,6 +27006,9 @@ export namespace Prisma {
     toSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     checkedSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     ukm?: StringNullableFilter<"QueueSecretMessage"> | string | null
+    senderKeyId?: StringNullableFilter<"QueueSecretMessage"> | string | null
+    senderKeyIteration?: IntNullableFilter<"QueueSecretMessage"> | number | null
+    senderKeyEpoch?: IntNullableFilter<"QueueSecretMessage"> | number | null
     iv?: StringFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringFilter<"QueueSecretMessage"> | string
     sig?: StringFilter<"QueueSecretMessage"> | string
@@ -26870,6 +27029,9 @@ export namespace Prisma {
     toSessionIds?: SortOrder
     checkedSessionIds?: SortOrder
     ukm?: SortOrderInput | SortOrder
+    senderKeyId?: SortOrderInput | SortOrder
+    senderKeyIteration?: SortOrderInput | SortOrder
+    senderKeyEpoch?: SortOrderInput | SortOrder
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
@@ -26893,6 +27055,9 @@ export namespace Prisma {
     toSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     checkedSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     ukm?: StringNullableFilter<"QueueSecretMessage"> | string | null
+    senderKeyId?: StringNullableFilter<"QueueSecretMessage"> | string | null
+    senderKeyIteration?: IntNullableFilter<"QueueSecretMessage"> | number | null
+    senderKeyEpoch?: IntNullableFilter<"QueueSecretMessage"> | number | null
     iv?: StringFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringFilter<"QueueSecretMessage"> | string
     sig?: StringFilter<"QueueSecretMessage"> | string
@@ -26913,6 +27078,9 @@ export namespace Prisma {
     toSessionIds?: SortOrder
     checkedSessionIds?: SortOrder
     ukm?: SortOrderInput | SortOrder
+    senderKeyId?: SortOrderInput | SortOrder
+    senderKeyIteration?: SortOrderInput | SortOrder
+    senderKeyEpoch?: SortOrderInput | SortOrder
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
@@ -26920,8 +27088,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: QueueSecretMessageCountOrderByAggregateInput
+    _avg?: QueueSecretMessageAvgOrderByAggregateInput
     _max?: QueueSecretMessageMaxOrderByAggregateInput
     _min?: QueueSecretMessageMinOrderByAggregateInput
+    _sum?: QueueSecretMessageSumOrderByAggregateInput
   }
 
   export type QueueSecretMessageScalarWhereWithAggregatesInput = {
@@ -26939,6 +27109,9 @@ export namespace Prisma {
     toSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     checkedSessionIds?: StringNullableListFilter<"QueueSecretMessage">
     ukm?: StringNullableWithAggregatesFilter<"QueueSecretMessage"> | string | null
+    senderKeyId?: StringNullableWithAggregatesFilter<"QueueSecretMessage"> | string | null
+    senderKeyIteration?: IntNullableWithAggregatesFilter<"QueueSecretMessage"> | number | null
+    senderKeyEpoch?: IntNullableWithAggregatesFilter<"QueueSecretMessage"> | number | null
     iv?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
     encryptedMessage?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
     sig?: StringWithAggregatesFilter<"QueueSecretMessage"> | string
@@ -27046,6 +27219,9 @@ export namespace Prisma {
     toUserId?: StringFilter<"QueueSharedSecretKey"> | string
     fromSessionId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
     toSessionId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
+    keyKind?: StringFilter<"QueueSharedSecretKey"> | string
+    senderKeyId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
+    senderKeyEpoch?: IntNullableFilter<"QueueSharedSecretKey"> | number | null
     ikPub?: StringFilter<"QueueSharedSecretKey"> | string
     ekPub?: StringFilter<"QueueSharedSecretKey"> | string
     usedOpk?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
@@ -27065,6 +27241,9 @@ export namespace Prisma {
     toUserId?: SortOrder
     fromSessionId?: SortOrderInput | SortOrder
     toSessionId?: SortOrderInput | SortOrder
+    keyKind?: SortOrder
+    senderKeyId?: SortOrderInput | SortOrder
+    senderKeyEpoch?: SortOrderInput | SortOrder
     ikPub?: SortOrder
     ekPub?: SortOrder
     usedOpk?: SortOrderInput | SortOrder
@@ -27087,6 +27266,9 @@ export namespace Prisma {
     toUserId?: StringFilter<"QueueSharedSecretKey"> | string
     fromSessionId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
     toSessionId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
+    keyKind?: StringFilter<"QueueSharedSecretKey"> | string
+    senderKeyId?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
+    senderKeyEpoch?: IntNullableFilter<"QueueSharedSecretKey"> | number | null
     ikPub?: StringFilter<"QueueSharedSecretKey"> | string
     ekPub?: StringFilter<"QueueSharedSecretKey"> | string
     usedOpk?: StringNullableFilter<"QueueSharedSecretKey"> | string | null
@@ -27106,6 +27288,9 @@ export namespace Prisma {
     toUserId?: SortOrder
     fromSessionId?: SortOrderInput | SortOrder
     toSessionId?: SortOrderInput | SortOrder
+    keyKind?: SortOrder
+    senderKeyId?: SortOrderInput | SortOrder
+    senderKeyEpoch?: SortOrderInput | SortOrder
     ikPub?: SortOrder
     ekPub?: SortOrder
     usedOpk?: SortOrderInput | SortOrder
@@ -27116,8 +27301,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: QueueSharedSecretKeyCountOrderByAggregateInput
+    _avg?: QueueSharedSecretKeyAvgOrderByAggregateInput
     _max?: QueueSharedSecretKeyMaxOrderByAggregateInput
     _min?: QueueSharedSecretKeyMinOrderByAggregateInput
+    _sum?: QueueSharedSecretKeySumOrderByAggregateInput
   }
 
   export type QueueSharedSecretKeyScalarWhereWithAggregatesInput = {
@@ -27131,6 +27318,9 @@ export namespace Prisma {
     toUserId?: StringWithAggregatesFilter<"QueueSharedSecretKey"> | string
     fromSessionId?: StringNullableWithAggregatesFilter<"QueueSharedSecretKey"> | string | null
     toSessionId?: StringNullableWithAggregatesFilter<"QueueSharedSecretKey"> | string | null
+    keyKind?: StringWithAggregatesFilter<"QueueSharedSecretKey"> | string
+    senderKeyId?: StringNullableWithAggregatesFilter<"QueueSharedSecretKey"> | string | null
+    senderKeyEpoch?: IntNullableWithAggregatesFilter<"QueueSharedSecretKey"> | number | null
     ikPub?: StringWithAggregatesFilter<"QueueSharedSecretKey"> | string
     ekPub?: StringWithAggregatesFilter<"QueueSharedSecretKey"> | string
     usedOpk?: StringNullableWithAggregatesFilter<"QueueSharedSecretKey"> | string | null
@@ -28452,6 +28642,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageCreatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageCreatecheckedSessionIdsInput | string[]
     ukm?: string | null
+    senderKeyId?: string | null
+    senderKeyIteration?: number | null
+    senderKeyEpoch?: number | null
     iv: string
     encryptedMessage: string
     sig: string
@@ -28472,6 +28665,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageCreatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageCreatecheckedSessionIdsInput | string[]
     ukm?: string | null
+    senderKeyId?: string | null
+    senderKeyIteration?: number | null
+    senderKeyEpoch?: number | null
     iv: string
     encryptedMessage: string
     sig: string
@@ -28492,6 +28688,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageUpdatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageUpdatecheckedSessionIdsInput | string[]
     ukm?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyIteration?: NullableIntFieldUpdateOperationsInput | number | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
@@ -28512,6 +28711,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageUpdatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageUpdatecheckedSessionIdsInput | string[]
     ukm?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyIteration?: NullableIntFieldUpdateOperationsInput | number | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
@@ -28532,6 +28734,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageCreatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageCreatecheckedSessionIdsInput | string[]
     ukm?: string | null
+    senderKeyId?: string | null
+    senderKeyIteration?: number | null
+    senderKeyEpoch?: number | null
     iv: string
     encryptedMessage: string
     sig: string
@@ -28552,6 +28757,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageUpdatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageUpdatecheckedSessionIdsInput | string[]
     ukm?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyIteration?: NullableIntFieldUpdateOperationsInput | number | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
@@ -28572,6 +28780,9 @@ export namespace Prisma {
     toSessionIds?: QueueSecretMessageUpdatetoSessionIdsInput | string[]
     checkedSessionIds?: QueueSecretMessageUpdatecheckedSessionIdsInput | string[]
     ukm?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyIteration?: NullableIntFieldUpdateOperationsInput | number | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     iv?: StringFieldUpdateOperationsInput | string
     encryptedMessage?: StringFieldUpdateOperationsInput | string
     sig?: StringFieldUpdateOperationsInput | string
@@ -28684,6 +28895,9 @@ export namespace Prisma {
     toUserId: string
     fromSessionId?: string | null
     toSessionId?: string | null
+    keyKind?: string
+    senderKeyId?: string | null
+    senderKeyEpoch?: number | null
     ikPub: string
     ekPub: string
     usedOpk?: string | null
@@ -28703,6 +28917,9 @@ export namespace Prisma {
     toUserId: string
     fromSessionId?: string | null
     toSessionId?: string | null
+    keyKind?: string
+    senderKeyId?: string | null
+    senderKeyEpoch?: number | null
     ikPub: string
     ekPub: string
     usedOpk?: string | null
@@ -28722,6 +28939,9 @@ export namespace Prisma {
     toUserId?: StringFieldUpdateOperationsInput | string
     fromSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     toSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    keyKind?: StringFieldUpdateOperationsInput | string
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     ikPub?: StringFieldUpdateOperationsInput | string
     ekPub?: StringFieldUpdateOperationsInput | string
     usedOpk?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28741,6 +28961,9 @@ export namespace Prisma {
     toUserId?: StringFieldUpdateOperationsInput | string
     fromSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     toSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    keyKind?: StringFieldUpdateOperationsInput | string
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     ikPub?: StringFieldUpdateOperationsInput | string
     ekPub?: StringFieldUpdateOperationsInput | string
     usedOpk?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28760,6 +28983,9 @@ export namespace Prisma {
     toUserId: string
     fromSessionId?: string | null
     toSessionId?: string | null
+    keyKind?: string
+    senderKeyId?: string | null
+    senderKeyEpoch?: number | null
     ikPub: string
     ekPub: string
     usedOpk?: string | null
@@ -28779,6 +29005,9 @@ export namespace Prisma {
     toUserId?: StringFieldUpdateOperationsInput | string
     fromSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     toSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    keyKind?: StringFieldUpdateOperationsInput | string
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     ikPub?: StringFieldUpdateOperationsInput | string
     ekPub?: StringFieldUpdateOperationsInput | string
     usedOpk?: NullableStringFieldUpdateOperationsInput | string | null
@@ -28798,6 +29027,9 @@ export namespace Prisma {
     toUserId?: StringFieldUpdateOperationsInput | string
     fromSessionId?: NullableStringFieldUpdateOperationsInput | string | null
     toSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    keyKind?: StringFieldUpdateOperationsInput | string
+    senderKeyId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderKeyEpoch?: NullableIntFieldUpdateOperationsInput | number | null
     ikPub?: StringFieldUpdateOperationsInput | string
     ekPub?: StringFieldUpdateOperationsInput | string
     usedOpk?: NullableStringFieldUpdateOperationsInput | string | null
@@ -29804,6 +30036,17 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type QueueSecretMessageCountOrderByAggregateInput = {
     id?: SortOrder
     groupId?: SortOrder
@@ -29816,12 +30059,20 @@ export namespace Prisma {
     toSessionIds?: SortOrder
     checkedSessionIds?: SortOrder
     ukm?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyIteration?: SortOrder
+    senderKeyEpoch?: SortOrder
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
     secretAttachmentIds?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type QueueSecretMessageAvgOrderByAggregateInput = {
+    senderKeyIteration?: SortOrder
+    senderKeyEpoch?: SortOrder
   }
 
   export type QueueSecretMessageMaxOrderByAggregateInput = {
@@ -29832,6 +30083,9 @@ export namespace Prisma {
     fromUserId?: SortOrder
     fromSessionId?: SortOrder
     ukm?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyIteration?: SortOrder
+    senderKeyEpoch?: SortOrder
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
@@ -29847,11 +30101,35 @@ export namespace Prisma {
     fromUserId?: SortOrder
     fromSessionId?: SortOrder
     ukm?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyIteration?: SortOrder
+    senderKeyEpoch?: SortOrder
     iv?: SortOrder
     encryptedMessage?: SortOrder
     sig?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type QueueSecretMessageSumOrderByAggregateInput = {
+    senderKeyIteration?: SortOrder
+    senderKeyEpoch?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type SecretAttachmentCountOrderByAggregateInput = {
@@ -29902,6 +30180,9 @@ export namespace Prisma {
     toUserId?: SortOrder
     fromSessionId?: SortOrder
     toSessionId?: SortOrder
+    keyKind?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyEpoch?: SortOrder
     ikPub?: SortOrder
     ekPub?: SortOrder
     usedOpk?: SortOrder
@@ -29913,6 +30194,10 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type QueueSharedSecretKeyAvgOrderByAggregateInput = {
+    senderKeyEpoch?: SortOrder
+  }
+
   export type QueueSharedSecretKeyMaxOrderByAggregateInput = {
     id?: SortOrder
     groupId?: SortOrder
@@ -29921,6 +30206,9 @@ export namespace Prisma {
     toUserId?: SortOrder
     fromSessionId?: SortOrder
     toSessionId?: SortOrder
+    keyKind?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyEpoch?: SortOrder
     ikPub?: SortOrder
     ekPub?: SortOrder
     usedOpk?: SortOrder
@@ -29940,6 +30228,9 @@ export namespace Prisma {
     toUserId?: SortOrder
     fromSessionId?: SortOrder
     toSessionId?: SortOrder
+    keyKind?: SortOrder
+    senderKeyId?: SortOrder
+    senderKeyEpoch?: SortOrder
     ikPub?: SortOrder
     ekPub?: SortOrder
     usedOpk?: SortOrder
@@ -29949,6 +30240,10 @@ export namespace Prisma {
     sig?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type QueueSharedSecretKeySumOrderByAggregateInput = {
+    senderKeyEpoch?: SortOrder
   }
 
   export type FriendshipCreateNestedManyWithoutUserInput = {
@@ -31870,6 +32165,14 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type QueueSecretMessageUpdatesecretAttachmentIdsInput = {
     set?: string[]
     push?: string | string[]
@@ -32114,6 +32417,33 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedBoolNullableFilter<$PrismaModel>
     _max?: NestedBoolNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type FriendshipCreateWithoutUserInput = {

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 import { QueueSharedSecretKey } from "@/prisma/generated";
 
@@ -24,6 +24,15 @@ export class QueueSharedSecretKeyModel implements QueueSharedSecretKey {
 
   @Field(() => String, { nullable: true })
   toSessionId: string | null;
+
+  @Field(() => String)
+  keyKind: string;
+
+  @Field(() => String, { nullable: true })
+  senderKeyId: string | null;
+
+  @Field(() => Int, { nullable: true })
+  senderKeyEpoch: number | null;
 
   @Field(() => String)
   ikPub: string;

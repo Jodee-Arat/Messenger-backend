@@ -2,7 +2,9 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
-  Injectable
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit
 } from "@nestjs/common";
 import { randomUUID } from "crypto";
 import * as QRCode from "qrcode";
@@ -20,7 +22,8 @@ import { SessionSharedSecretKeyInput } from "./input/session-shared-secret-key.i
 import { UploadSecretAttachmentInput } from "./input/upload-secret-attachment.input";
 import { SecretSessionPlatform } from "./models/secret-session-platform.enum";
 
-const SECRET_ATTACHMENT_STAGE_TTL_MS = 24 * 60 * 60 * 1000;
+const SECRET_ATTACHMENT_TTL_MS = 24 * 60 * 60 * 1000;
+const SECRET_ATTACHMENT_CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
 const SECRET_SESSION_KEY_PREFIX = "secret-session:";
 const SAVED_SECRET_PAIRING_KEY_PREFIX = "saved-secret-pairing:";
 const SAVED_SECRET_PAIRING_WEB_KEY_PREFIX = "saved-secret-pairing-web:";
@@ -29,6 +32,7 @@ const SAVED_SECRET_GROUP_ID = "saved";
 const WEB_SECRET_SESSION_TTL_SECONDS = 8 * 60 * 60;
 const MOBILE_SECRET_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
 const SAVED_SECRET_PAIRING_TTL_SECONDS = 5 * 60;
+const SESSION_SHARED_KEY_KIND = "SESSION_KEY";
 
 type SecretChatAccess = Awaited<
   ReturnType<ChatService["ensureDirectChatAccess"]>
@@ -67,13 +71,34 @@ type SavedSecretPairingRecord = {
 };
 
 @Injectable()
-export class SecretService {
+export class SecretService implements OnModuleInit, OnModuleDestroy {
+  private secretAttachmentCleanupInterval: ReturnType<typeof setInterval> | null =
+    null;
+  private isSecretAttachmentCleanupRunning = false;
+
   public constructor(
     private readonly prismaService: PrismaService,
     private readonly redisService: RedisService,
     private readonly storageService: StorageService,
     private readonly chatService: ChatService
   ) {}
+
+  public onModuleInit() {
+    void this.runScheduledSecretAttachmentCleanup();
+
+    this.secretAttachmentCleanupInterval = setInterval(() => {
+      void this.runScheduledSecretAttachmentCleanup();
+    }, SECRET_ATTACHMENT_CLEANUP_INTERVAL_MS);
+
+    this.secretAttachmentCleanupInterval.unref?.();
+  }
+
+  public onModuleDestroy() {
+    if (this.secretAttachmentCleanupInterval) {
+      clearInterval(this.secretAttachmentCleanupInterval);
+      this.secretAttachmentCleanupInterval = null;
+    }
+  }
 
   public async registerSecretSession(
     userId: string,
@@ -312,7 +337,7 @@ export class SecretService {
     const ciphertext = this.decodeCiphertext(ciphertextBase64);
 
     const attachmentId = randomUUID();
-    const expiresAt = new Date(Date.now() + SECRET_ATTACHMENT_STAGE_TTL_MS);
+    const expiresAt = new Date(Date.now() + SECRET_ATTACHMENT_TTL_MS);
     const storageKey = this.buildAttachmentStorageKey(chat.id, attachmentId);
 
     const attachment = await this.prismaService.secretAttachment.create({
@@ -454,7 +479,11 @@ export class SecretService {
     );
 
     const chat = await this.ensureSecretChatSendAccess(fromUserId, input.chatId);
-    this.assertSessionTargetUsersExist(chat, [input.toUserId], fromUserId);
+    this.assertSessionTargetUsersExist(chat, [input.toUserId]);
+    this.assertTargetSessionIdsDoNotContainSender(
+      [toSession.id],
+      fromSession.id
+    );
 
     const sharedSecretKey =
       await this.prismaService.queueSharedSecretKey.create({
@@ -465,6 +494,9 @@ export class SecretService {
           toSessionId: toSession.id,
           chatId: input.chatId,
           groupId: input.groupId ?? chat.groupId ?? SAVED_SECRET_GROUP_ID,
+          keyKind: input.keyKind ?? SESSION_SHARED_KEY_KIND,
+          senderKeyId: input.senderKeyId ?? null,
+          senderKeyEpoch: input.senderKeyEpoch ?? null,
           ikPub: input.ikPub,
           ukm: input.ukm,
           iv: input.iv,
@@ -472,7 +504,7 @@ export class SecretService {
           sig: input.sig,
           ekPub: input.ekPub,
           usedOpk: input.usedOpk ?? null
-        }
+        } as any
       });
 
     if (!sharedSecretKey) {
@@ -558,7 +590,11 @@ export class SecretService {
     const uniqueRecipientIds = this.getUniqueIds(toUserIds);
     const uniqueRecipientSessionIds = this.getUniqueIds(toSessionIds);
 
-    this.assertSessionTargetUsersExist(chat, uniqueRecipientIds, fromUserId);
+    this.assertSessionTargetUsersExist(chat, uniqueRecipientIds);
+    this.assertTargetSessionIdsDoNotContainSender(
+      uniqueRecipientSessionIds,
+      fromSession.id
+    );
     await this.assertTargetSessionsBelongToUsers(
       uniqueRecipientIds,
       uniqueRecipientSessionIds
@@ -570,6 +606,9 @@ export class SecretService {
       ...uniqueRecipientIds
     ]);
     const committedAt = new Date();
+    const committedAttachmentExpiresAt = new Date(
+      committedAt.getTime() + SECRET_ATTACHMENT_TTL_MS
+    );
 
     const secretMessage = await this.prismaService.$transaction(async (tx) => {
       if (uniqueAttachmentIds.length > 0) {
@@ -621,13 +660,16 @@ export class SecretService {
           toSessionIds: uniqueRecipientSessionIds,
           checkedSessionIds: [],
           ukm: ukm ?? null,
+          senderKeyId: input.senderKeyId ?? null,
+          senderKeyIteration: input.senderKeyIteration ?? null,
+          senderKeyEpoch: input.senderKeyEpoch ?? null,
           iv,
           encryptedMessage,
           sig,
           groupId: input.groupId ?? chat.groupId ?? SAVED_SECRET_GROUP_ID,
           isKey: isKey ?? false,
           secretAttachmentIds: uniqueAttachmentIds
-        }
+        } as any
       });
 
       for (const attachmentId of uniqueAttachmentIds) {
@@ -641,7 +683,7 @@ export class SecretService {
             },
             committedAt,
             committedMessageId: createdSecretMessage.id,
-            expiresAt: null
+            expiresAt: committedAttachmentExpiresAt
           }
         });
       }
@@ -883,25 +925,31 @@ export class SecretService {
 
   private assertSessionTargetUsersExist(
     chat: SecretChatAccess,
-    targetUserIds: string[],
-    currentUserId: string
+    targetUserIds: string[]
   ) {
     if (targetUserIds.length === 0) {
       throw new BadRequestException("Secret recipients are required");
     }
 
     const memberIds = new Set(chat.members.map((member) => member.userId));
-    const invalidUserId = targetUserIds.find((targetUserId) => {
-      if (!memberIds.has(targetUserId)) {
-        return true;
-      }
-
-      return !chat.isSaved && targetUserId === currentUserId;
-    });
+    const invalidUserId = targetUserIds.find(
+      (targetUserId) => !memberIds.has(targetUserId)
+    );
 
     if (invalidUserId) {
       throw new BadRequestException(
         "Secret recipient list contains a user outside this chat"
+      );
+    }
+  }
+
+  private assertTargetSessionIdsDoNotContainSender(
+    targetSessionIds: string[],
+    fromSessionId: string
+  ) {
+    if (targetSessionIds.includes(fromSessionId)) {
+      throw new BadRequestException(
+        "Secret recipient sessions must not include the sender session"
       );
     }
   }
@@ -1243,34 +1291,93 @@ export class SecretService {
   }
 
   private async cleanupExpiredSecretAttachments() {
-    const now = new Date();
-    const expiredAttachments = await this.prismaService.secretAttachment.findMany(
-      {
-        where: {
-          committedAt: null,
-          expiresAt: {
-            lte: now
+    if (this.isSecretAttachmentCleanupRunning) {
+      return;
+    }
+
+    this.isSecretAttachmentCleanupRunning = true;
+
+    try {
+      await this.backfillCommittedSecretAttachmentExpirations();
+
+      const now = new Date();
+      const expiredAttachments =
+        await this.prismaService.secretAttachment.findMany({
+          where: {
+            expiresAt: {
+              lte: now
+            }
+          },
+          select: {
+            id: true,
+            storageKey: true
           }
+        });
+
+      for (const attachment of expiredAttachments) {
+        try {
+          await this.storageService.remove(attachment.storageKey);
+        } catch (error) {
+          console.warn(
+            "[SecretAttachment] Failed to remove expired attachment from storage",
+            {
+              attachmentId: attachment.id,
+              error
+            }
+          );
+          continue;
+        }
+
+        await this.prismaService.secretAttachment.deleteMany({
+          where: {
+            id: attachment.id
+          }
+        });
+      }
+    } finally {
+      this.isSecretAttachmentCleanupRunning = false;
+    }
+  }
+
+  private async backfillCommittedSecretAttachmentExpirations() {
+    const committedWithoutExpiration =
+      await this.prismaService.secretAttachment.findMany({
+        where: {
+          committedAt: {
+            not: null
+          },
+          expiresAt: null
         },
         select: {
           id: true,
-          storageKey: true
+          committedAt: true
         }
-      }
-    );
+      });
 
-    for (const attachment of expiredAttachments) {
-      try {
-        await this.storageService.remove(attachment.storageKey);
-      } catch {
+    for (const attachment of committedWithoutExpiration) {
+      if (!attachment.committedAt) {
         continue;
       }
 
-      await this.prismaService.secretAttachment.deleteMany({
+      await this.prismaService.secretAttachment.updateMany({
         where: {
-          id: attachment.id
+          id: attachment.id,
+          expiresAt: null
+        },
+        data: {
+          expiresAt: new Date(
+            attachment.committedAt.getTime() + SECRET_ATTACHMENT_TTL_MS
+          )
         }
       });
+    }
+  }
+
+  private async runScheduledSecretAttachmentCleanup() {
+    try {
+      await this.cleanupExpiredSecretAttachments();
+    } catch (error) {
+      console.warn("[SecretAttachment] Scheduled cleanup failed", error);
     }
   }
 

@@ -1,0 +1,57 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mesarat_backend
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db_mesarat
+      POSTGRES_PORT: 5432
+      POSTGRES_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db_mesarat:5432/${POSTGRES_DATABASE}
+      REDIS_HOST: redis_mesarat
+      REDIS_PORT: 6379
+      REDIS_URI: redis://:${REDIS_PASSWORD}@redis_mesarat:6379
+      APPLICATION_PORT: 4000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db_mesarat
+      - redis_mesarat
+    networks:
+      - mesarat-backend
+
+  db_mesarat:
+    image: postgres:16
+    container_name: postgres_mesarat
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data_mesarat:/var/lib/postgresql/data
+    networks:
+      - mesarat-backend
+
+  redis_mesarat:
+    image: redis:7
+    container_name: redis_mesarat
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_data_mesarat:/data
+    networks:
+      - mesarat-backend
+
+volumes:
+  postgres_data_mesarat:
+  redis_data_mesarat:
+
+networks:
+  mesarat-backend:

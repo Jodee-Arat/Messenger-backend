@@ -5,11 +5,11 @@ import {
   UnauthorizedException
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { GqlExecutionContext } from "@nestjs/graphql";
 import { JwtService } from "@nestjs/jwt";
 
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { RedisService } from "@/src/core/redis/redis.service";
+import { getGraphqlRequest } from "@/src/shared/utils/gql-request.util";
 
 @Injectable()
 export class GqlAuthGuard implements CanActivate {
@@ -21,14 +21,18 @@ export class GqlAuthGuard implements CanActivate {
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const ctx = GqlExecutionContext.create(context);
-    const request = ctx.getContext().req;
-    const authHeader = request.headers.authorization;
+    const request = getGraphqlRequest(context);
+    if (!request) {
+      throw new UnauthorizedException("GraphQL request context not found");
+    }
+
+    const headers = request.headers ?? {};
+    const authHeader = this.getHeader(headers.authorization);
 
     if (request.user?.id) {
       if (authHeader) {
         const sessionId = this.getSessionIdFromHeader(
-          request.headers["x-session-id"]
+          headers["x-session-id"]
         );
 
         if (
@@ -57,7 +61,7 @@ export class GqlAuthGuard implements CanActivate {
 
           if (user) {
             const sessionId = this.getSessionIdFromHeader(
-              request.headers["x-session-id"]
+              headers["x-session-id"]
             );
 
             if (
@@ -110,6 +114,18 @@ export class GqlAuthGuard implements CanActivate {
     }
 
     return null;
+  }
+
+  private getHeader(header: unknown) {
+    if (typeof header === "string") {
+      return header;
+    }
+
+    if (Array.isArray(header)) {
+      return header.find((value) => typeof value === "string") ?? undefined;
+    }
+
+    return undefined;
   }
 
   private getSessionKeyCandidates(sessionId: string) {

@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class QueueSecretMessageModel {
@@ -34,6 +34,15 @@ export class QueueSecretMessageModel {
 
   @Field(() => String, { nullable: true })
   ukm?: string | null;
+
+  @Field(() => String, { nullable: true })
+  senderKeyId?: string | null;
+
+  @Field(() => Int, { nullable: true })
+  senderKeyIteration?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  senderKeyEpoch?: number | null;
 
   @Field(() => String)
   iv: string;

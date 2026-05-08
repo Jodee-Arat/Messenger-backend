@@ -1,5 +1,11 @@
-import { Field, InputType } from "@nestjs/graphql";
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Field, InputType, Int } from "@nestjs/graphql";
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString
+} from "class-validator";
 
 @InputType()
 export class SessionSecretMessageInput {
@@ -34,6 +40,21 @@ export class SessionSecretMessageInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   ukm?: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  senderKeyId?: string | null;
+
+  @Field(() => Int, { nullable: true })
+  @IsInt()
+  @IsOptional()
+  senderKeyIteration?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  @IsInt()
+  @IsOptional()
+  senderKeyEpoch?: number | null;
 
   @Field(() => Boolean, { nullable: true })
   @IsOptional()

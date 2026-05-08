@@ -407,6 +407,10 @@ model QueueSecretMessage {
 
   ukm String? @map("ukm")
 
+  senderKeyId        String? @map("sender_key_id")
+  senderKeyIteration Int?    @map("sender_key_iteration")
+  senderKeyEpoch     Int?    @map("sender_key_epoch")
+
   iv                  String
   encryptedMessage    String   @map("encrypted_message")
   sig                 String
@@ -454,6 +458,10 @@ model QueueSharedSecretKey {
 
   fromSessionId String? @map("from_session_id")
   toSessionId   String? @map("to_session_id")
+
+  keyKind        String  @default("SESSION_KEY") @map("key_kind")
+  senderKeyId    String? @map("sender_key_id")
+  senderKeyEpoch Int?    @map("sender_key_epoch")
 
   ikPub String @map("ik_pub")
 
