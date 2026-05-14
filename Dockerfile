@@ -34,4 +34,4 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 
 EXPOSE 4000
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "yarn db:migrate && yarn start:prod"]
