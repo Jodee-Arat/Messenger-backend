@@ -16,6 +16,32 @@ const session = require("express-session");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require("cookie-parser");
 
+function resolveCookieDomain(config: ConfigService) {
+  const domain = config.get<string>("SESSION_DOMAIN")?.trim();
+
+  if (!domain || domain === "localhost") {
+    return undefined;
+  }
+
+  return domain;
+}
+
+function resolveCorsOrigin(config: ConfigService) {
+  const origins = config
+    .getOrThrow<string>("ALLOWED_ORIGIN")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return origins.length === 1 ? origins[0] : origins;
+}
+
+function resolveApplicationPort(config: ConfigService) {
+  return Number(
+    process.env.PORT ?? config.getOrThrow<string>("APPLICATION_PORT")
+  );
+}
+
 async function bootstrap() {
   // bodyParser: false — отключаем дефолтный Express body-parser (лимит ~100KB),
   // чтобы использовать свой с лимитом 50MB для base64-файлов секретного чата
@@ -23,9 +49,11 @@ async function bootstrap() {
     rawBody: true,
     bodyParser: false
   });
+  app.getHttpAdapter().getInstance().set("trust proxy", 1);
 
   const config = app.get(ConfigService);
   const redis = app.get(RedisService);
+  const sessionDomain = resolveCookieDomain(config);
 
   // Свой body-parser с увеличенным лимитом — ДО всех остальных middleware
   // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -55,7 +83,7 @@ async function bootstrap() {
       cookie: {
         // В DEV лучше не указывать domain, чтобы cookie работал на IP/localhost
         // Если требуется, можно управлять через ENV, но по умолчанию убираем домен
-        // domain: config.get<string>("SESSION_DOMAIN") ?? undefined,
+        domain: sessionDomain,
         path: "/",
         maxAge: ms(config.getOrThrow<StringValue>("SESSION_MAX_AGE")),
         httpOnly: parseBoolean(config.getOrThrow<string>("SESSION_HTTP_ONLY")),
@@ -72,11 +100,15 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: config.getOrThrow<string>("ALLOWED_ORIGIN"),
+    origin: resolveCorsOrigin(config),
     credentials: true,
     exposedHeaders: ["set-cookie"]
   });
 
-  await app.listen(config.getOrThrow<number>("APPLICATION_PORT"));
+  app.getHttpAdapter().getInstance().get("/health", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
+  await app.listen(resolveApplicationPort(config));
 }
 bootstrap();

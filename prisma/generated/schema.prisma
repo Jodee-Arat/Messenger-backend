@@ -542,8 +542,6 @@ enum ChatPermissionEnum {
 }
 
 enum GroupPermissionEnum {
-  // и надо посмотреть как всё работает на фронте и добавить в бэк, те же проверки
-  // Добавить подписки на изменения в группе (например, на изменение информации о группе, на добавление новых сообщений и т.д.)
   INVITE_MEMBERS
   REMOVE_MEMBERS
   CHANGE_GROUP_INFO
