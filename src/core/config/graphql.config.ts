@@ -8,6 +8,7 @@ import { join } from "path";
 
 import { User } from "@prisma/client";
 import { isDev } from "../../shared/utils/is-dev.util";
+import { parseBoolean } from "../../shared/utils/parse-boolean.util";
 
 import { PrismaService } from "../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
@@ -178,9 +179,13 @@ export function getGraphqlConfig(
   jwtService: JwtService
 ): ApolloDriverConfig {
   const isDevelopment = isDev(configService);
+  const introspectionEnabled =
+    isDevelopment ||
+    parseBoolean(configService.get<string>("GRAPHQL_INTROSPECTION") ?? "false");
 
   return {
     playground: isDevelopment,
+    introspection: introspectionEnabled,
     path: configService.getOrThrow<string>("GRAPHQL_PREFIX"),
     autoSchemaFile: isDevelopment
       ? join(process.cwd(), "src/core/graphql/schema.gql")
