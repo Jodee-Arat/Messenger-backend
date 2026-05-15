@@ -1,7 +1,7 @@
 import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 import { User } from "@prisma/client";
-import { getGraphqlRequest } from "@/src/shared/utils/gql-request.util";
+import { getGraphqlRequest } from "../../utils/gql-request.util";
 
 export const Authorized = createParamDecorator(
   (data: keyof User, ctx: ExecutionContext) => {

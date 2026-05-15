@@ -3,11 +3,11 @@ import { PubSub } from "graphql-subscriptions";
 import { GraphQLUpload, Upload } from "graphql-upload";
 
 import { User } from "@prisma/client";
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
-import { IsMemberGroup } from "@/src/shared/decorators/group/is-member-group.decorator";
-import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
-import { appPubSub } from "@/src/shared/utils/pubsub.util";
+import { Authorization } from "../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../shared/decorators/auth/authorized.decorator";
+import { IsMemberGroup } from "../../shared/decorators/group/is-member-group.decorator";
+import { FileValidationPipe } from "../../shared/pipes/file-validation.pipe";
+import { appPubSub } from "../../shared/utils/pubsub.util";
 
 import { FiltersInput } from "../inputs/filters.input";
 

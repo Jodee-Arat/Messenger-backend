@@ -7,9 +7,9 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 
-import { PrismaService } from "@/src/core/prisma/prisma.service";
-import { RedisService } from "@/src/core/redis/redis.service";
-import { getGraphqlRequest } from "@/src/shared/utils/gql-request.util";
+import { PrismaService } from "../../core/prisma/prisma.service";
+import { RedisService } from "../../core/redis/redis.service";
+import { getGraphqlRequest } from "../utils/gql-request.util";
 
 @Injectable()
 export class GqlAuthGuard implements CanActivate {

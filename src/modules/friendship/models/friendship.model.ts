@@ -1,7 +1,7 @@
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql";
 
 import { Friendship, FriendshipStatusEnum } from "@prisma/client";
-import { UserModel } from "@/src/modules/auth/account/models/user.model";
+import { UserModel } from "../../auth/account/models/user.model";
 
 registerEnumType(FriendshipStatusEnum, { name: "FriendshipStatusEnum" });
 

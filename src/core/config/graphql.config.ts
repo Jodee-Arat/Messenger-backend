@@ -7,7 +7,7 @@ import { IncomingMessage } from "http";
 import { join } from "path";
 
 import { User } from "@prisma/client";
-import { isDev } from "@/src/shared/utils/is-dev.util";
+import { isDev } from "../../shared/utils/is-dev.util";
 
 import { PrismaService } from "../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";

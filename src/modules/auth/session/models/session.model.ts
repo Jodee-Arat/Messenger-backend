@@ -4,7 +4,7 @@ import {
   DeviceInfo,
   LocationInfo,
   SessionMetadata
-} from "@/src/shared/types/session-metadata.types";
+} from "../../../../shared/types/session-metadata.types";
 
 @ObjectType()
 export class LocationModel implements LocationInfo {

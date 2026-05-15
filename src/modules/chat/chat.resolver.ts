@@ -2,11 +2,11 @@ import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { GraphQLUpload, Upload } from "graphql-upload";
 
 import { User } from "@prisma/client";
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
-import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
-import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
-import { appPubSub } from "@/src/shared/utils/pubsub.util";
+import { Authorization } from "../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../shared/decorators/auth/authorized.decorator";
+import { IsMemberChat } from "../../shared/decorators/chat/is-member-chat.decorator";
+import { FileValidationPipe } from "../../shared/pipes/file-validation.pipe";
+import { appPubSub } from "../../shared/utils/pubsub.util";
 
 import { FiltersInput } from "../inputs/filters.input";
 

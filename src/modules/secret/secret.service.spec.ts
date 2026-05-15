@@ -1,4 +1,4 @@
-jest.mock("@/src/modules/chat/chat.service", () => ({
+jest.mock("../chat/chat.service", () => ({
   ChatService: class ChatService {}
 }));
 

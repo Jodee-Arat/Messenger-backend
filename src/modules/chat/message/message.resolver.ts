@@ -1,9 +1,9 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
-import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";
-import { appPubSub } from "@/src/shared/utils/pubsub.util";
+import { Authorization } from "../../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../../shared/decorators/auth/authorized.decorator";
+import { IsMemberChat } from "../../../shared/decorators/chat/is-member-chat.decorator";
+import { appPubSub } from "../../../shared/utils/pubsub.util";
 
 import { FiltersInput } from "../../inputs/filters.input";
 import { ChatModel } from "../models/chat.model";

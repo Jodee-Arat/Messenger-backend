@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 
-import { ms } from "@/src/shared/utils/ms.util";
+import { ms } from "../../../shared/utils/ms.util";
 
 import { SessionResolver } from "./session.resolver";
 import { SessionService } from "./session.service";

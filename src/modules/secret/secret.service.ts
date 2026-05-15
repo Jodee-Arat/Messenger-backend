@@ -10,10 +10,10 @@ import { randomUUID } from "crypto";
 import * as QRCode from "qrcode";
 
 import { ChatPermissionEnum } from "@prisma/client";
-import { PrismaService } from "@/src/core/prisma/prisma.service";
-import { RedisService } from "@/src/core/redis/redis.service";
-import { ChatService } from "@/src/modules/chat/chat.service";
-import { StorageService } from "@/src/modules/libs/storage/storage.service";
+import { PrismaService } from "../../core/prisma/prisma.service";
+import { RedisService } from "../../core/redis/redis.service";
+import { ChatService } from "../chat/chat.service";
+import { StorageService } from "../libs/storage/storage.service";
 
 import { PreKeyInput } from "./input/preKey.input";
 import { RegisterSecretSessionInput } from "./input/register-secret-session.input";

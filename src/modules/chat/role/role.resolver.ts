@@ -1,8 +1,8 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { PubSub } from "graphql-subscriptions";
 
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
+import { Authorization } from "../../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../../shared/decorators/auth/authorized.decorator";
 
 import { UpsertChatRoleInput } from "./inputs/upsert-chat-role.input";
 import { ChatRoleModel } from "./models/chat-role.model";

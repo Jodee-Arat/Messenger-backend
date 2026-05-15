@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 
-import { SessionModule } from "@/src/modules/auth/session/session.module";
+import { SessionModule } from "../../auth/session/session.module";
 
 import { RoleResolver } from "./role.resolver";
 import { RoleService } from "./role.service";

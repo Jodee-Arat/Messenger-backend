@@ -14,8 +14,8 @@ import {
   DraftMessage,
   User
 } from "@prisma/client";
-import { PrismaService } from "@/src/core/prisma/prisma.service";
-import { StorageService } from "@/src/modules/libs/storage/storage.service";
+import { PrismaService } from "../../../../core/prisma/prisma.service";
+import { StorageService } from "../../../libs/storage/storage.service";
 
 import { ChatService } from "../../chat.service";
 

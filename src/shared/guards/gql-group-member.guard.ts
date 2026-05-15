@@ -6,8 +6,8 @@ import {
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 
-import { GroupService } from "@/src/modules/group/group.service";
-import { getGraphqlRequest } from "@/src/shared/utils/gql-request.util";
+import { GroupService } from "../../modules/group/group.service";
+import { getGraphqlRequest } from "../utils/gql-request.util";
 
 @Injectable()
 export class GqlGroupMembershipGuard implements CanActivate {

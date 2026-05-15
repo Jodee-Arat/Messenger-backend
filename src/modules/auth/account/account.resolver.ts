@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
 
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
+import { Authorization } from "../../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../../shared/decorators/auth/authorized.decorator";
 
 import { FiltersInput } from "../../inputs/filters.input";
 

@@ -6,8 +6,8 @@ import {
 } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 
-import { ChatService } from "@/src/modules/chat/chat.service";
-import { getGraphqlRequest } from "@/src/shared/utils/gql-request.util";
+import { ChatService } from "../../modules/chat/chat.service";
+import { getGraphqlRequest } from "../utils/gql-request.util";
 
 @Injectable()
 export class GqlChatMembershipGuard implements CanActivate {

@@ -1,6 +1,6 @@
 import { forwardRef, Module } from "@nestjs/common";
 
-import { GqlChatMembershipGuard } from "@/src/shared/guards/gql-chat-membership.guard";
+import { GqlChatMembershipGuard } from "../../../shared/guards/gql-chat-membership.guard";
 
 import { SessionModule } from "../../auth/session/session.module";
 import { ChatModule } from "../chat.module";

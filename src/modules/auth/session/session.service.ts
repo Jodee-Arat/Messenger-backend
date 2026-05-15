@@ -9,10 +9,10 @@ import { verify } from "argon2";
 import { Request } from "express";
 import { verify as verifyTotp } from "otplib";
 
-import { PrismaService } from "@/src/core/prisma/prisma.service";
-import { RedisService } from "@/src/core/redis/redis.service";
-import { getSessionMetadata } from "@/src/shared/utils/session-metadata.util";
-import { destroySession, saveSession } from "@/src/shared/utils/session.util";
+import { PrismaService } from "../../../core/prisma/prisma.service";
+import { RedisService } from "../../../core/redis/redis.service";
+import { getSessionMetadata } from "../../../shared/utils/session-metadata.util";
+import { destroySession, saveSession } from "../../../shared/utils/session.util";
 
 import { LoginInput } from "./inputs/login.input";
 

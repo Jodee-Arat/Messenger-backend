@@ -11,8 +11,8 @@ import {
   DraftMessage,
   Prisma
 } from "@prisma/client";
-import { PrismaService } from "@/src/core/prisma/prisma.service";
-import { appPubSub } from "@/src/shared/utils/pubsub.util";
+import { PrismaService } from "../../../core/prisma/prisma.service";
+import { appPubSub } from "../../../shared/utils/pubsub.util";
 
 import { FiltersInput } from "../../inputs/filters.input";
 import { StorageService } from "../../libs/storage/storage.service";

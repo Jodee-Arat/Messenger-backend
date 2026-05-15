@@ -2,9 +2,9 @@ import { Args, Mutation, Resolver } from "@nestjs/graphql";
 import { GraphQLUpload, Upload } from "graphql-upload";
 
 import { User } from "@prisma/client";
-import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
-import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
-import { FileValidationPipe } from "@/src/shared/pipes/file-validation.pipe";
+import { Authorization } from "../../../shared/decorators/auth/auth.decorator";
+import { Authorized } from "../../../shared/decorators/auth/authorized.decorator";
+import { FileValidationPipe } from "../../../shared/pipes/file-validation.pipe";
 
 import { ChangeProfileInfoInput } from "./inputs/change-profile-info.input";
 import { ProfileService } from "./profile.service";
