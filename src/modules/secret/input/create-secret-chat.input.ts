@@ -2,7 +2,7 @@ import { Field, InputType } from "@nestjs/graphql";
 import { registerEnumType } from "@nestjs/graphql";
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-import { QueueActionTypeEnum } from "@/prisma/generated";
+import { QueueActionTypeEnum } from "@prisma/client";
 
 registerEnumType(QueueActionTypeEnum, { name: "QueueActionTypeEnum" });
 

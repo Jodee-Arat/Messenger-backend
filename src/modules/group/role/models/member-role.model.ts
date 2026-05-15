@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
-import { GroupPermissionEnum, GroupRole } from "@/prisma/generated";
+import { GroupPermissionEnum, GroupRole } from "@prisma/client";
 
 @ObjectType()
 export class MemberRoleModel implements GroupRole {

@@ -7,7 +7,7 @@ import {
 import { GraphQLUpload, Upload } from "graphql-upload";
 import * as sharp from "sharp";
 
-import { GroupPermissionEnum, Prisma, User } from "@/prisma/generated";
+import { GroupPermissionEnum, Prisma, User } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FiltersInput } from "../inputs/filters.input";

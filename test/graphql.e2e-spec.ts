@@ -29,7 +29,7 @@ import { GroupResolver } from "../src/modules/group/group.resolver";
 import { GroupService } from "../src/modules/group/group.service";
 import { GroupRoleResolver } from "../src/modules/group/role/group-role.resolver";
 import { GroupRoleService } from "../src/modules/group/role/group-role.service";
-import { ChatPermissionEnum, GroupPermissionEnum } from "../prisma/generated";
+import { ChatPermissionEnum, GroupPermissionEnum } from "@prisma/client";
 
 type GraphqlResponse<TData = Record<string, unknown>> = {
   body: {

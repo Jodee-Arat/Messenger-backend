@@ -1,7 +1,7 @@
 import { Args, Mutation, Query, Resolver, Subscription } from "@nestjs/graphql";
 import { GraphQLUpload, Upload } from "graphql-upload";
 
-import { User } from "@/prisma/generated";
+import { User } from "@prisma/client";
 import { Authorization } from "@/src/shared/decorators/auth/auth.decorator";
 import { Authorized } from "@/src/shared/decorators/auth/authorized.decorator";
 import { IsMemberChat } from "@/src/shared/decorators/chat/is-member-chat.decorator";

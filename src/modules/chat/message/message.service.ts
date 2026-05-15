@@ -10,7 +10,7 @@ import {
   ChatPermissionEnum,
   DraftMessage,
   Prisma
-} from "@/prisma/generated";
+} from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { appPubSub } from "@/src/shared/utils/pubsub.util";
 

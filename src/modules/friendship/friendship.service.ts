@@ -4,7 +4,7 @@ import {
   Injectable
 } from "@nestjs/common";
 
-import { FriendshipStatusEnum } from "@/prisma/generated";
+import { FriendshipStatusEnum } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 @Injectable()

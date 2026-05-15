@@ -1,7 +1,7 @@
 import { Field, InputType, registerEnumType } from "@nestjs/graphql";
 import { IsNotEmpty, IsString } from "class-validator";
 
-import { ChatPermissionEnum } from "@/prisma/generated";
+import { ChatPermissionEnum } from "@prisma/client";
 
 registerEnumType(ChatPermissionEnum, { name: "ChatPermissionEnum" });
 

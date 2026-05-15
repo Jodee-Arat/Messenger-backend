@@ -13,7 +13,7 @@ import {
   ChatPermissionEnum,
   DraftMessage,
   User
-} from "@/prisma/generated";
+} from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { StorageService } from "@/src/modules/libs/storage/storage.service";
 

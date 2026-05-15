@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import { GroupMember } from "@/prisma/generated";
+import { GroupMember } from "@prisma/client";
 
 import { UserModel } from "../../auth/account/models/user.model";
 import { GroupRoleModel } from "../role/models/group-role.model";

@@ -4,7 +4,7 @@ import {
   Injectable
 } from "@nestjs/common";
 
-import { GroupPermissionEnum } from "@/prisma/generated";
+import { GroupPermissionEnum } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { UpsertGroupRoleInput } from "./inputs/upsert-group-role.input";

@@ -13,7 +13,7 @@ import {
   GroupPermissionEnum,
   Prisma,
   User
-} from "@/prisma/generated";
+} from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FriendshipService } from "../friendship/friendship.service";

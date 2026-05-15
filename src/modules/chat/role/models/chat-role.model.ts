@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 
-import { $Enums, ChatPermissionEnum, ChatRole } from "@/prisma/generated";
+import { $Enums, ChatPermissionEnum, ChatRole } from "@prisma/client";
 
 @ObjectType()
 export class ChatRoleModel implements ChatRole {

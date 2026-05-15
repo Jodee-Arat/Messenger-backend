@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 
-import { FileMessage } from "@/prisma/generated";
+import { FileMessage } from "@prisma/client";
 import { UserModel } from "@/src/modules/auth/account/models/user.model";
 
 import { ChatModel } from "../../../models/chat.model";

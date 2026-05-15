@@ -3,7 +3,7 @@ import { hash } from "argon2";
 import { generateSecret, generateURI, verify as verifyTotp } from "otplib";
 import * as QRCode from "qrcode";
 
-import { FriendshipStatusEnum, Prisma, User } from "@/prisma/generated";
+import { FriendshipStatusEnum, Prisma, User } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { FiltersInput } from "../../inputs/filters.input";

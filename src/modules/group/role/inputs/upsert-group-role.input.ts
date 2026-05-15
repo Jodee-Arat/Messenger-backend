@@ -1,7 +1,7 @@
 import { Field, InputType, registerEnumType } from "@nestjs/graphql";
 import { IsNotEmpty, IsString } from "class-validator";
 
-import { GroupPermissionEnum } from "@/prisma/generated";
+import { GroupPermissionEnum } from "@prisma/client";
 
 registerEnumType(GroupPermissionEnum, { name: "GroupPermissionEnum" });
 

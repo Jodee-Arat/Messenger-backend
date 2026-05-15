@@ -1,7 +1,7 @@
 // import { Field, ObjectType } from "@nestjs/graphql";
 
-// import { QueueAction, QueueActionTypeEnum } from "@/prisma/generated";
-// import { JsonValue } from "@/prisma/generated/runtime/library";
+// import { QueueAction, QueueActionTypeEnum } from "@prisma/client";
+// import { JsonValue } from "@prisma/client/runtime/library";
 
 // @ObjectType()
 // export class QueueActionModel implements QueueAction {

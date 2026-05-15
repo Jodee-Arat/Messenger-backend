@@ -2,7 +2,7 @@ import { InternalServerErrorException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { type Request } from "express";
 
-import { type User } from "@/prisma/generated";
+import { type User } from "@prisma/client";
 
 import { type SessionMetadata } from "../types/session-metadata.types";
 

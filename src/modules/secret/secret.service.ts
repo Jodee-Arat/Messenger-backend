@@ -9,7 +9,7 @@ import {
 import { randomUUID } from "crypto";
 import * as QRCode from "qrcode";
 
-import { ChatPermissionEnum } from "@/prisma/generated";
+import { ChatPermissionEnum } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 import { RedisService } from "@/src/core/redis/redis.service";
 import { ChatService } from "@/src/modules/chat/chat.service";

@@ -4,7 +4,7 @@ import {
   Injectable
 } from "@nestjs/common";
 
-import { ChatPermissionEnum } from "@/prisma/generated";
+import { ChatPermissionEnum } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { UpsertChatRoleInput } from "./inputs/upsert-chat-role.input";

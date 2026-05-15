@@ -6,7 +6,7 @@ import { signedCookie } from "cookie-parser";
 import { IncomingMessage } from "http";
 import { join } from "path";
 
-import { User } from "@/prisma/generated";
+import { User } from "@prisma/client";
 import { isDev } from "@/src/shared/utils/is-dev.util";
 
 import { PrismaService } from "../prisma/prisma.service";

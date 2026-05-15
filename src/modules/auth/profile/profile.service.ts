@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { GraphQLUpload, Upload } from "graphql-upload";
 import * as sharp from "sharp";
 
-import { User } from "@/prisma/generated";
+import { User } from "@prisma/client";
 import { PrismaService } from "@/src/core/prisma/prisma.service";
 
 import { StorageService } from "../../libs/storage/storage.service";
