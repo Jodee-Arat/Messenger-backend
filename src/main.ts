@@ -12,9 +12,35 @@ import { parseBoolean } from "./shared/utils/parse-boolean.util";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const session = require("express-session");
 
-// cookie-parser в CJS, используем require для корректного вызова как функции
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieParser = require("cookie-parser");
+
+const BOOTSTRAP_TIMEOUT_MS = 45000;
+
+function logStartupStep(step: string) {
+  console.log(`[Bootstrap] ${step}`);
+}
+
+async function withBootstrapTimeout(promise: Promise<void>) {
+  let timeout: NodeJS.Timeout | undefined;
+
+  try {
+    await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(() => {
+          reject(
+            new Error(`Bootstrap timed out after ${BOOTSTRAP_TIMEOUT_MS}ms`)
+          );
+        }, BOOTSTRAP_TIMEOUT_MS);
+      })
+    ]);
+  } finally {
+    if (timeout) {
+      clearTimeout(timeout);
+    }
+  }
+}
 
 function resolveCookieDomain(config: ConfigService) {
   const domain = config.get<string>("SESSION_DOMAIN")?.trim();
@@ -43,37 +69,40 @@ function resolveApplicationPort(config: ConfigService) {
 }
 
 async function bootstrap() {
-  // bodyParser: false — отключаем дефолтный Express body-parser (лимит ~100KB),
-  // чтобы использовать свой с лимитом 50MB для base64-файлов секретного чата
+  logStartupStep("Creating Nest application");
   const app = await NestFactory.create(CoreModule, {
     rawBody: true,
     bodyParser: false
   });
+  logStartupStep("Nest application created");
+
   app.getHttpAdapter().getInstance().set("trust proxy", 1);
 
+  logStartupStep("Resolving providers");
   const config = app.get(ConfigService);
   const redis = app.get(RedisService);
   const sessionDomain = resolveCookieDomain(config);
+  logStartupStep("Providers resolved");
 
-  // Свой body-parser с увеличенным лимитом — ДО всех остальных middleware
+  logStartupStep("Registering body parser");
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const bodyParser = require("body-parser");
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
-  // Важно: session middleware должен стоять до GraphQL и роутов
+  logStartupStep("Registering cookie parser and global pipes");
   app.use(cookieParser(config.getOrThrow<string>("COOKIES_SECRET")));
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true
     })
   );
 
+  logStartupStep("Registering session middleware");
   app.use(
     session({
       secret: config.getOrThrow<string>("SESSION_SECRET"),
-      name: config.getOrThrow<string>("SESSION_NAME"), // совпадает с Cookie: session
+      name: config.getOrThrow<string>("SESSION_NAME"),
       resave: false,
       saveUninitialized: false,
       store: new RedisStore({
@@ -81,8 +110,6 @@ async function bootstrap() {
         prefix: config.getOrThrow<string>("SESSION_FOLDER")
       }),
       cookie: {
-        // В DEV лучше не указывать domain, чтобы cookie работал на IP/localhost
-        // Если требуется, можно управлять через ENV, но по умолчанию убираем домен
         domain: sessionDomain,
         path: "/",
         maxAge: ms(config.getOrThrow<StringValue>("SESSION_MAX_AGE")),
@@ -93,27 +120,33 @@ async function bootstrap() {
     })
   );
 
-  // GraphQL upload после session, чтобы иметь доступ к req.session
+  logStartupStep("Registering GraphQL upload middleware");
   app.use(
     config.getOrThrow<string>("GRAPHQL_PREFIX"),
     graphqlUploadExpress({ maxFileSize: 50 * 1024 * 1024, maxFiles: 10 })
   );
 
+  logStartupStep("Enabling CORS");
   app.enableCors({
     origin: resolveCorsOrigin(config),
     credentials: true,
     exposedHeaders: ["set-cookie"]
   });
 
+  logStartupStep("Registering healthcheck");
   app.getHttpAdapter().getInstance().get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
   });
 
-  await app.listen(resolveApplicationPort(config));
+  const port = resolveApplicationPort(config);
+  logStartupStep(`Listening on port ${port}`);
+  await app.listen(port);
+  logStartupStep(`Listening on port ${port}`);
 }
 
-bootstrap().catch((error: unknown) => {
+withBootstrapTimeout(bootstrap()).catch((error: unknown) => {
   const message = error instanceof Error ? error.stack : String(error);
-  Logger.error(message, "Bootstrap");
+  Logger.error(message, undefined, "Bootstrap");
+  console.error(`[Bootstrap] ${message}`);
   process.exit(1);
 });
