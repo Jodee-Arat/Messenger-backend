@@ -1,4 +1,4 @@
-import { ValidationPipe } from "@nestjs/common";
+import { Logger, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { RedisStore } from "connect-redis";
@@ -111,4 +111,9 @@ async function bootstrap() {
 
   await app.listen(resolveApplicationPort(config));
 }
-bootstrap();
+
+bootstrap().catch((error: unknown) => {
+  const message = error instanceof Error ? error.stack : String(error);
+  Logger.error(message, "Bootstrap");
+  process.exit(1);
+});
