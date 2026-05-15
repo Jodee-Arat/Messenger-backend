@@ -177,10 +177,14 @@ export function getGraphqlConfig(
   redisService: RedisService,
   jwtService: JwtService
 ): ApolloDriverConfig {
+  const isDevelopment = isDev(configService);
+
   return {
-    playground: isDev(configService),
+    playground: isDevelopment,
     path: configService.getOrThrow<string>("GRAPHQL_PREFIX"),
-    autoSchemaFile: join(process.cwd(), "src/core/graphql/schema.gql"),
+    autoSchemaFile: isDevelopment
+      ? join(process.cwd(), "src/core/graphql/schema.gql")
+      : true,
     sortSchema: true,
     context: ({ req, res }) => ({ req, res }),
     installSubscriptionHandlers: true,
