@@ -5,18 +5,23 @@ import {
   forwardRef
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { fileTypeFromBuffer } from "file-type";
-import { Upload } from "graphql-upload";
-
 import {
-  ChatMessage,
+  FileMessage,
   ChatPermissionEnum,
   DraftMessage,
   User
 } from "@prisma/client";
-import { PrismaService } from "../../../../core/prisma/prisma.service";
-import { StorageService } from "../../../libs/storage/storage.service";
+import { randomUUID } from "crypto";
+import { fileTypeFromBuffer } from "file-type";
+import { Upload } from "graphql-upload";
 
+import { PrismaService } from "../../../../core/prisma/prisma.service";
+import {
+  getFilenameExtension,
+  normalizeUploadedFilename,
+  toSafeStorageFileFormat
+} from "../../../../shared/utils/file.util";
+import { StorageService } from "../../../libs/storage/storage.service";
 import { ChatService } from "../../chat.service";
 
 @Injectable()
@@ -43,6 +48,7 @@ export class FileService {
     }
 
     const { createReadStream, filename, mimetype } = await file;
+    const normalizedFilename = normalizeUploadedFilename(filename);
 
     const chunks: Buffer[] = [];
     for await (const chunk of createReadStream()) {
@@ -97,32 +103,49 @@ export class FileService {
     }
 
     const fileTypeResult = await fileTypeFromBuffer(buffer);
-    const fileFormat = fileTypeResult?.ext ?? "unknown";
-    const filePath = `chats/${chatId}/${chatDraftMessage.id}/${filename}`;
-
-    const fileMessage = await this.prismaService.fileMessage.create({
-      data: {
-        fileName: filename,
-        fileFullName: filePath,
-        fileSize: buffer.length.toString(),
-        fileFormat,
-        fileUrl: `${this.configService.getOrThrow<string>("S3_URL")}${filePath}`,
-        draftMessageId: chatDraftMessage.id,
-        userId: user.id,
-        chatId
-      }
-    });
-
-    await this.prismaService.draftMessage.update({
-      where: { id: chatDraftMessage.id },
-      data: {
-        files: {
-          connect: { id: fileMessage.id }
-        }
-      }
-    });
+    const fileFormat =
+      fileTypeResult?.ext ??
+      getFilenameExtension(normalizedFilename) ??
+      "unknown";
+    const fileId = randomUUID();
+    const storageFileFormat = toSafeStorageFileFormat(fileFormat);
+    const filePath = `chats/${chatId}/${chatDraftMessage.id}/${fileId}.${storageFileFormat}`;
 
     await this.storageService.upload(buffer, filePath, mimetype);
+
+    let fileMessage: FileMessage;
+
+    try {
+      fileMessage = await this.prismaService.$transaction(async (tx) => {
+        const createdFileMessage = await tx.fileMessage.create({
+          data: {
+            id: fileId,
+            fileName: normalizedFilename,
+            fileFullName: filePath,
+            fileSize: buffer.length.toString(),
+            fileFormat,
+            fileUrl: `${this.configService.getOrThrow<string>("S3_URL")}${filePath}`,
+            draftMessageId: chatDraftMessage.id,
+            userId: user.id,
+            chatId
+          }
+        });
+
+        await tx.draftMessage.update({
+          where: { id: chatDraftMessage.id },
+          data: {
+            files: {
+              connect: { id: createdFileMessage.id }
+            }
+          }
+        });
+
+        return createdFileMessage;
+      });
+    } catch (error) {
+      await this.storageService.remove(filePath).catch(() => undefined);
+      throw error;
+    }
 
     return {
       fileId: fileMessage.id,
@@ -208,7 +231,7 @@ export class FileService {
 
     return {
       fileUrl,
-      filename: fileMessage.fileName
+      filename: normalizeUploadedFilename(fileMessage.fileName)
     };
   }
 }

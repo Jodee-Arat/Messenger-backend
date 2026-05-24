@@ -1,4 +1,9 @@
-import { validateFileFormat } from "./file.util";
+import {
+  getFilenameExtension,
+  normalizeUploadedFilename,
+  toSafeStorageFileFormat,
+  validateFileFormat
+} from "./file.util";
 
 describe("validateFileFormat", () => {
   it("should return true for allowed extensions", () => {
@@ -26,5 +31,45 @@ describe("validateFileFormat", () => {
 
   it("should return false for empty allowed formats", () => {
     expect(validateFileFormat("file.txt", [])).toBe(false);
+  });
+});
+
+describe("normalizeUploadedFilename", () => {
+  it("keeps regular unicode filenames readable", () => {
+    expect(normalizeUploadedFilename("пример.txt")).toBe("пример.txt");
+  });
+
+  it("decodes percent-encoded filenames when picker returns encoded names", () => {
+    expect(
+      normalizeUploadedFilename("%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80.txt")
+    ).toBe("пример.txt");
+  });
+
+  it("repairs latin1-decoded UTF-8 mojibake from multipart filenames", () => {
+    expect(normalizeUploadedFilename("Ð¿ÑÐ¸Ð¼ÐµÑ.txt")).toBe("пример.txt");
+  });
+
+  it("removes path segments and control characters", () => {
+    expect(normalizeUploadedFilename("folder\\bad\u0000name.txt")).toBe(
+      "bad_name.txt"
+    );
+  });
+});
+
+describe("getFilenameExtension", () => {
+  it("returns normalized extension from unicode filenames", () => {
+    expect(getFilenameExtension("пример.TXT")).toBe("txt");
+  });
+
+  it("returns null for names without extensions", () => {
+    expect(getFilenameExtension("README")).toBeNull();
+  });
+});
+
+describe("toSafeStorageFileFormat", () => {
+  it("keeps storage file format ASCII-safe", () => {
+    expect(toSafeStorageFileFormat("tar.gz")).toBe("targz");
+    expect(toSafeStorageFileFormat("../png")).toBe("png");
+    expect(toSafeStorageFileFormat("")).toBe("bin");
   });
 });
