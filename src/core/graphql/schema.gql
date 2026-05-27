@@ -408,6 +408,7 @@ type Query {
   findMySecretSessions: [SecretSessionModel!]!
   findOrCreateSavedSecretChat: ChatModel!
   findProfile: UserModel!
+  findUserById(targetUserId: String!): UserModel!
   findSessionsByUser: [SessionModel!]!
   getBlockedUsers: [FriendshipModel!]!
   getChatRoles(chatId: String!): [ChatRoleModel!]!

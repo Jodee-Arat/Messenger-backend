@@ -31,6 +31,7 @@ describe("AccountService", () => {
   let prisma: {
     user: {
       findUnique: jest.Mock;
+      findFirst: jest.Mock;
       findMany: jest.Mock;
       create: jest.Mock;
       update: jest.Mock;
@@ -44,6 +45,7 @@ describe("AccountService", () => {
     prisma = {
       user: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
         findMany: jest.fn(),
         create: jest.fn(),
         update: jest.fn()
@@ -259,6 +261,45 @@ describe("AccountService", () => {
       await expect(service.me("nonexistent")).rejects.toThrow(
         ConflictException
       );
+    });
+  });
+
+  describe("findUserById", () => {
+    it("should return target user when it exists and is visible", async () => {
+      const targetUser = { id: "user2", username: "other", email: "other@test.com" };
+      prisma.friendship.findMany.mockResolvedValue([]);
+      prisma.user.findFirst.mockResolvedValue(targetUser);
+
+      const result = await service.findUserById("user1", "user2");
+
+      expect(result).toEqual(targetUser);
+      expect(prisma.friendship.findMany).toHaveBeenCalledWith({
+        where: {
+          status: "BLOCKED",
+          friendId: "user1"
+        },
+        select: { userId: true }
+      });
+      expect(prisma.user.findFirst).toHaveBeenCalledWith({
+        where: {
+          AND: [{ id: "user2" }]
+        }
+      });
+    });
+
+    it("should hide target user when they blocked the viewer", async () => {
+      prisma.friendship.findMany.mockResolvedValue([{ userId: "user2" }]);
+      prisma.user.findFirst.mockResolvedValue(null);
+
+      await expect(service.findUserById("user1", "user2")).rejects.toThrow(
+        ConflictException
+      );
+
+      expect(prisma.user.findFirst).toHaveBeenCalledWith({
+        where: {
+          AND: [{ id: "user2" }, { id: { notIn: ["user2"] } }]
+        }
+      });
     });
   });
 

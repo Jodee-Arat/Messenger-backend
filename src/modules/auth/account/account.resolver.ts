@@ -57,4 +57,13 @@ export class AccountResolver {
   ) {
     return await this.accountService.findAllUsers(userId, input);
   }
+
+  @Authorization()
+  @Query(() => UserModel, { name: "findUserById" })
+  public async findUserById(
+    @Authorized("id") userId: string,
+    @Args("targetUserId") targetUserId: string
+  ) {
+    return await this.accountService.findUserById(userId, targetUserId);
+  }
 }

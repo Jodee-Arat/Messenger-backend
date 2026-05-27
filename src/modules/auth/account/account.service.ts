@@ -150,6 +150,36 @@ export class AccountService {
     return user;
   }
 
+  public async findUserById(userId: string, targetUserId: string) {
+    if (userId === targetUserId) {
+      return this.me(userId);
+    }
+
+    const blockedByOthers = await this.prismaService.friendship.findMany({
+      where: {
+        status: FriendshipStatusEnum.BLOCKED,
+        friendId: userId
+      },
+      select: { userId: true }
+    });
+
+    const blockedIds = blockedByOthers.map((friendship) => friendship.userId);
+    const targetUser = await this.prismaService.user.findFirst({
+      where: {
+        AND: [
+          { id: targetUserId },
+          ...(blockedIds.length > 0 ? [{ id: { notIn: blockedIds } }] : [])
+        ]
+      }
+    });
+
+    if (!targetUser) {
+      throw new ConflictException("User not found");
+    }
+
+    return targetUser;
+  }
+
   public async findAllUsers(userId: string, input?: FiltersInput) {
     const normalizedSearchTerm = input?.searchTerm?.trim();
     const take = this.normalizeTake(input?.take);
